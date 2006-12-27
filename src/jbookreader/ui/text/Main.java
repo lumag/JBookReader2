@@ -4,7 +4,7 @@ import java.util.List;
 
 import jbookreader.book.IBook;
 import jbookreader.fileformats.IErrorHandler;
-import jbookreader.fileformats.impl.FictionBook2;
+import jbookreader.fileformats.impl.FileFormatsLibrary;
 import jbookreader.formatengine.FormatEngine;
 import jbookreader.formatengine.ICompositor;
 import jbookreader.formatengine.IFormatEngine;
@@ -32,11 +32,12 @@ public class Main {
 
 		};
 
-		IBook book = new FictionBook2().parse(
-				args.length > 0 ? args[0] : 
+		String uri = args.length > 0 ? args[0] : 
 				"tests/simple.fb2"
 				//"tests/exupery_malenkiyi_princ.fb2"
-				,handler, BookFactoryCreator.getBookFactory());
+			;
+		IBook book = FileFormatsLibrary.getDescriptorForFile(uri).parse(
+				uri, handler, BookFactoryCreator.getBookFactory());
 		System.err.println("parsed");
 //		book.getFirstBody().accept(new BookDumper());
 		IGraphicDriver driver = new TextRenderer();

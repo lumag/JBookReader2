@@ -7,7 +7,8 @@ import javax.swing.SwingUtilities;
 
 import jbookreader.book.IBook;
 import jbookreader.fileformats.IErrorHandler;
-import jbookreader.fileformats.impl.FictionBook2;
+import jbookreader.fileformats.impl.FileFormatsLibrary;
+import jbookreader.fileformats.impl.UnknownFormatException;
 import jbookreader.formatengine.FormatEngine;
 import jbookreader.formatengine.SimpleCompositor;
 import jbookreader.rendering.swing.JGraphicDriver;
@@ -20,7 +21,9 @@ public class Main {
 		final String filename = args.length == 0?
 				//"tests/simple.fb2"
 				"tests/exupery_malenkiyi_princ.fb2"
-				: args[1];
+				//"tests/test.rtf"
+				//"tests/yekzyuperi_antuan_malenkii_princ.rtf"
+				: args[0];
 		SwingUtilities.invokeLater(new Runnable() {
 
 			public void run() {
@@ -47,7 +50,7 @@ public class Main {
 						};
 
 						try {
-							final IBook book = new FictionBook2().parse(
+							final IBook book = FileFormatsLibrary.getDescriptorForFile(filename).parse(
 									filename
 									,handler, BookFactoryCreator.getBookFactory());
 							SwingUtilities.invokeAndWait(new Runnable() {
@@ -64,6 +67,8 @@ public class Main {
 						} catch (InterruptedException e) {
 							e.printStackTrace();
 						} catch (InvocationTargetException e) {
+							e.printStackTrace();
+						} catch (UnknownFormatException e) {
 							e.printStackTrace();
 						}
 					}

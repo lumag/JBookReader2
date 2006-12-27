@@ -1,6 +1,9 @@
 package jbookreader.fileformats.impl;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 import jbookreader.book.IBinaryBlob;
 import jbookreader.book.IBook;
@@ -19,21 +22,7 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
 
-public class FictionBook2 implements IFileFormatDescriptor {
-	public IBook parse(String uri, IErrorHandler handler, IBookFactory factory) throws SAXException, IOException {
-		return parse(new InputSource(uri), handler, factory);
-	}
-
-	private IBook parse(InputSource source, IErrorHandler handler, IBookFactory factory) throws SAXException, IOException {
-		XMLReader reader = XMLReaderFactory.createXMLReader();
-		FB2ContentsHandler fb2handler = new FB2ContentsHandler(factory);
-		reader.setErrorHandler(new SAXParseErrorHandler(handler));
-		reader.setContentHandler(fb2handler);
-
-		reader.parse(source);
-
-		return fb2handler.getBook();
-	}
+class FictionBook2 implements IFileFormatDescriptor {
 	private static class FB2ContentsHandler extends DefaultHandler {
 		private final IBookFactory factory;
 		private final IBook book;
@@ -157,6 +146,38 @@ public class FictionBook2 implements IFileFormatDescriptor {
 		public IBook getBook() {
 			return book;
 		}
+	}
+
+	FictionBook2() {
+		extensions = new ArrayList<String>();
+		extensions.add(".fb2");
+// FIXME: support zipped fb2
+//		extensions.add(".fb2.zip");
+//		extensions.add(".fbz");
+	}
+
+	public IBook parse(String uri, IErrorHandler handler, IBookFactory factory) throws SAXException, IOException {
+		return parse(new InputSource(uri), handler, factory);
+	}
+
+	private IBook parse(InputSource source, IErrorHandler handler, IBookFactory factory) throws SAXException, IOException {
+		XMLReader reader = XMLReaderFactory.createXMLReader();
+		FB2ContentsHandler fb2handler = new FB2ContentsHandler(factory);
+		reader.setErrorHandler(new SAXParseErrorHandler(handler));
+		reader.setContentHandler(fb2handler);
+
+		reader.parse(source);
+
+		return fb2handler.getBook();
+	}
+
+	public String getDescription() {
+		return "FictionBook2";
+	}
+
+	private final Collection<String> extensions;
+	public Collection<String> getExtensions() {
+		return Collections.unmodifiableCollection(extensions);
 	}
 
 }

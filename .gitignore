@@ -1,0 +1,9 @@
+JBookReader2-0.0.1.jar
+TEST*.xml
+bin
+docs/report
+src/jbookreader/fileformats/impl/FileFormatsLibrary.java
+src/jbookreader/fileformats/impl/RichTextFormat.java
+src/jbookreader/fileformats/impl/UnknownFormatException.java
+src/jbookreader/ui/swing/Values.java
+

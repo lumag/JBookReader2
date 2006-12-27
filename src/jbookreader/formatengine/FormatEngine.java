@@ -50,6 +50,9 @@ public class FormatEngine implements IFormatEngine {
 		// FIXME: move to style!
 		private boolean isInlineNode(IContainerNode node) {
 			String tag = node.getNodeTag();
+			if (tag == null) {
+				return false;
+			}
 			if (
 					tag.equals("strong") ||
 					tag.equals("emphasis") ||

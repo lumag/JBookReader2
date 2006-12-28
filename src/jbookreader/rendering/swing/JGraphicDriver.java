@@ -35,17 +35,12 @@ public class JGraphicDriver extends JComponent implements IGraphicDriver, Scroll
 
 	private IFormatEngine formatEngine;
 	private ICompositor compositor;
-	@SuppressWarnings("unused")
 	private IBook book;
 	private List<IDrawable> lines;
 
 	private FontRenderContext fontRC;
 
 	private Graphics2D paperGraphics;
-	
-	public JGraphicDriver() {
-		setPreferredSize(new Dimension(256, 256));
-	}
 	
 	static int pixelToDimension(float px) {
 		return Math.round(px * PIXEL_SCALE_FACTOR);
@@ -118,6 +113,7 @@ public class JGraphicDriver extends JComponent implements IGraphicDriver, Scroll
 	}
 	
 	public IDrawable renderImage(InputStream dataStream) throws IOException {
+//		throw new UnsupportedOperationException("unsupported"); 
 		BufferedImage image = ImageIO.read(dataStream);
 		return new AWTImageAdapter(this, image);
 	}
@@ -163,8 +159,10 @@ public class JGraphicDriver extends JComponent implements IGraphicDriver, Scroll
 			) {
 			// FIXME: move to separate thread!
 			System.err.println("formatting");
+			long before = System.nanoTime();
 			lines = formatEngine.format(this, compositor, book.getFirstBody());
-			System.err.println("done");
+			long after = System.nanoTime();
+			System.err.println("done " + (after - before)/1000000 + "ms");
 			
 			int height = 0;
 			for (IDrawable dr: lines) {
@@ -172,7 +170,7 @@ public class JGraphicDriver extends JComponent implements IGraphicDriver, Scroll
 				height += dr.getHeight() + dr.getDepth();
 			}
 			setPreferredSize(new Dimension(getWidth(), Math.round(
-					dimensionToPixel(height + insets.top + insets.bottom))));
+					dimensionToPixel(height) + insets.top + insets.bottom)));
 			revalidate();
 			repaint();
 		} else {

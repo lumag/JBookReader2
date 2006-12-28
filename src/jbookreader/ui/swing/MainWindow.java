@@ -1,9 +1,11 @@
 package jbookreader.ui.swing;
 
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.GraphicsConfiguration;
 import java.awt.event.KeyEvent;
 
+import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -15,6 +17,7 @@ import jbookreader.rendering.swing.JGraphicDriver;
 
 @SuppressWarnings("serial")
 class MainWindow extends JFrame {
+	private static final int BORDER_WIDTH = 15;
 	private JGraphicDriver display;
 
 	public MainWindow() {
@@ -28,10 +31,17 @@ class MainWindow extends JFrame {
 
 		setJMenuBar(createMenuBar());
 		display = new JGraphicDriver();
-		JScrollPane pane = new JScrollPane(display, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		display.setBorder(BorderFactory.createEmptyBorder(
+				BORDER_WIDTH, BORDER_WIDTH,
+				BORDER_WIDTH, BORDER_WIDTH));
+		JScrollPane pane = new JScrollPane(display,
+				ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
+				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		add(pane);
 
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		
+		setPreferredSize(new Dimension(800, 600));
 
 		pack();
 		setVisible(true);

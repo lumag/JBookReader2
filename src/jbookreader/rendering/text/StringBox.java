@@ -34,14 +34,18 @@ class StringBox implements IDrawable {
 		return string.length();
 	}
 
-	public int getShrink() {
+	public int getShrink(Position position) {
 		return 0;
 	}
 
-	public int getStretch() {
+	public int getStretch(Position position) {
 		return 0;
 	}
 	
+	public void adjustWidth(int adjust) {
+		throw new UnsupportedOperationException("Width adjustment not supported");
+	}
+
 	@Override
 	public String toString() {
 		return "'" + string +"'";

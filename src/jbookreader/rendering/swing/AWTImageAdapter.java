@@ -36,16 +36,20 @@ public class AWTImageAdapter implements IDrawable {
 		return JGraphicDriver.pixelToDimension(image.getHeight());
 	}
 
-	public int getShrink() {
+	public int getShrink(Position position) {
 		return 0;
 	}
 
-	public int getStretch() {
+	public int getStretch(Position position) {
 		return 0;
 	}
 
 	public int getWidth(Position position) {
 		return width;
+	}
+
+	public void adjustWidth(int adjust) {
+		throw new UnsupportedOperationException("Width adjustment not supported");
 	}
 
 }

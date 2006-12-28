@@ -9,6 +9,7 @@ class Glue implements IDrawable {
 	private final int stretch;
 	private final int shrink;
 	private final IGraphicDriver driver;
+	private int adjustment;
 
 	Glue(final IGraphicDriver driver, final int space, final int stretch, final int shrink) {
 		this.driver = driver;
@@ -16,16 +17,22 @@ class Glue implements IDrawable {
 		this.stretch = stretch;
 		this.shrink = shrink;
 	}
-	public int getShrink() {
-		return shrink;
+	public int getShrink(Position position) {
+		if (position != Position.MIDDLE_OF_LINE) {
+			return 0;
+		}
+		return stretch;
 	}
 	public int getWidth(Position position) {
 		if (position != Position.MIDDLE_OF_LINE) {
 			return 0;
 		}
-		return space;
+		return space + adjustment;
 	}
-	public int getStretch() {
+	public int getStretch(Position position) {
+		if (position != Position.MIDDLE_OF_LINE) {
+			return 0;
+		}
 		return stretch;
 	}
 	public int getDepth() {
@@ -36,13 +43,15 @@ class Glue implements IDrawable {
 	}
 
 	public void draw(Position position) {
-		if (position == Position.MIDDLE_OF_LINE) {
-			driver.addHorizontalSpace(space);
-		}
+		driver.addHorizontalSpace(getWidth(position));
 	}
 	
 	@Override
 	public String toString() {
-		return "Glue: " + space + ":" + stretch + ":" + shrink;
+		return "Glue: " + space + "+" + adjustment + ":" + stretch + ":" + shrink;
+	}
+
+	public void adjustWidth(int adjust) {
+		this.adjustment = adjust;
 	}
 }

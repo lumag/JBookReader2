@@ -10,52 +10,100 @@ import jbookreader.style.Alignment;
 
 
 public class SimpleCompositor implements ICompositor {
-	private Alignment alignment = Alignment.LEFT;
+	private Alignment alignment = Alignment.JUSTIFY;
 
 	public List<IDrawable> compose(List<IDrawable> particles, int width, IGraphicDriver driver) {
 		List<IDrawable> result = new ArrayList<IDrawable>();
-		HBox hbox = new HBox();
+		List<IDrawable> line = new ArrayList<IDrawable>();
+		int currentWidth = 0;
 		for (IDrawable d: particles) {
-			int width_add = hbox.calculateWidthAddition(-1, d);
-			if (hbox.getWidth(Position.MIDDLE_OF_LINE)
-					+ width_add > width) {
-				result.add(fixHBox(width, driver, hbox));
-				hbox = new HBox();
+			if (line.isEmpty()) {
+				line.add(d);
+				currentWidth = d.getWidth(Position.START_OF_LINE);
+			} else if (currentWidth + d.getWidth(Position.END_OF_LINE) > width) {
+				// we can't add current element as last or middle
+				IDrawable last = line.get(line.size()-1);
+				currentWidth = currentWidth
+							- last.getWidth(Position.MIDDLE_OF_LINE)
+							+ last.getWidth(Position.END_OF_LINE);
+
+				// flush line
+				result.add(makeHBox(driver, line, currentWidth, width, false));
+				line.clear();
+
+				line.add(d);
+				currentWidth = d.getWidth(Position.START_OF_LINE);
+			} else if (currentWidth + d.getWidth(Position.MIDDLE_OF_LINE) > width) {
+				// can't add the element in the middle, but it could be last item
+				line.add(d);
+				currentWidth += d.getWidth(Position.END_OF_LINE);
+
+				// flush line
+				result.add(makeHBox(driver, line, currentWidth, width, false));
+				line.clear();
+				currentWidth = 0;
+			} else {
+				line.add(d);
+				currentWidth += d.getWidth(Position.MIDDLE_OF_LINE);
 			}
-			hbox.add(d);
 		}
-		if (!hbox.isEmpty()) {
-			result.add(fixHBox(width, driver, hbox));
+		if (!line.isEmpty()) {
+			IDrawable last = line.get(line.size()-1);
+			currentWidth = currentWidth
+						- last.getWidth(Position.MIDDLE_OF_LINE)
+						+ last.getWidth(Position.END_OF_LINE);
+
+			// flush line
+			result.add(makeHBox(driver, line, currentWidth, width, true));
+			line.clear();
 		}
 		return result;
 	}
 
-	private HBox fixHBox(int width, IGraphicDriver driver, HBox hbox) {
-		int defect = width - hbox.getWidth(Position.MIDDLE_OF_LINE);
+	private IDrawable makeHBox(IGraphicDriver driver, List<IDrawable> line, int currentWidth, int width, boolean last) {
+		HBox hbox = new HBox();
+		for (IDrawable d: line) {
+			hbox.add(d);
+		}
+		int defect = width - currentWidth;
 		if (defect == 0) {
 			return hbox;
 		}
-
-		// XXX: it's bad to allocate the whole big box for such nonsense.
-		//      either provide some other way to add leading and trailing
-		//      whitespaces or provide 'light' hbox
-		HBox wrapperBox = new HBox();
+		
+		HBox wrapperBox;
 		switch (alignment) {
 		case LEFT:
+			wrapperBox = new HBox();
 			wrapperBox.add(hbox);
 			wrapperBox.add(new SimpleWhitespace(driver, defect));
+			hbox = wrapperBox;
 			break;
 		case RIGHT:
+			wrapperBox = new HBox();
 			wrapperBox.add(new SimpleWhitespace(driver, defect));
 			wrapperBox.add(hbox);
+			hbox = wrapperBox;
 			break;
 		case CENTER:
+			wrapperBox = new HBox();
 			wrapperBox.add(new SimpleWhitespace(driver, defect / 2));
 			wrapperBox.add(hbox);
 			wrapperBox.add(new SimpleWhitespace(driver, (defect + 1) / 2));
+			hbox = wrapperBox;
+			break;
+		case JUSTIFY:
+			if (hbox.getStretch(Position.MIDDLE_OF_LINE) != 0
+					&& !last) {
+				hbox.adjustWidth(defect);
+			} else {
+				wrapperBox = new HBox();
+				wrapperBox.add(hbox);
+				wrapperBox.add(new SimpleWhitespace(driver, defect));
+				hbox = wrapperBox;
+			}
 			break;
 		}
-		return wrapperBox;
+		return hbox;
 	}
 
 }

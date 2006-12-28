@@ -49,7 +49,8 @@ class FictionBook2 implements IFileFormatDescriptor {
 //				System.out.print("<" + localName + ">");
 				if (localName.equals("image")) {
 					IImageNode node = factory.newImageNode();
-					node.setText(attributes.getValue("", "alt"));
+					String altText = attributes.getValue("", "alt");
+					node.setText(altText != null? altText: "");
 					node.setHRef(attributes.getValue("http://www.w3.org/1999/xlink", "href"));
 					containerNode.add(node);
 				} else {

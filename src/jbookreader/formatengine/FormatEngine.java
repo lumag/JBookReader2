@@ -91,7 +91,8 @@ public class FormatEngine implements IFormatEngine {
 			// if the image is a first node in a paragraph.
 			// Then we will get duplicate image.
 			// XXX: this will be fixed once imageType and inlineImageType
-			// become different node types
+			// become different node types or will be distinguishable
+			// in any other simple way.
 			formatInline(node);
 			return false;
 		}
@@ -118,7 +119,11 @@ public class FormatEngine implements IFormatEngine {
 		}
 
 		public boolean visitTextNode(ITextNode node) {
-			char[] str = node.getText().toCharArray();
+			String text = node.getText();
+			if (text == null) {
+				return false;
+			}
+			char[] str = text.toCharArray();
 			int size = str.length;
 			for (int start = 0, end = start;
 				end < size;

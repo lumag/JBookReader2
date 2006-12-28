@@ -7,7 +7,7 @@
     <path id="project.classpath">
 	<pathelement path="${classpath}" />
 	<pathelement location="bin" />
-	<!--<fileset dir="lib" includes="**/*.jar" />-->
+	<!-- <fileset dir="lib" includes="**/*.jar" /> -->
 	<pathelement location="${JUNIT_HOME}/junit.jar" />
 	<pathelement location="${JDEPEND_HOME}/jdepend.jar" />
     </path>

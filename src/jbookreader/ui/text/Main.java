@@ -3,6 +3,7 @@ package jbookreader.ui.text;
 import java.util.List;
 
 import jbookreader.book.IBook;
+import jbookreader.book.IBookFactory;
 import jbookreader.fileformats.IErrorHandler;
 import jbookreader.fileformats.impl.FileFormatsLibrary;
 import jbookreader.formatengine.FormatEngine;
@@ -13,7 +14,7 @@ import jbookreader.rendering.IDrawable;
 import jbookreader.rendering.IGraphicDriver;
 import jbookreader.rendering.Position;
 import jbookreader.rendering.text.TextRenderer;
-import jbookreader.util.BookFactoryCreator;
+import lumag.util.ClassFactory;
 
 
 public class Main {
@@ -37,7 +38,8 @@ public class Main {
 				//"tests/exupery_malenkiyi_princ.fb2"
 			;
 		IBook book = FileFormatsLibrary.getDescriptorForFile(uri).parse(
-				uri, handler, BookFactoryCreator.getBookFactory());
+				uri, handler,
+				ClassFactory.createClass(IBookFactory.class, "jbookreader.book.factory"));
 		System.err.println("parsed");
 //		book.getFirstBody().accept(new BookDumper());
 		IGraphicDriver driver = new TextRenderer();

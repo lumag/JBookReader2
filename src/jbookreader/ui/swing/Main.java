@@ -6,13 +6,14 @@ import java.lang.reflect.InvocationTargetException;
 import javax.swing.SwingUtilities;
 
 import jbookreader.book.IBook;
+import jbookreader.book.IBookFactory;
 import jbookreader.fileformats.IErrorHandler;
 import jbookreader.fileformats.impl.FileFormatsLibrary;
 import jbookreader.fileformats.impl.UnknownFormatException;
 import jbookreader.formatengine.FormatEngine;
 import jbookreader.formatengine.SimpleCompositor;
 import jbookreader.rendering.swing.JGraphicDriver;
-import jbookreader.util.BookFactoryCreator;
+import lumag.util.ClassFactory;
 
 import org.xml.sax.SAXException;
 
@@ -52,7 +53,8 @@ public class Main {
 						try {
 							final IBook book = FileFormatsLibrary.getDescriptorForFile(filename).parse(
 									filename
-									,handler, BookFactoryCreator.getBookFactory());
+									,handler,
+									ClassFactory.createClass(IBookFactory.class, "jbookreader.book.factory"));
 							SwingUtilities.invokeAndWait(new Runnable() {
 								public void run() {
 									driver.setBook(book);

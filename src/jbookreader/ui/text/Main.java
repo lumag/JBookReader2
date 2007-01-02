@@ -6,10 +6,8 @@ import jbookreader.book.IBook;
 import jbookreader.book.IBookFactory;
 import jbookreader.fileformats.IErrorHandler;
 import jbookreader.fileformats.impl.FileFormatsLibrary;
-import jbookreader.formatengine.FormatEngine;
 import jbookreader.formatengine.ICompositor;
 import jbookreader.formatengine.IFormatEngine;
-import jbookreader.formatengine.SimpleCompositor;
 import jbookreader.rendering.IDrawable;
 import jbookreader.rendering.IGraphicDriver;
 import jbookreader.rendering.Position;
@@ -20,6 +18,8 @@ import lumag.util.ClassFactory;
 public class Main {
 
 	public static void main(String[] args) throws Exception {
+		ClassFactory.loadProperies("jbookreader");
+
 		IErrorHandler handler = new IErrorHandler() {
 
 			public boolean error(boolean fatal, String message) {
@@ -43,8 +43,10 @@ public class Main {
 		System.err.println("parsed");
 //		book.getFirstBody().accept(new BookDumper());
 		IGraphicDriver driver = new TextRenderer();
-		ICompositor compositor = new SimpleCompositor();
-		IFormatEngine engine = new FormatEngine();
+		ICompositor compositor = ClassFactory.createClass(ICompositor.class,
+				"jbookreader.compositor");
+		IFormatEngine engine = ClassFactory.createClass(IFormatEngine.class,
+				"jbookreader.formatengine");
 		@SuppressWarnings("unused")
 		List<IDrawable> lines = engine.format(driver, compositor, book.getFirstBody());
 		System.err.println("formatted");

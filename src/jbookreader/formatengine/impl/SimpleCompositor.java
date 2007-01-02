@@ -1,9 +1,11 @@
-package jbookreader.formatengine;
+package jbookreader.formatengine.impl;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
+import jbookreader.formatengine.IAdjustableDrawable;
+import jbookreader.formatengine.ICompositor;
 import jbookreader.rendering.IDrawable;
 import jbookreader.rendering.IGraphicDriver;
 import jbookreader.rendering.Position;

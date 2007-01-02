@@ -1,4 +1,4 @@
-package jbookreader.formatengine;
+package jbookreader.formatengine.impl;
 
 import java.util.ArrayList;
 import java.util.List;

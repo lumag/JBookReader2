@@ -1,5 +1,6 @@
-package jbookreader.formatengine;
+package jbookreader.formatengine.impl;
 
+import jbookreader.formatengine.IAdjustableDrawable;
 import jbookreader.rendering.IDrawable;
 import jbookreader.rendering.IGraphicDriver;
 import jbookreader.rendering.Position;

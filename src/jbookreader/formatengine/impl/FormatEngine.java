@@ -1,4 +1,4 @@
-package jbookreader.formatengine;
+package jbookreader.formatengine.impl;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,6 +10,8 @@ import jbookreader.book.IImageNode;
 import jbookreader.book.INode;
 import jbookreader.book.INodeVisitor;
 import jbookreader.book.ITextNode;
+import jbookreader.formatengine.ICompositor;
+import jbookreader.formatengine.IFormatEngine;
 import jbookreader.rendering.IDrawable;
 import jbookreader.rendering.IFont;
 import jbookreader.rendering.IGraphicDriver;

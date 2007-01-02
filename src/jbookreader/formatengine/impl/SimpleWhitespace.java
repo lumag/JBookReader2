@@ -1,4 +1,4 @@
-package jbookreader.formatengine;
+package jbookreader.formatengine.impl;
 
 import jbookreader.rendering.IDrawable;
 import jbookreader.rendering.IGraphicDriver;

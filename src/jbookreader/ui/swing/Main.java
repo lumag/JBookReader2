@@ -10,8 +10,8 @@ import jbookreader.book.IBookFactory;
 import jbookreader.fileformats.IErrorHandler;
 import jbookreader.fileformats.impl.FileFormatsLibrary;
 import jbookreader.fileformats.impl.UnknownFormatException;
-import jbookreader.formatengine.FormatEngine;
-import jbookreader.formatengine.SimpleCompositor;
+import jbookreader.formatengine.ICompositor;
+import jbookreader.formatengine.IFormatEngine;
 import jbookreader.rendering.swing.JGraphicDriver;
 import lumag.util.ClassFactory;
 
@@ -19,6 +19,8 @@ import org.xml.sax.SAXException;
 
 public class Main {
 	public static void main(String[] args) {
+		ClassFactory.loadProperies("jbookreader");
+
 		final String filename = args.length == 0?
 				//"tests/simple.fb2"
 				"tests/exupery_malenkiyi_princ.fb2"
@@ -32,8 +34,12 @@ public class Main {
 				MainWindow window = new MainWindow();
 				final JGraphicDriver driver = window.getGraphicDriver();
 				
-				driver.setCompositor(new SimpleCompositor());
-				driver.setFormatEngine(new FormatEngine());
+				driver.setCompositor(
+						ClassFactory.createClass(ICompositor.class,
+								"jbookreader.compositor"));
+				driver.setFormatEngine(
+						ClassFactory.createClass(IFormatEngine.class,
+								"jbookreader.formatengine"));
 				
 				new Thread(new Runnable() {
 					public void run() {
@@ -52,8 +58,7 @@ public class Main {
 
 						try {
 							final IBook book = FileFormatsLibrary.getDescriptorForFile(filename).parse(
-									filename
-									,handler,
+									filename, handler,
 									ClassFactory.createClass(IBookFactory.class, "jbookreader.book.factory"));
 							SwingUtilities.invokeAndWait(new Runnable() {
 								public void run() {

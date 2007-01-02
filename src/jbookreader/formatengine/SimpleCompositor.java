@@ -19,24 +19,24 @@ public class SimpleCompositor implements ICompositor {
 		for (IDrawable d: particles) {
 			if (line.isEmpty()) {
 				line.add(d);
-				currentWidth = d.getWidth(Position.START_OF_LINE);
-			} else if (currentWidth + d.getWidth(Position.END_OF_LINE) > width) {
+				currentWidth = d.getWidth(Position.START);
+			} else if (currentWidth + d.getWidth(Position.END) > width) {
 				// we can't add current element as last or middle
 				IDrawable last = line.get(line.size()-1);
 				currentWidth = currentWidth
-							- last.getWidth(Position.MIDDLE_OF_LINE)
-							+ last.getWidth(Position.END_OF_LINE);
+							- last.getWidth(Position.MIDDLE)
+							+ last.getWidth(Position.END);
 
 				// flush line
 				result.add(makeHBox(driver, line, currentWidth, width, false));
 				line.clear();
 
 				line.add(d);
-				currentWidth = d.getWidth(Position.START_OF_LINE);
-			} else if (currentWidth + d.getWidth(Position.MIDDLE_OF_LINE) > width) {
+				currentWidth = d.getWidth(Position.START);
+			} else if (currentWidth + d.getWidth(Position.MIDDLE) > width) {
 				// can't add the element in the middle, but it could be last item
 				line.add(d);
-				currentWidth += d.getWidth(Position.END_OF_LINE);
+				currentWidth += d.getWidth(Position.END);
 
 				// flush line
 				result.add(makeHBox(driver, line, currentWidth, width, false));
@@ -44,14 +44,14 @@ public class SimpleCompositor implements ICompositor {
 				currentWidth = 0;
 			} else {
 				line.add(d);
-				currentWidth += d.getWidth(Position.MIDDLE_OF_LINE);
+				currentWidth += d.getWidth(Position.MIDDLE);
 			}
 		}
 		if (!line.isEmpty()) {
 			IDrawable last = line.get(line.size()-1);
 			currentWidth = currentWidth
-						- last.getWidth(Position.MIDDLE_OF_LINE)
-						+ last.getWidth(Position.END_OF_LINE);
+						- last.getWidth(Position.MIDDLE)
+						+ last.getWidth(Position.END);
 
 			// flush line
 			result.add(makeHBox(driver, line, currentWidth, width, true));
@@ -92,7 +92,7 @@ public class SimpleCompositor implements ICompositor {
 			hbox = wrapperBox;
 			break;
 		case JUSTIFY:
-			if (hbox.getStretch(Position.MIDDLE_OF_LINE) != 0
+			if (hbox.getStretch(Position.MIDDLE) != 0
 					&& !last) {
 				hbox.adjustWidth(defect);
 			} else {

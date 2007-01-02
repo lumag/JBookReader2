@@ -23,11 +23,11 @@ class HBox implements IDrawable {
 			it.hasNext();) {
 			IDrawable drawable = it.next();
 			if (it.previousIndex() == 0) {
-				drawable.draw(Position.START_OF_LINE);
+				drawable.draw(Position.START);
 			} else if (it.hasNext()) {
-				drawable.draw(Position.MIDDLE_OF_LINE);
+				drawable.draw(Position.MIDDLE);
 			} else {
-				drawable.draw(Position.END_OF_LINE);
+				drawable.draw(Position.END);
 			}
 		}
 	}
@@ -57,35 +57,35 @@ class HBox implements IDrawable {
 			index = elements.size();
 		}
 		if (elements.isEmpty()) {
-			width += drawable.getWidth(Position.START_OF_LINE);
-			stretch += drawable.getStretch(Position.START_OF_LINE);
-			shrink += drawable.getShrink(Position.START_OF_LINE);
+			width += drawable.getWidth(Position.START);
+			stretch += drawable.getStretch(Position.START);
+			shrink += drawable.getShrink(Position.START);
 		} else if (index == 0) {
 			IDrawable first = elements.get(0);
-			width += drawable.getWidth(Position.START_OF_LINE)
-				+ first.getWidth(Position.MIDDLE_OF_LINE)
-				- first.getWidth(Position.START_OF_LINE);
-			stretch += drawable.getStretch(Position.START_OF_LINE)
-				+ first.getStretch(Position.MIDDLE_OF_LINE)
-				- first.getStretch(Position.START_OF_LINE);
-			shrink += drawable.getShrink(Position.START_OF_LINE)
-				+ first.getShrink(Position.MIDDLE_OF_LINE)
-				- first.getShrink(Position.START_OF_LINE);
+			width += drawable.getWidth(Position.START)
+				+ first.getWidth(Position.MIDDLE)
+				- first.getWidth(Position.START);
+			stretch += drawable.getStretch(Position.START)
+				+ first.getStretch(Position.MIDDLE)
+				- first.getStretch(Position.START);
+			shrink += drawable.getShrink(Position.START)
+				+ first.getShrink(Position.MIDDLE)
+				- first.getShrink(Position.START);
 		} else if (index == elements.size()) {
 			IDrawable last = elements.get(elements.size()-1);
-			width += drawable.getWidth(Position.END_OF_LINE)
-				+ last.getWidth(Position.MIDDLE_OF_LINE)
-				- last.getWidth(Position.END_OF_LINE);
-			stretch += drawable.getStretch(Position.END_OF_LINE)
-				+ last.getStretch(Position.MIDDLE_OF_LINE)
-				- last.getStretch(Position.END_OF_LINE);
-			shrink += drawable.getShrink(Position.END_OF_LINE)
-				+ last.getShrink(Position.MIDDLE_OF_LINE)
-				- last.getShrink(Position.END_OF_LINE);
+			width += drawable.getWidth(Position.END)
+				+ last.getWidth(Position.MIDDLE)
+				- last.getWidth(Position.END);
+			stretch += drawable.getStretch(Position.END)
+				+ last.getStretch(Position.MIDDLE)
+				- last.getStretch(Position.END);
+			shrink += drawable.getShrink(Position.END)
+				+ last.getShrink(Position.MIDDLE)
+				- last.getShrink(Position.END);
 		} else {
-			width += drawable.getWidth(Position.MIDDLE_OF_LINE);
-			stretch += drawable.getStretch(Position.MIDDLE_OF_LINE);
-			shrink += drawable.getShrink(Position.MIDDLE_OF_LINE);
+			width += drawable.getWidth(Position.MIDDLE);
+			stretch += drawable.getStretch(Position.MIDDLE);
+			shrink += drawable.getShrink(Position.MIDDLE);
 		}
 		if (height < drawable.getHeight()) {
 			height = drawable.getHeight();
@@ -107,17 +107,17 @@ class HBox implements IDrawable {
 			) {
 			IDrawable drawable = it.next();
 			if (it.previousIndex() == 0 && elements.size() == 0) {
-				width += drawable.getWidth(Position.START_OF_LINE);
-				stretch += drawable.getStretch(Position.START_OF_LINE);
-				shrink += drawable.getShrink(Position.START_OF_LINE);
+				width += drawable.getWidth(Position.START);
+				stretch += drawable.getStretch(Position.START);
+				shrink += drawable.getShrink(Position.START);
 			} else if (it.hasNext()) {
-				width += drawable.getWidth(Position.MIDDLE_OF_LINE);
-				stretch += drawable.getStretch(Position.MIDDLE_OF_LINE);
-				shrink += drawable.getShrink(Position.MIDDLE_OF_LINE);
+				width += drawable.getWidth(Position.MIDDLE);
+				stretch += drawable.getStretch(Position.MIDDLE);
+				shrink += drawable.getShrink(Position.MIDDLE);
 			} else {
-				width += drawable.getWidth(Position.END_OF_LINE);
-				stretch += drawable.getStretch(Position.END_OF_LINE);
-				shrink += drawable.getShrink(Position.END_OF_LINE);
+				width += drawable.getWidth(Position.END);
+				stretch += drawable.getStretch(Position.END);
+				shrink += drawable.getShrink(Position.END);
 			}
 			if (height < drawable.getHeight()) {
 				height = drawable.getHeight();
@@ -147,11 +147,11 @@ class HBox implements IDrawable {
 			
 			int adj_i;
 			if (iter.previousIndex() == 0) {
-				adj_i = d.getStretch(Position.START_OF_LINE);
+				adj_i = d.getStretch(Position.START);
 			} else if (iter.hasNext()) {
-				adj_i = d.getStretch(Position.MIDDLE_OF_LINE);
+				adj_i = d.getStretch(Position.MIDDLE);
 			} else {
-				adj_i = d.getStretch(Position.END_OF_LINE);
+				adj_i = d.getStretch(Position.END);
 			}
 			if (adj_i != 0) {
 				err += 2 * adjust * adj_i - 2 * step * stretch;

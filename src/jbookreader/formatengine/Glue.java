@@ -18,19 +18,19 @@ class Glue implements IDrawable {
 		this.shrink = shrink;
 	}
 	public int getShrink(Position position) {
-		if (position != Position.MIDDLE_OF_LINE) {
+		if (position != Position.MIDDLE) {
 			return 0;
 		}
 		return stretch;
 	}
 	public int getWidth(Position position) {
-		if (position != Position.MIDDLE_OF_LINE) {
+		if (position != Position.MIDDLE) {
 			return 0;
 		}
 		return space + adjustment;
 	}
 	public int getStretch(Position position) {
-		if (position != Position.MIDDLE_OF_LINE) {
+		if (position != Position.MIDDLE) {
 			return 0;
 		}
 		return stretch;

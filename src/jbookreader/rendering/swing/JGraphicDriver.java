@@ -155,7 +155,7 @@ public class JGraphicDriver extends JComponent implements IGraphicDriver, Scroll
 		fontRC = paperGraphics.getFontRenderContext();
 
 		if (lines == null || getPaperWidth() != 
-			lines.get(0).getWidth(Position.MIDDLE_OF_LINE)
+			lines.get(0).getWidth(Position.MIDDLE)
 			) {
 			// FIXME: move to separate thread!
 			System.err.println("formatting");
@@ -185,7 +185,7 @@ public class JGraphicDriver extends JComponent implements IGraphicDriver, Scroll
 			horizontalPosition = verticalPosition = 0;
 			for (IDrawable dr: lines) {
 				if (verticalPosition + dr.getHeight() > hmin) {
-					dr.draw(Position.MIDDLE_OF_LINE);
+					dr.draw(Position.MIDDLE);
 					horizontalPosition = 0;
 				}
 				// FIXME: correct inter-line value!

@@ -49,7 +49,7 @@ public class Main {
 		List<IDrawable> lines = engine.format(driver, compositor, book.getFirstBody());
 		System.err.println("formatted");
 		for (IDrawable dr: lines) {
-			dr.draw(Position.MIDDLE_OF_LINE);
+			dr.draw(Position.MIDDLE);
 			driver.clear();
 			System.out.println();
 		}

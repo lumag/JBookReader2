@@ -113,7 +113,7 @@ public class JGraphicDriver extends JComponent implements IGraphicDriver, Scroll
 			throw new IllegalStateException("renderString with null frc");
 		}
 
-		return new SwingString(this, s, (AWTFontAdapter) font);
+		return new SimpleSwingString(this, s, (AWTFontAdapter) font);
 	}
 	
 	public IDrawable renderImage(String contentType, InputStream dataStream) throws IOException {

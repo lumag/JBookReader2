@@ -2,6 +2,7 @@ package jbookreader.formatengine;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 import jbookreader.rendering.IDrawable;
 import jbookreader.rendering.IGraphicDriver;
@@ -28,7 +29,7 @@ public class SimpleCompositor implements ICompositor {
 							+ last.getWidth(Position.END);
 
 				// flush line
-				result.add(makeHBox(driver, line, currentWidth, width, false));
+				result.add(makeHBox(driver, line, width, false));
 				line.clear();
 
 				line.add(d);
@@ -39,7 +40,7 @@ public class SimpleCompositor implements ICompositor {
 				currentWidth += d.getWidth(Position.END);
 
 				// flush line
-				result.add(makeHBox(driver, line, currentWidth, width, false));
+				result.add(makeHBox(driver, line, width, false));
 				line.clear();
 				currentWidth = 0;
 			} else {
@@ -54,54 +55,148 @@ public class SimpleCompositor implements ICompositor {
 						+ last.getWidth(Position.END);
 
 			// flush line
-			result.add(makeHBox(driver, line, currentWidth, width, true));
+			result.add(makeHBox(driver, line, width, true));
 			line.clear();
 		}
 		return result;
 	}
 
-	private IDrawable makeHBox(IGraphicDriver driver, List<IDrawable> line, int currentWidth, int width, boolean last) {
-		HBox hbox = new HBox();
-		for (IDrawable d: line) {
-			hbox.add(d);
-		}
-		int defect = width - currentWidth;
-		if (defect == 0) {
-			return hbox;
-		}
-		
-		HBox wrapperBox;
+	private IDrawable makeHBox(IGraphicDriver driver, List<IDrawable> line, int width, boolean last) {
+		HBox hbox;
 		switch (alignment) {
-		case LEFT:
-			wrapperBox = new HBox();
-			wrapperBox.add(hbox);
-			wrapperBox.add(new SimpleWhitespace(driver, defect));
-			hbox = wrapperBox;
-			break;
-		case RIGHT:
-			wrapperBox = new HBox();
-			wrapperBox.add(new SimpleWhitespace(driver, defect));
-			wrapperBox.add(hbox);
-			hbox = wrapperBox;
-			break;
-		case CENTER:
-			wrapperBox = new HBox();
-			wrapperBox.add(new SimpleWhitespace(driver, defect / 2));
-			wrapperBox.add(hbox);
-			wrapperBox.add(new SimpleWhitespace(driver, (defect + 1) / 2));
-			hbox = wrapperBox;
-			break;
 		case JUSTIFY:
-			if (hbox.getStretch(Position.MIDDLE) != 0
-					&& !last) {
-				hbox.adjustWidth(defect);
-			} else {
-				wrapperBox = new HBox();
+		{
+			hbox = makeJustifiedHBox(line, width, last);
+			int boxWidth = hbox.getWidth(Position.MIDDLE);
+			int defect = width - boxWidth;
+			if (defect != 0) {
+				HBox wrapperBox = new HBox();
 				wrapperBox.add(hbox);
 				wrapperBox.add(new SimpleWhitespace(driver, defect));
 				hbox = wrapperBox;
 			}
-			break;
+		}
+		break;
+		case LEFT:
+		{
+			hbox = new HBox();
+			hbox.addAll(line);
+			int boxWidth = hbox.getWidth(Position.MIDDLE);
+			int defect = width - boxWidth;
+			if (defect != 0) {
+				HBox wrapperBox = new HBox();
+				wrapperBox.add(hbox);
+				wrapperBox.add(new SimpleWhitespace(driver, defect));
+				hbox = wrapperBox;
+			}
+		}
+		break;
+		case RIGHT:
+		{
+			hbox = new HBox();
+			hbox.addAll(line);
+			int boxWidth = hbox.getWidth(Position.MIDDLE);
+			int defect = width - boxWidth;
+			if (defect != 0) {
+				HBox wrapperBox = new HBox();
+				wrapperBox.add(new SimpleWhitespace(driver, defect));
+				wrapperBox.add(hbox);
+				hbox = wrapperBox;
+			}
+		}
+		break;
+		case CENTER:
+		{
+			hbox = new HBox();
+			hbox.addAll(line);
+			int boxWidth = hbox.getWidth(Position.MIDDLE);
+			int defect = width - boxWidth;
+			if (defect != 0) {
+				HBox wrapperBox = new HBox();
+				wrapperBox.add(new SimpleWhitespace(driver, defect / 2));
+				wrapperBox.add(hbox);
+				wrapperBox.add(new SimpleWhitespace(driver, (defect + 1) / 2));
+				hbox = wrapperBox;
+			}
+		}
+		break;
+		default: throw new RuntimeException("Unsupported alignment type: " + alignment);
+		}
+		return hbox;
+	}
+
+	private HBox makeJustifiedHBox(List<IDrawable> line, int width, boolean last) {
+		if (last) {
+			HBox hbox = new HBox();
+			hbox.addAll(line);
+			return hbox;
+		}
+		int currentWidth = 0;
+		int currentStretch = 0;
+		for (ListIterator<IDrawable> iter = line.listIterator(); iter.hasNext();) {
+			IDrawable d = iter.next();
+			if (iter.previousIndex() == 0) {
+				currentWidth += d.getWidth(Position.START);
+			} else if (iter.hasNext()) {
+				currentWidth += d.getWidth(Position.MIDDLE);
+			} else {
+				currentWidth += d.getWidth(Position.END);
+			}
+			
+			if (d instanceof IAdjustableDrawable) {
+				IAdjustableDrawable ad = (IAdjustableDrawable)d;
+				if (iter.previousIndex() == 0) {
+					currentStretch += ad.getStretch(Position.START);
+				} else if (iter.hasNext()) {
+					currentStretch += ad.getStretch(Position.MIDDLE);
+				} else {
+					currentStretch += ad.getStretch(Position.END);
+				}
+			}
+		}
+			
+		if (currentStretch == 0) {
+			HBox hbox = new HBox();
+			hbox.addAll(line);
+			return hbox;
+		}
+		
+		int adjust = width - currentWidth;
+		if (adjust < 0) {
+			// FIXME: implement shrinking
+			throw new UnsupportedOperationException("Shrinking isn't supported yet");
+		}
+
+		int step = adjust/currentStretch;
+		int err = 0;
+
+		HBox hbox = new HBox();
+		for (ListIterator<IDrawable> iter = line.listIterator(); iter.hasNext();) {
+			IDrawable drawable = iter.next();
+
+			if (drawable instanceof IAdjustableDrawable) {
+				IAdjustableDrawable d = (IAdjustableDrawable) drawable;
+				
+				int adj_i;
+				if (iter.previousIndex() == 0) {
+					adj_i = d.getStretch(Position.START);
+				} else if (iter.hasNext()) {
+					adj_i = d.getStretch(Position.MIDDLE);
+				} else {
+					adj_i = d.getStretch(Position.END);
+				}
+				if (adj_i != 0) {
+					err += 2 * adjust * adj_i - 2 * step * currentStretch;
+					if (err > currentStretch) {
+						err -= 2 * currentStretch;
+						d.adjust(step*adj_i+1);
+					} else {
+						d.adjust(step*adj_i);
+					}
+				}
+			}
+
+			hbox.add(drawable);
 		}
 		return hbox;
 	}

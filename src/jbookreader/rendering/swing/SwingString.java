@@ -4,7 +4,6 @@ import java.awt.Graphics2D;
 import java.awt.font.TextLayout;
 
 import jbookreader.rendering.IDrawable;
-import jbookreader.rendering.IFont;
 import jbookreader.rendering.Position;
 
 final class SwingString implements IDrawable {
@@ -18,9 +17,9 @@ final class SwingString implements IDrawable {
 
 	private final int width;
 
-	SwingString(JGraphicDriver driver, String s, IFont font) {
+	SwingString(JGraphicDriver driver, String s, AWTFontAdapter font) {
 		this.driver = driver;
-		layout = new TextLayout(s, ((AWTFontAdapter) font).getFont(), this.driver.getFontRC());
+		layout = new TextLayout(s, font.getFont(), this.driver.getFontRC());
 
 		depth = JGraphicDriver.pixelToDimension(layout.getDescent());
 		height = JGraphicDriver.pixelToDimension(layout.getAscent());
@@ -46,20 +45,8 @@ final class SwingString implements IDrawable {
 		return height;
 	}
 
-	public int getShrink(Position position) {
-		return 0;
-	}
-
-	public int getStretch(Position position) {
-		return 0;
-	}
-
 	public int getWidth(Position position) {
 		return width;
-	}
-
-	public void adjustWidth(int adjust) {
-		throw new UnsupportedOperationException("Width adjustment not supported");
 	}
 
 }

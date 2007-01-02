@@ -25,20 +25,8 @@ public class SimpleWhitespace implements IDrawable {
 		return 0;
 	}
 
-	public int getShrink(Position position) {
-		return 0;
-	}
-
-	public int getStretch(Position position) {
-		return 0;
-	}
-
 	public int getWidth(Position position) {
 		return space;
-	}
-
-	public void adjustWidth(int adjust) {
-		throw new UnsupportedOperationException("Width adjustment not supported");
 	}
 
 	@Override

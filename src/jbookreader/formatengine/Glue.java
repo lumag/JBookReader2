@@ -4,7 +4,7 @@ import jbookreader.rendering.IDrawable;
 import jbookreader.rendering.IGraphicDriver;
 import jbookreader.rendering.Position;
 
-class Glue implements IDrawable {
+class Glue implements IDrawable, IAdjustableDrawable {
 	private final int space;
 	private final int stretch;
 	private final int shrink;
@@ -51,7 +51,7 @@ class Glue implements IDrawable {
 		return "Glue: " + space + "+" + adjustment + ":" + stretch + ":" + shrink;
 	}
 
-	public void adjustWidth(int adjust) {
+	public void adjust(int adjust) {
 		this.adjustment = adjust;
 	}
 }

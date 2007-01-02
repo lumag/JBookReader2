@@ -11,7 +11,7 @@ class AWTFontAdapter implements IFont {
 	private int spaceWidth;
 
 	AWTFontAdapter(String name, int size, FontRenderContext frc) {
-		font = new Font(name, Font.PLAIN, size);
+		font = new Font(name, Font.ITALIC, size);
 		Rectangle2D r2d = font.createGlyphVector(frc, new char[]{' '}).getLogicalBounds();
 		spaceWidth = JGraphicDriver.pixelToDimension((float) (r2d.getMaxX() - r2d.getMinX()));
 	}

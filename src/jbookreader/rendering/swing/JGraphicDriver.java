@@ -6,13 +6,17 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Insets;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.font.FontRenderContext;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.ImageInputStream;
 import javax.swing.JComponent;
 import javax.swing.Scrollable;
 
@@ -28,7 +32,7 @@ import jbookreader.rendering.Position;
 public class JGraphicDriver extends JComponent implements IGraphicDriver, Scrollable {
 	
 	private static final int PIXEL_SCALE_FACTOR = 100;
-
+	
 	// FIXME: these should not be exposed. perhaps I should encapsulate draw(Shape) process.
 	int horizontalPosition;
 	int verticalPosition;
@@ -109,12 +113,19 @@ public class JGraphicDriver extends JComponent implements IGraphicDriver, Scroll
 			throw new IllegalStateException("renderString with null frc");
 		}
 
-		return new SwingString(this, s, font);
+		return new SwingString(this, s, (AWTFontAdapter) font);
 	}
 	
-	public IDrawable renderImage(InputStream dataStream) throws IOException {
-//		throw new UnsupportedOperationException("unsupported"); 
-		BufferedImage image = ImageIO.read(dataStream);
+	public IDrawable renderImage(String contentType, InputStream dataStream) throws IOException {
+		//		throw new UnsupportedOperationException("unsupported");
+		Iterator<ImageReader> readers = ImageIO.getImageReadersByMIMEType(contentType);
+		if (!readers.hasNext()) {
+			throw new UnsupportedOperationException("content type '" + contentType + "' isn't supported");
+		}
+		ImageReader reader = readers.next();
+		ImageInputStream stream = ImageIO.createImageInputStream(dataStream);
+		reader.setInput(stream, true);
+		BufferedImage image = reader.read(0);
 		return new AWTImageAdapter(this, image);
 	}
 
@@ -151,6 +162,12 @@ public class JGraphicDriver extends JComponent implements IGraphicDriver, Scroll
 		paperGraphics = (Graphics2D) g.create(insets.left, insets.top, w, h);
 		paperGraphics.setBackground(getBackground());
 		paperGraphics.setColor(Color.BLACK);
+
+		// FIXME: this should be set from config
+		paperGraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                RenderingHints.VALUE_ANTIALIAS_ON);
+		paperGraphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
 		fontRC = paperGraphics.getFontRenderContext();
 

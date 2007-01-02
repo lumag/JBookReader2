@@ -8,7 +8,7 @@ public interface IGraphicDriver {
 	// factory methods
 	IDrawable renderString(String s, IFont font);
 	IDrawable renderBox(int width, int height, int depth);
-	IDrawable renderImage(InputStream dataStream) throws IOException;
+	IDrawable renderImage(String contentType, InputStream dataStream) throws IOException;
 
 	// TODO font variations
 	IFont getFont(String name, int size);

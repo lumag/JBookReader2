@@ -58,7 +58,7 @@ public class TextRenderer implements IGraphicDriver {
 		return new StringBox(this, s);
 	}
 	
-	public IDrawable renderImage(InputStream dataStream) {
+	public IDrawable renderImage(String contentType, InputStream dataStream) {
 		throw new UnsupportedOperationException("image rendering isn't supported");
 	}
 

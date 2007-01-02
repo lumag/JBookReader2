@@ -17,9 +17,6 @@ import jbookreader.rendering.IGraphicDriver;
 
 public class FormatEngine implements IFormatEngine {
 
-	/* (non-Javadoc)
-	 * @see jbookreader.formatengine.IFormatEngine#format(jbookreader.presentation.IGraphicDriver, jbookreader.formatengine.ICompositor, jbookreader.book.INode)
-	 */
 	public List<IDrawable> format(IGraphicDriver driver, ICompositor compositor, INode node) {
 		List<IDrawable> result = new ArrayList<IDrawable> ();
 		node.accept(new BlockFormattingVisitor(driver, compositor, result));
@@ -155,7 +152,7 @@ public class FormatEngine implements IFormatEngine {
 				IBinaryBlob blob = node.getBook().getBinaryBlob(href.substring(1));
 				if (blob != null) {
 					try {
-						result.add(driver.renderImage(blob.getDataStream()));
+						result.add(driver.renderImage(blob.getContentType(), blob.getDataStream()));
 						return false;
 					} catch (UnsupportedOperationException e) {
 						System.err.println("Error: " + e.getMessage());

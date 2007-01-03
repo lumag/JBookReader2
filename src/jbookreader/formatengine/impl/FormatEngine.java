@@ -68,7 +68,7 @@ public class FormatEngine implements IFormatEngine {
 			
 			styleStack.push(node);
 
-			List<IDrawable> lines = compositor.compose(drawables, driver.getPaperWidth(), driver);
+			List<IDrawable> lines = compositor.compose(drawables, driver.getPaperWidth(), styleStack.getTextAlign(), driver);
 
 			result.addAll(lines);
 

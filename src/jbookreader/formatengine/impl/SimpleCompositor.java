@@ -13,9 +13,7 @@ import jbookreader.style.Alignment;
 
 
 public class SimpleCompositor implements ICompositor {
-	private Alignment alignment = Alignment.JUSTIFY;
-
-	public List<IDrawable> compose(List<IDrawable> particles, int width, IGraphicDriver driver) {
+	public List<IDrawable> compose(List<IDrawable> particles, int width, Alignment alignment, IGraphicDriver driver) {
 		List<IDrawable> result = new ArrayList<IDrawable>();
 		List<IDrawable> line = new ArrayList<IDrawable>();
 		int currentWidth = 0;
@@ -31,7 +29,7 @@ public class SimpleCompositor implements ICompositor {
 							+ last.getWidth(Position.END);
 
 				// flush line
-				result.add(makeHBox(driver, line, width, false));
+				result.add(makeHBox(driver, line, width, alignment, false));
 				line.clear();
 
 				line.add(d);
@@ -42,7 +40,7 @@ public class SimpleCompositor implements ICompositor {
 				currentWidth += d.getWidth(Position.END);
 
 				// flush line
-				result.add(makeHBox(driver, line, width, false));
+				result.add(makeHBox(driver, line, width, alignment, false));
 				line.clear();
 				currentWidth = 0;
 			} else {
@@ -57,13 +55,13 @@ public class SimpleCompositor implements ICompositor {
 						+ last.getWidth(Position.END);
 
 			// flush line
-			result.add(makeHBox(driver, line, width, true));
+			result.add(makeHBox(driver, line, width, alignment, true));
 			line.clear();
 		}
 		return result;
 	}
 
-	private IDrawable makeHBox(IGraphicDriver driver, List<IDrawable> line, int width, boolean last) {
+	private IDrawable makeHBox(IGraphicDriver driver, List<IDrawable> line, int width, Alignment alignment, boolean last) {
 		HBox hbox;
 		switch (alignment) {
 		case JUSTIFY:

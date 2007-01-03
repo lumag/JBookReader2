@@ -52,6 +52,7 @@ public class FB2StyleStackImpl implements IStyleStack {
 			}
 			
 			if ("title".equals(currentState.nodeTag)) {
+				currentState.textAlignment = Alignment.CENTER;
 				currentState.fontFamily = new ArrayList<String>();
 				currentState.fontFamily.add("sans");
 				currentState.fontSize = (int) (currentState.fontSize * 1.5 * 1.5);

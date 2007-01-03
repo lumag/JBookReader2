@@ -8,19 +8,8 @@ import jbookreader.book.INodeVisitor;
 import lumag.util.OrderedSet;
 
 
-public class ContainerNodeImpl extends AbstractNode implements IContainerNode {
-	private String nodeClass;
-	private String nodeTag;
-
+public class ContainerNodeImpl extends AbstractNamedNode implements IContainerNode {
 	private OrderedSet<INode> children = new OrderedSet<INode>();
-
-	public String getNodeClass() {
-		return nodeClass;
-	}
-
-	public String getNodeTag() {
-		return nodeTag;
-	}
 
 	public void add(INode node) {
 		if (node.getParentNode() != null) {
@@ -30,14 +19,6 @@ public class ContainerNodeImpl extends AbstractNode implements IContainerNode {
 		((AbstractNode) node).setParentNode(this);
 		((AbstractNode) node).setBook(this.getBook());
 		this.children.add(node);
-	}
-
-	public void setNodeClass(String nodeClass) {
-		this.nodeClass = nodeClass;
-	}
-
-	public void setNodeTag(String nodeTag) {
-		this.nodeTag = nodeTag;
 	}
 
 	public boolean accept(INodeVisitor visitor) {
@@ -77,4 +58,11 @@ public class ContainerNodeImpl extends AbstractNode implements IContainerNode {
 		return children.hasPrevious(element);
 	}
 
+	@Override
+	public String toString() {
+		if (nodeClass != null) {
+			return nodeTag + "." + nodeClass;
+		}
+		return nodeTag;
+	}
 }

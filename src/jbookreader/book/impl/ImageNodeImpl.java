@@ -3,10 +3,10 @@ package jbookreader.book.impl;
 import jbookreader.book.IImageNode;
 import jbookreader.book.INodeVisitor;
 
-public class ImageNodeImpl extends TextNodeImpl implements IImageNode {
+public class ImageNodeImpl extends AbstractNamedNode implements IImageNode {
 	private String hRef;
+	private String text;
 
-	@Override
 	public boolean accept(INodeVisitor visitor) {
 		return visitor.visitImageNode(this);
 	}
@@ -17,6 +17,14 @@ public class ImageNodeImpl extends TextNodeImpl implements IImageNode {
 
 	public void setHRef(String value) {
 		hRef = value;
+	}
+
+	public String getText() {
+		return text;
+	}
+
+	public void setText(String text) {
+		this.text = text;
 	}
 
 }

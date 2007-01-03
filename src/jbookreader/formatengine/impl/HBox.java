@@ -46,7 +46,7 @@ class HBox implements IDrawable {
 			index = elements.size();
 		}
 		if (elements.isEmpty()) {
-			width += drawable.getWidth(Position.START);
+			width = drawable.getWidth(Position.START);
 		} else if (index == 0) {
 			IDrawable first = elements.get(0);
 			width += drawable.getWidth(Position.START)
@@ -100,4 +100,8 @@ class HBox implements IDrawable {
 		return elements.isEmpty();
 	}
 
+	@Override
+	public String toString() {
+		return width + " x " + height + " + " + depth;
+	}
 }

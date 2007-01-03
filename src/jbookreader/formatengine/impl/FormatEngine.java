@@ -15,13 +15,15 @@ import jbookreader.formatengine.IFormatEngine;
 import jbookreader.rendering.IDrawable;
 import jbookreader.rendering.IFont;
 import jbookreader.rendering.IGraphicDriver;
+import jbookreader.style.Display;
+import jbookreader.style.IStyleStack;
 
 
 public class FormatEngine implements IFormatEngine {
 
-	public List<IDrawable> format(IGraphicDriver driver, ICompositor compositor, INode node) {
+	public List<IDrawable> format(IGraphicDriver driver, ICompositor compositor, INode node, IStyleStack styleStack) {
 		List<IDrawable> result = new ArrayList<IDrawable> ();
-		node.accept(new BlockFormattingVisitor(driver, compositor, result));
+		node.accept(new BlockFormattingVisitor(driver, compositor, result, styleStack));
 		return result;
 	}
 
@@ -30,41 +32,24 @@ public class FormatEngine implements IFormatEngine {
 		private final IGraphicDriver driver;
 		private final List<IDrawable> result;
 		private final ICompositor compositor;
+		private final IStyleStack styleStack;
 
-		public BlockFormattingVisitor(IGraphicDriver driver, ICompositor compositor, List<IDrawable> result) {
+		public BlockFormattingVisitor(IGraphicDriver driver, ICompositor compositor, List<IDrawable> result, IStyleStack styleStack) {
 			this.driver = driver;
 			this.compositor = compositor;
 			this.result = result;
+			this.styleStack = styleStack;
 		}
 
 		public boolean visitContainerNode(IContainerNode node) {
-			if (isInlineNode(node)) {
+			styleStack.push(node);
+			if (styleStack.getDisplay() == Display.INLINE) {
+				styleStack.pop();
 				formatInline(node.getParentNode());
 				return true;
 			}
 			node.visitChildren(this);
-			return false;
-		}
-
-		// FIXME: move to style!
-		private boolean isInlineNode(IContainerNode node) {
-			String tag = node.getNodeTag();
-			if (tag == null) {
-				return false;
-			}
-			if (
-					tag.equals("strong") ||
-					tag.equals("emphasis") ||
-					tag.equals("style") ||
-					tag.equals("a") ||
-					tag.equals("strikethrough") ||
-					tag.equals("sub") ||
-					tag.equals("sup") ||
-					tag.equals("code") ||
-					false
-					) {
-				return true;
-			}
+			styleStack.pop();
 			return false;
 		}
 
@@ -74,25 +59,30 @@ public class FormatEngine implements IFormatEngine {
 		}
 
 		private void formatInline(INode node) {
-
 			List<IDrawable> drawables = new ArrayList<IDrawable>();
-			INodeVisitor visitor = new InlineFormattingVisitor(driver, drawables );
 
+			styleStack.pop();
+			
+			INodeVisitor visitor = new InlineFormattingVisitor(driver, drawables, styleStack);
 			node.accept(visitor);
+			
+			styleStack.push(node);
 
 			List<IDrawable> lines = compositor.compose(drawables, driver.getPaperWidth(), driver);
 
 			result.addAll(lines);
+
 		}
 
 		public boolean visitImageNode(IImageNode node) {
-			// FIXME: this wouldn't work as required in one simple case:
-			// if the image is a first node in a paragraph.
-			// Then we will get duplicate image.
-			// XXX: this will be fixed once imageType and inlineImageType
-			// become different node types or will be distinguishable
-			// in any other simple way.
+			styleStack.push(node);
+			if (styleStack.getDisplay() == Display.INLINE) {
+				styleStack.pop();
+				formatInline(node.getParentNode());
+				return true;
+			}
 			formatInline(node);
+			styleStack.pop();
 			return false;
 		}
 
@@ -101,25 +91,29 @@ public class FormatEngine implements IFormatEngine {
 	private static class InlineFormattingVisitor implements INodeVisitor {
 		private final List<IDrawable> result;
 		private final IGraphicDriver driver;
-		// FIXME: style
-		private IFont font;
+		private final IStyleStack styleStack;
 
-		public InlineFormattingVisitor(IGraphicDriver driver, List<IDrawable> result) {
+		public InlineFormattingVisitor(IGraphicDriver driver, List<IDrawable> result, IStyleStack styleStack) {
 			this.driver = driver;
 			this.result = result;
-
-			// FIXME!
-			font = driver.getFont(null, 12);
+			this.styleStack = styleStack;
 		}
 
 		public boolean visitContainerNode(IContainerNode node) {
+			styleStack.push(node);
 			node.visitChildren(this);
+			styleStack.pop();
 			return false;
 		}
 
 		public boolean visitTextNode(ITextNode node) {
+			styleStack.push(node);
+
+			IFont font = driver.getFont(styleStack.getFirstFontFamily(), styleStack.getFontSize());
+
 			String text = node.getText();
 			if (text == null) {
+				styleStack.pop();
 				return false;
 			}
 			char[] str = text.toCharArray();
@@ -145,16 +139,19 @@ public class FormatEngine implements IFormatEngine {
 					start = end;
 				}
 			}
+			styleStack.pop();
 			return false;
 		}
 
 		public boolean visitImageNode(IImageNode node) {
+			styleStack.push(node);
 			String href = node.getHRef();
 			if (href.length() >= 1 && href.charAt(0) == '#') {
 				IBinaryBlob blob = node.getBook().getBinaryBlob(href.substring(1));
 				if (blob != null) {
 					try {
 						result.add(driver.renderImage(blob.getContentType(), blob.getDataStream()));
+						styleStack.pop();
 						return false;
 					} catch (UnsupportedOperationException e) {
 						System.err.println("Error: " + e.getMessage());
@@ -165,9 +162,12 @@ public class FormatEngine implements IFormatEngine {
 			} else {
 				System.err.println("Bad image HRef: " + href);
 			}
+
+			styleStack.pop();
 			return visitTextNode(node);
 		}
 
 	}
+
 }
 

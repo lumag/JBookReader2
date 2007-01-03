@@ -1,5 +1,6 @@
 package lumag.util;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -13,7 +14,6 @@ public final class ClassFactory {
 	private static Properties defaults = new Properties();
 	
 	private static String findClassName(String property) {
-		// FIXME
 		String className = null;
 		try {
 			className = System.getProperty(property);
@@ -34,25 +34,28 @@ public final class ClassFactory {
 	}
 	
 	public static void loadProperies(String pkg) {
-//		ClassLoader loader = ClassFactory.class.getClassLoader();
-		ClassLoader loader = Thread.currentThread().getContextClassLoader();
 		InputStream stream;
-		if (loader == null) {
-			// FIXME
-			stream = null;
-		} else {
-			String resourceName = "";
-			if (pkg != null && ! "".equals(pkg)) {
-				resourceName = pkg + ".";
-			}
-			resourceName = resourceName.replace('.', '/');
-			resourceName = resourceName + "classes.properties";
-			stream = loader.getResourceAsStream(resourceName);
+
+		String resourceName = "";
+		if (pkg != null && ! "".equals(pkg)) {
+			resourceName = pkg + ".";
 		}
+		resourceName = resourceName.replace('.', '/');
+		resourceName = resourceName + "classes.properties";
+
+		ClassLoader loader = Thread.currentThread().getContextClassLoader();
+		if (loader == null) {
+			loader = ClassLoader.class.getClassLoader();
+		}
+
 		try {
+			if (loader == null) { 
+				stream = new FileInputStream(resourceName);
+			} else {
+				stream = loader.getResourceAsStream(resourceName);
+			}
 			defaults.load(stream);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

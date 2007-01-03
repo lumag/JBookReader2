@@ -14,7 +14,6 @@ public class AWTImageAdapter implements IDrawable {
 
 	public AWTImageAdapter(JGraphicDriver driver, BufferedImage image) {
 		this.driver = driver;
-		// TODO Auto-generated constructor stub
 		this.image = image;
 		width = JGraphicDriver.pixelToDimension(image.getWidth());
 	}

@@ -53,6 +53,8 @@
       <p>
         But before this line.
       </p>
+      <p>– Due to first chars, parts of this line can be displayed with
+	      wrong baselines.</p>
       <p>A line with inline 
         <image xlink:href="#test.jpg" alt="test inline image"/>
 	image.</p>
@@ -63,7 +65,7 @@
       </p>
     </section>
   </body>
-  <binary content-type="application/octet-stream" id="test.jpg">
+  <binary content-type="image/jpeg" id="test.jpg">
 /9j/4AAQSkZJRgABAQEASABIAAD/4QAWRXhpZgAATU0AKgAAAAgAAAAAAAD//gATQ3JlYXRl
 ZCB3aXRoIEdJTVD/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwX
 ExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4e

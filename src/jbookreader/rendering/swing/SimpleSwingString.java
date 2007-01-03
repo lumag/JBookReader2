@@ -26,11 +26,13 @@ final class SimpleSwingString implements IDrawable {
 //		System.out.println(bounds);
 		height = JGraphicDriver.pixelToDimension(metrics.getAscent());
 		depth = JGraphicDriver.pixelToDimension(metrics.getDescent());
-		// XXX: There are some problems if we use bounds for height/depth:
+
+		// There are some problems if we use bounds for height/depth:
 		//     if the first char is some type of long dash \u2013, then we get incorrect
 		//     measurements (the base line is shifted)
 //		height = JGraphicDriver.pixelToDimension((float) bounds.getHeight());
 //		depth = JGraphicDriver.pixelToDimension((float) (bounds.getHeight() + bounds.getY()));
+
 		width = JGraphicDriver.pixelToDimension((float) bounds.getWidth());
 	}
 

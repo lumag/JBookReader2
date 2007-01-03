@@ -10,6 +10,7 @@ import jbookreader.book.IBook;
 import jbookreader.book.IBookFactory;
 import jbookreader.book.IContainerNode;
 import jbookreader.book.IImageNode;
+import jbookreader.book.INamedNode;
 import jbookreader.book.ITextNode;
 import jbookreader.fileformats.IErrorHandler;
 import jbookreader.fileformats.IFileFormatDescriptor;
@@ -49,6 +50,7 @@ class FictionBook2 implements IFileFormatDescriptor {
 //				System.out.print("<" + localName + ">");
 				if (localName.equals("image")) {
 					IImageNode node = factory.newImageNode();
+					node.setNodeTag(localName);
 					String altText = attributes.getValue("", "alt");
 					node.setText(altText != null? altText: "");
 					node.setHRef(attributes.getValue("http://www.w3.org/1999/xlink", "href"));
@@ -108,7 +110,7 @@ class FictionBook2 implements IFileFormatDescriptor {
 			}
 		}
 
-		private boolean isMixedNode(IContainerNode node) {
+		private boolean isMixedNode(INamedNode node) {
 			String tag = node.getNodeTag();
 			if (
 					tag.equals("a") ||

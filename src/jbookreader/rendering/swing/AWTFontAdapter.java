@@ -23,4 +23,13 @@ class AWTFontAdapter implements IFont {
 	public int getSpaceWidth() {
 		return spaceWidth;
 	}
+
+	public String getFamily() {
+		return font.getFamily();
+	}
+
+	public int getSize() {
+		return font.getSize();
+	}
+
 }

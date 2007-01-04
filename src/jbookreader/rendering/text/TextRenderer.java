@@ -7,17 +7,9 @@ import jbookreader.rendering.IFont;
 import jbookreader.rendering.IGraphicDriver;
 
 public class TextRenderer implements IGraphicDriver {
-	private static class TextFont implements IFont {
-		public int getSpaceWidth() {
-			return 1;
-		}
-	}
-
 	private static final int WIDTH = 80; 
 	private int xPosition;
 	private int yPosition;
-	private IFont textFont;
-
 	public void addHorizontalSpace(int amount) {
 		for (int i = 0; i < amount; i++) {
 			append(" ");
@@ -68,10 +60,7 @@ public class TextRenderer implements IGraphicDriver {
 	}
 
 	public IFont getFont(String name, int size) {
-		if (textFont == null) {
-			textFont = new TextFont();
-		}
-		return textFont;
+		return new TextFont(name, size);
 	}
 
 }

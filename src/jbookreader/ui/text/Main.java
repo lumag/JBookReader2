@@ -48,7 +48,6 @@ public class Main {
 				"jbookreader.compositor");
 		IFormatEngine engine = ClassFactory.createClass(IFormatEngine.class,
 				"jbookreader.formatengine");
-		@SuppressWarnings("unused")
 		List<IDrawable> lines = engine.format(driver, compositor, book.getFirstBody(),
 				new FB2StyleStackImpl());
 		System.err.println("formatted");

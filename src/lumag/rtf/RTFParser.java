@@ -13,7 +13,7 @@ public class RTFParser {
 		PARAMETER,
 		BACKTICK,
 		BACKTICK_X,
-		BLOB,
+		BLOB
 	}
 
 	private IRTFContentHandler handler;

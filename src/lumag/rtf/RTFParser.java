@@ -197,6 +197,9 @@ public class RTFParser {
 					state = State.TEXT;
 				}
 				break;
+			default:
+				// really means something is broken
+				throw new InternalError("unsupported rtf state?");
 			}
 		}
 	}

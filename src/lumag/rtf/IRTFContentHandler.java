@@ -8,8 +8,8 @@ public interface IRTFContentHandler {
 
 	void string(String string);
 
-	boolean control(String string);
+	boolean control(String string, boolean hasParameter, int parameter);
 
-	boolean control(String string, int parameter);
+	void binaryBlob(byte[] bs);
 
 }

@@ -1,6 +1,7 @@
 package lumag.rtf;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.InputStream;
 
@@ -12,6 +13,7 @@ public class RTFParser {
 		PARAMETER,
 		BACKTICK,
 		BACKTICK_X,
+		BLOB,
 	}
 
 	private IRTFContentHandler handler;
@@ -22,94 +24,46 @@ public class RTFParser {
 	
 	private char[] codePageTable = CodePageTables.getCodePageTable(437);
 	private StringBuilder builder = new StringBuilder();
+	private String currentControl;
 
-	private boolean parameterNegative;
-	private int parameterValue;
-	
-	private byte tickedChar;
+	private int tickedChar;
 
-	private boolean canSkipGroupIfUnknown;
+	private boolean shouldSkipGroupIfUnknown;
 	private int skipLevel = Integer.MAX_VALUE;
+
+	private long blobBytesLeft;
+
+	private ByteArrayOutputStream blobBuffer;
 	
-	public void startGroup() {
-		level ++;
-		if (level >= skipLevel) {
-			return;
+	public void setCharacterSet(int cpNumber) {
+		char[] table = CodePageTables.getCodePageTable(cpNumber);
+		if (table != null) {
+			codePageTable = table;
+		} else {
+			System.err.println("Unsupported codepage" + cpNumber);
 		}
-		handler.startGroup();
 	}
 	
-	public void endGroup() {
-		level --;
-		if (level >= skipLevel) {
-			return;
-		}
-		skipLevel = Integer.MAX_VALUE;
-		handler.endGroup();
-	}
-	
-	private void processText() {
+	private void processControlWord(String control, boolean hasParameter, int parameter) {
 		if (level >= skipLevel) {
 			builder.setLength(0);
 			return;
 		}
-
-		if (builder.length() == 0) {
-			return;
-		}
-
-		handler.string(builder.toString());
-
-		builder.setLength(0);
-	}
-	
-	private void processControlWord() {
-		if (level >= skipLevel) {
-			builder.setLength(0);
-			return;
-		}
-		String control = builder.toString();
-		builder.setLength(0);
 		boolean handled = false;
-		handled |= handler.control(control);
+
+		handled |= handler.control(control, hasParameter, hasParameter ? parameter: 1);
+
 		if (!handled) {
-			if (canSkipGroupIfUnknown) {
-				System.err.println("Ignoring: " + control);
-				skipLevel = level;
-				canSkipGroupIfUnknown = false;
-			} else {
-				System.err.println("Ignored unsupported control: " + control);
+			String ctrl = control;
+			if (hasParameter) {
+				ctrl = ctrl + " " + parameter;
 			}
-		}
-	}
-	
-	private void processControlWord(int parameter) {
-		if (level >= skipLevel) {
-			builder.setLength(0);
-			return;
-		}
-		String control = builder.toString();
-		builder.setLength(0);
-		boolean handled = false;
-		if (control.equals("rtf")) {
-			System.out.println("RTF version " + parameter);
-			handled = true;
-		} else if (control.equals("ansicpg")) {
-			char[] table = CodePageTables.getCodePageTable(parameter);
-			if (table != null) {
-				codePageTable = table;
-			} else {
-				System.err.println("Unsupported codepage" + parameter);
-			}
-		}
-		handled |= handler.control(control, parameter);
-		if (!handled) {
-			if (canSkipGroupIfUnknown) {
-				System.err.println("Ignoring: " + control + " " + parameter);
+			if (shouldSkipGroupIfUnknown) {
+				System.err.println("Ignoring: " + ctrl);
 				skipLevel = level;
-				canSkipGroupIfUnknown = false;
+				shouldSkipGroupIfUnknown = false;
 			} else {
-				System.err.println("Ignored unsupported control: " + control + " " + parameter);
+				System.err.println("Ignored unsupported control: " + ctrl);
 			}
 		}
 	}
@@ -120,124 +74,138 @@ public class RTFParser {
 			switch (state) {
 			case TEXT:
 				if (b == '{') {
-					processText();
-					startGroup();
+					if (level < skipLevel) {
+						if (builder.length() != 0) {
+							handler.string(builder.toString());
+						}
+					}
+					builder.setLength(0);
+					level ++;
+					if (level < skipLevel) {
+						handler.startGroup();
+					}
 				} else if (b == '}') {
-					processText();
-					endGroup();
+					if (level < skipLevel) {
+						if (builder.length() != 0) {
+							handler.string(builder.toString());
+						}
+					}
+					builder.setLength(0);
+					level --;
+					if (level < skipLevel) {
+						skipLevel = Integer.MAX_VALUE;
+						handler.endGroup();
+					}
 				} else if (b == '\\') {
-					processText();
+					if (level < skipLevel) {
+						if (builder.length() != 0) {
+							handler.string(builder.toString());
+						}
+					}
+					builder.setLength(0);
 					state = State.BACKSLASH;
+				} else if (b == '\n' || b == '\r') {
+					// ignore
 				} else {
 					putChar(b);
 				}
 				break;
 			case BACKSLASH:
-				if (('a' <= b && b <= 'z') ||
-					('A' <= b && b <= 'Z')) {
+				if (Character.isLetter(b)) {
 					state = State.CONTROL;
 					putChar(b);
 				} else if (b == '\'') {
 					state = State.BACKTICK;
 					tickedChar = 0;
 				} else if (b == '*') {
-					canSkipGroupIfUnknown = true;
+					shouldSkipGroupIfUnknown = true;
 					state = State.TEXT;
 				} else {
-					System.out.println("Unknown Control symbol: "  + (char)b);
+					processControlWord(String.valueOf((char) b), false, 1);
 					state = State.TEXT;
 				}
 				break;
 			case CONTROL:
-				if (b == '{') {
-					processControlWord();
-					startGroup();
-					state = State.TEXT;
-				} else if (b == '}') {
-					processControlWord();
-					endGroup();
-					state = State.TEXT;
-				} else if (('a' <= b && b <= 'z') ||
-					('A' <= b && b <= 'Z')) {
+				if (Character.isLetter(b)) {
 					putChar(b);
-				} else if (b == '\\') {
-					processControlWord();
-					state = State.BACKSLASH;
-				} else if (b == ' ' || b == '\n' || b == '\r' || b == '\t') {
-					processControlWord();
-					state = State.TEXT;
-				} else if (b == '-') {
-					parameterNegative = true;
-					parameterValue = 0;
-					state = State.PARAMETER;
-				} else if ('0' <= b && b <= '9') {
-					parameterNegative = false;
-					parameterValue = b - '0';
+				} else if (Character.isDigit(b) || b == '-') {
+					currentControl = builder.toString();
+					builder.setLength(0);
+					putChar(b);
 					state = State.PARAMETER;
 				} else {
-					processControlWord();
+					currentControl = builder.toString();
+					builder.setLength(0);
+					processControlWord(currentControl, false, 1);
+					currentControl = null;
 					state = State.TEXT;
-					putChar(b);
+					if (!Character.isWhitespace(b)) {
+						// XXX: a hack to reprocess current character; 
+						i--;
+					}
 				}
 				break;
 			case PARAMETER:
-				if (b == '{') {
-					processControlWord(parameterValue);
-					startGroup();
-					state = State.TEXT;
-				} else if (b == '}') {
-					processControlWord(parameterValue);
-					endGroup();
-					state = State.TEXT;
-				} else if ('0' <= b && b <= '9') {
-					parameterValue = parameterValue * 10 + (b - '0');
-				} else if (b == '\\') {
-					if (parameterNegative) {
-						parameterValue = - parameterValue;
-					}
-					processControlWord(parameterValue);
-					state = State.BACKSLASH;
-				} else if (b == ' ' || b == '\n' || b == '\r' || b == '\t') {
-					processControlWord(parameterValue);
-					state = State.TEXT;
-				} else {
-					processControlWord(parameterValue);
-					state = State.TEXT;
+				if (Character.isDigit(b)) {
 					putChar(b);
+				} else {
+					if (currentControl.equals("bin")) {
+						blobBytesLeft = Long.valueOf(builder.toString());
+						builder.setLength(0);
+						if (blobBytesLeft > Integer.MAX_VALUE) {
+							blobBuffer = new ByteArrayOutputStream(Integer.MAX_VALUE);
+						} else {
+							blobBuffer = new ByteArrayOutputStream((int)blobBytesLeft);
+						}
+						state = State.BLOB;
+					} else {
+						int parameterValue = Integer.valueOf(builder.toString());
+						builder.setLength(0);
+						processControlWord(currentControl, true, parameterValue);
+						currentControl = null;
+						state = State.TEXT;
+						if (!Character.isWhitespace(b)) {
+							// XXX: a hack to reprocess current character; 
+							i--;
+						}
+					}
 				}
 				break;
 			case BACKTICK:
-				tickedChar = 0;
-				if ('0' <= b && b <= '9') {
-					tickedChar |= b - '0';
-				} else if ('a' <= b && b <= 'z') {
-					tickedChar |= b - 'a' + 10;
-				} else if ('A' <= b && b <= 'Z') {
-					tickedChar |= b - 'A' + 10;
+				if (Character.digit(b, 16) == -1) {
+					state = State.TEXT;
+				} else {
+					tickedChar = Character.digit(b, 16);
+					state = State.BACKTICK_X;
 				}
-				state = State.BACKTICK_X;
 				break;
 			case BACKTICK_X:
-				tickedChar <<= 4;
-				if ('0' <= b && b <= '9') {
-					tickedChar |= b - '0';
-				} else if ('a' <= b && b <= 'z') {
-					tickedChar |= b - 'a' + 10;
-				} else if ('A' <= b && b <= 'Z') {
-					tickedChar |= b - 'A' + 10;
+				if (Character.digit(b, 16) != -1) {
+					tickedChar = (tickedChar << 4) + Character.digit(b, 16);
+					putChar(tickedChar);
 				}
-				putChar(tickedChar);
 				state = State.TEXT;
+				break;
+			case BLOB:
+				blobBuffer.write(b);
+				blobBytesLeft --;
+				if (blobBytesLeft == 0) {
+					if (level < skipLevel) {
+						handler.binaryBlob(blobBuffer.toByteArray());
+					}
+					blobBuffer = null;
+					state = State.TEXT;
+				}
 				break;
 			}
 		}
 	}
 
-	private void putChar(byte b) {
-		if (b >= 0) {
-			builder.append((char) b);
+	private void putChar(int ch) {
+		if ((ch & 0x80) != 0) {
+			builder.append(codePageTable[ch&0x7f]);
 		} else {
-			builder.append(codePageTable[b&0x7f]);
+			builder.append((char) ch);
 		}
 	}
 	
@@ -261,6 +229,10 @@ public class RTFParser {
 			parser.process(buffer, 0, len);
 		}
 		stream.close();
+	}
+
+	public int getLevel() {
+		return level;
 	}
 
 }

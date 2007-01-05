@@ -25,9 +25,17 @@ class RichTextFormat implements IFileFormatDescriptor {
 		private final IBookFactory factory;
 		private IBook book;
 		private IContainerNode container;
+		private final RTFParser parser;
+		
+		private int unicodeCharLength = 1;
+		private int skipChars;
 
-		public RTFHandler(IBookFactory factory) {
+		// FIXME: correctly implement non-text destinations
+		private int ignoredLevel = Integer.MAX_VALUE;
+		
+		public RTFHandler(IBookFactory factory, RTFParser parser) {
 			this.factory = factory;
+			this.parser = parser;
 			this.book = factory.newBook();
 			IContainerNode body = factory.newContainerNode();
 			book.addBody(body, "");
@@ -35,23 +43,49 @@ class RichTextFormat implements IFileFormatDescriptor {
 			body.add(container);
 		}
 
-		public boolean control(String string) {
-			if (string.equals("par")) {
+		public boolean control(String string, boolean hasParameter, int parameter) {
+			if (parser.getLevel() >= ignoredLevel) {
+				// assume we support all controls in ignored destinations
+				return true;
+			}
+
+			if (string.equals("rtf")) {
+				System.out.println("RTF version " + parameter);
+			} else if (string.equals("ansicpg")) {
+				parser.setCharacterSet(parameter);
+			} else if (string.equals("par")
+					|| string.equals("\n")
+					|| string.equals("\r")) {
+				// new paragraph
 				IContainerNode node = factory.newContainerNode();
 				container.getParentNode().add(node);
 				container = node;
-				return true;
+			} else if (string.equals("uc")) {
+				unicodeCharLength = parameter;
+			} else if (string.equals("u")) {
+				string(Character.valueOf((char) parameter).toString());
+				skipChars = unicodeCharLength;
+			} else if (string.equals("~")
+					|| string.equals(" ")) {
+				// XXX: nbsp
+				string("\u00A0");
+			} else if (string.equals("_")) {
+				// XXX: nb dash;
+				string("\u2011");
+			} else if (string.equals("fonttbl")
+					|| string.equals("stylesheet")
+					|| string.equals("pict")) {
+				ignoredLevel = parser.getLevel();
+			} else {
+				return false;
 			}
-			// TODO Auto-generated method stub
-			return false;
-		}
-
-		public boolean control(String string, int parameter) {
-			// TODO Auto-generated method stub
-			return false;
+			return true;
 		}
 
 		public void endGroup() {
+			if (parser.getLevel() < ignoredLevel) {
+				ignoredLevel = Integer.MAX_VALUE;
+			}
 			// TODO Auto-generated method stub
 
 		}
@@ -62,13 +96,28 @@ class RichTextFormat implements IFileFormatDescriptor {
 		}
 
 		public void string(String string) {
-			ITextNode node = factory.newTextNode();
-			node.setText(string);
-			container.add(node);
+			if (parser.getLevel() >= ignoredLevel) {
+				return;
+			}
+			
+			if (skipChars >= string.length()) {
+				skipChars -= string.length();
+			} else {
+				ITextNode node = factory.newTextNode();
+				node.setText(string.substring(skipChars));
+				container.add(node);
+				skipChars = 0;
+			}
 		}
 
 		public IBook getBook() {
 			return book;
+		}
+
+		public void binaryBlob(byte[] bs) {
+			skipChars --;
+			// TODO Auto-generated method stub
+			
 		}
 
 	}
@@ -83,7 +132,7 @@ class RichTextFormat implements IFileFormatDescriptor {
 	public IBook parse(String uri, IErrorHandler handler, IBookFactory factory)
 			throws SAXException, IOException {
 		RTFParser parser = new RTFParser();
-		RTFHandler rtfHandler = new RTFHandler(factory);
+		RTFHandler rtfHandler = new RTFHandler(factory, parser);
 		parser.setHandler(rtfHandler);
 		InputStream stream = new BufferedInputStream(
 				new FileInputStream(uri));

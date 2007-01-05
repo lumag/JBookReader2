@@ -17,7 +17,7 @@ class StyleStackState implements Cloneable {
 	
 	StyleStackState() {
 		display = Display.BLOCK;
-		textAlignment = Alignment.LEFT;
+		textAlignment = Alignment.JUSTIFY;
 		fontFamily = new ArrayList<String>();
 		fontFamily.add("serif");
 		fontSize = 10;

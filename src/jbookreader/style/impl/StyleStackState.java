@@ -5,6 +5,7 @@ import java.util.List;
 
 import jbookreader.style.Alignment;
 import jbookreader.style.Display;
+import jbookreader.style.IStylesheet.FontStyle;
 
 class StyleStackState implements Cloneable {
 	String nodeTag;
@@ -14,13 +15,17 @@ class StyleStackState implements Cloneable {
 	Alignment textAlignment;
 	List<String> fontFamily;
 	int fontSize;
+	int fontWeight;
+	FontStyle fontStyle;
 	
 	StyleStackState() {
 		display = Display.BLOCK;
 		textAlignment = Alignment.JUSTIFY;
 		fontFamily = new ArrayList<String>();
-		fontFamily.add("serif");
-		fontSize = 10;
+		fontFamily.add("Serif");
+		fontSize = 12;
+		fontWeight = 400;
+		fontStyle = FontStyle.NORMAL;
 	}
 	
 	@Override

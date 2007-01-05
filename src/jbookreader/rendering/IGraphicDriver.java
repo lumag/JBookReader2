@@ -10,8 +10,7 @@ public interface IGraphicDriver {
 	IDrawable renderBox(int width, int height, int depth);
 	IDrawable renderImage(String contentType, InputStream dataStream) throws IOException;
 
-	// TODO font variations
-	IFont getFont(String name, int size);
+	IFont getFont(String name, int size, boolean bold, boolean italic);
 	
 	// drawing methods
 	void clear();

@@ -13,6 +13,8 @@ import jbookreader.book.ITextNode;
 import jbookreader.style.Alignment;
 import jbookreader.style.Display;
 import jbookreader.style.IStyleStack;
+import jbookreader.style.IStylesheet;
+import jbookreader.style.IStylesheet.FontStyle;
 
 public class FB2StyleStackImpl implements IStyleStack {
 	private class FB2StyleNodeVisitor implements INodeVisitor {
@@ -54,8 +56,12 @@ public class FB2StyleStackImpl implements IStyleStack {
 			if ("title".equals(currentState.nodeTag)) {
 				currentState.textAlignment = Alignment.CENTER;
 				currentState.fontFamily = new ArrayList<String>();
-				currentState.fontFamily.add("sans");
+				currentState.fontFamily.add("Sans");
 				currentState.fontSize = (int) (currentState.fontSize * 1.5 * 1.5);
+			} else if ("strong".equals(currentState.nodeTag)) {
+				currentState.fontWeight = 700;
+			} else if ("emphasis".equals(currentState.nodeTag)) {
+				currentState.fontStyle = FontStyle.ITALIC;
 			}
 		}
 
@@ -138,6 +144,14 @@ public class FB2StyleStackImpl implements IStyleStack {
 
 	public int getFontSize() {
 		return currentState.fontSize;
+	}
+
+	public int getFontWeight() {
+		return currentState.fontWeight;
+	}
+
+	public IStylesheet.FontStyle getFontStyle() {
+		return currentState.fontStyle;
 	}
 
 }

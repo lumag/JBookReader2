@@ -10,8 +10,15 @@ class AWTFontAdapter implements IFont {
 	private Font font;
 	private int spaceWidth;
 
-	AWTFontAdapter(String name, int size, FontRenderContext frc) {
-		font = new Font(name, Font.ITALIC, size);
+	AWTFontAdapter(String name, int size, FontRenderContext frc, boolean bold, boolean italic) {
+		int style = Font.PLAIN;
+		if (bold) {
+			style |= Font.BOLD;
+		}
+		if (italic) {
+			style |= Font.ITALIC;
+		}
+		font = new Font(name, style, size);
 		Rectangle2D r2d = font.createGlyphVector(frc, new char[]{' '}).getLogicalBounds();
 		spaceWidth = JGraphicDriver.pixelToDimension((float) (r2d.getMaxX() - r2d.getMinX()));
 	}
@@ -30,6 +37,14 @@ class AWTFontAdapter implements IFont {
 
 	public int getSize() {
 		return font.getSize();
+	}
+
+	public boolean isBold() {
+		return font.isBold();
+	}
+
+	public boolean isItalic() {
+		return font.isItalic();
 	}
 
 }

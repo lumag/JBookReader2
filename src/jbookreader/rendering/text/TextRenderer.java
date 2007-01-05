@@ -59,7 +59,7 @@ public class TextRenderer implements IGraphicDriver {
 		xPosition += s.length();
 	}
 
-	public IFont getFont(String name, int size) {
+	public IFont getFont(String name, int size, boolean bold, boolean italic) {
 		return new TextFont(name, size);
 	}
 

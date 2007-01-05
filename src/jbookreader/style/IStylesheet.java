@@ -1,5 +1,10 @@
 package jbookreader.style;
 
 public interface IStylesheet {
-	// empty interface
+
+	public enum FontStyle {
+		NORMAL,
+		ITALIC,
+		OBLIQUE
+	};
 }

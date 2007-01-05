@@ -93,8 +93,8 @@ public class JGraphicDriver extends JComponent implements IGraphicDriver, Scroll
 		horizontalPosition = verticalPosition = 0;
 	}
 
-	public AWTFontAdapter getFont(String name, int size) {
-		return new AWTFontAdapter(name, size, fontRC);
+	public AWTFontAdapter getFont(String name, int size, boolean bold, boolean italic) {
+		return new AWTFontAdapter(name, size, fontRC, bold, italic);
 	}
 
 	public int getHorizontalPosition() {
@@ -125,8 +125,12 @@ public class JGraphicDriver extends JComponent implements IGraphicDriver, Scroll
 		}
 		ImageReader reader = readers.next();
 		ImageInputStream stream = ImageIO.createImageInputStream(dataStream);
+		if (stream == null) {
+			throw new UnsupportedOperationException("Can't create image input stream");
+		}
 		reader.setInput(stream, true);
 		BufferedImage image = reader.read(0);
+//		BufferedImage image = ImageIO.read(dataStream);
 		return new AWTImageAdapter(this, image);
 	}
 

@@ -6,5 +6,6 @@ public interface IFont {
 
 	String getFamily();
 	int getSize();
-
+	boolean isItalic();
+	boolean isBold();
 }

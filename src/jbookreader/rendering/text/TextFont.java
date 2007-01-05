@@ -25,4 +25,12 @@ class TextFont implements IFont {
 	public int getSize() {
 		return size;
 	}
+
+	public boolean isBold() {
+		return false;
+	}
+
+	public boolean isItalic() {
+		return false;
+	}
 }

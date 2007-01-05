@@ -17,6 +17,7 @@ import jbookreader.rendering.IFont;
 import jbookreader.rendering.IGraphicDriver;
 import jbookreader.style.Display;
 import jbookreader.style.IStyleStack;
+import jbookreader.style.IStylesheet.FontStyle;
 
 
 public class FormatEngine implements IFormatEngine {
@@ -110,7 +111,12 @@ public class FormatEngine implements IFormatEngine {
 		public boolean visitTextNode(ITextNode node) {
 			styleStack.push(node);
 
-			IFont font = driver.getFont(styleStack.getFirstFontFamily(), styleStack.getFontSize());
+			// FIXME: better italic
+			IFont font = driver.getFont(
+					styleStack.getFirstFontFamily(),
+					styleStack.getFontSize(),
+					styleStack.getFontWeight() > 500,
+					styleStack.getFontStyle() != FontStyle.NORMAL);
 
 			String text = node.getText();
 			if (text == null) {

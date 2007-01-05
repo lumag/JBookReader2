@@ -61,8 +61,6 @@ class AboutWindow extends JDialog {
         pane.add(new JLabel("JBookReader comes with ABSOLUTELY NO WARRANTY."));
         pane.add(new JLabel("This is free software, and you are welcome"));
         pane.add(new JLabel("to redistribute it under conditions of GPL."));
-        pane.add(new JLabel(""));
-        pane.add(new JLabel("Includes base64 engine by Robert Harder"));
 
         return pane;
 	}

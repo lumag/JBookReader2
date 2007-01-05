@@ -150,6 +150,7 @@ class FictionBook2 implements IFileFormatDescriptor {
 			return book;
 		}
 	}
+	private final Collection<String> extensions;
 
 	FictionBook2() {
 		extensions = new ArrayList<String>();
@@ -178,7 +179,6 @@ class FictionBook2 implements IFileFormatDescriptor {
 		return "FictionBook2";
 	}
 
-	private final Collection<String> extensions;
 	public Collection<String> getExtensions() {
 		return Collections.unmodifiableCollection(extensions);
 	}

@@ -3,6 +3,6 @@ package jbookreader.style;
 public enum Display {
 	NONE,
 	BLOCK,
-	INLINE,
+	INLINE
 	// LIST_ITEM,
 }

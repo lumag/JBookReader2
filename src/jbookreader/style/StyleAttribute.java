@@ -8,5 +8,5 @@ public enum StyleAttribute {
 	FONT_FAMILY,
 	FONT_SIZE,
 	FONT_STYLE,
-	FONT_WEIGHT,
+	FONT_WEIGHT
 }

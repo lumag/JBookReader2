@@ -12,9 +12,8 @@ import jbookreader.book.INodeVisitor;
 import jbookreader.book.ITextNode;
 import jbookreader.style.Alignment;
 import jbookreader.style.Display;
+import jbookreader.style.FontStyle;
 import jbookreader.style.IStyleStack;
-import jbookreader.style.IStylesheet;
-import jbookreader.style.IStylesheet.FontStyle;
 
 public class FB2StyleStackImpl implements IStyleStack {
 	private class FB2StyleNodeVisitor implements INodeVisitor {
@@ -150,7 +149,7 @@ public class FB2StyleStackImpl implements IStyleStack {
 		return currentState.fontWeight;
 	}
 
-	public IStylesheet.FontStyle getFontStyle() {
+	public FontStyle getFontStyle() {
 		return currentState.fontStyle;
 	}
 

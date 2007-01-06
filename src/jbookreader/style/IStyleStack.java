@@ -14,6 +14,6 @@ public interface IStyleStack {
 	List<String> getFontFamily();
 	String getFirstFontFamily();
 	int getFontSize();
-	IStylesheet.FontStyle getFontStyle();
+	FontStyle getFontStyle();
 	int getFontWeight();
 }

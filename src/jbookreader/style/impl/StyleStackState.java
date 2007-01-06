@@ -5,7 +5,7 @@ import java.util.List;
 
 import jbookreader.style.Alignment;
 import jbookreader.style.Display;
-import jbookreader.style.IStylesheet.FontStyle;
+import jbookreader.style.FontStyle;
 
 class StyleStackState implements Cloneable {
 	String nodeTag;

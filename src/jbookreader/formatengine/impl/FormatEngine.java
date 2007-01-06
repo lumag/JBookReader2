@@ -16,8 +16,8 @@ import jbookreader.rendering.IDrawable;
 import jbookreader.rendering.IFont;
 import jbookreader.rendering.IGraphicDriver;
 import jbookreader.style.Display;
+import jbookreader.style.FontStyle;
 import jbookreader.style.IStyleStack;
-import jbookreader.style.IStylesheet.FontStyle;
 
 
 public class FormatEngine implements IFormatEngine {

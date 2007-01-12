@@ -11,12 +11,8 @@ import java.awt.font.FontRenderContext;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Iterator;
 import java.util.List;
 
-import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
-import javax.imageio.stream.ImageInputStream;
 import javax.swing.JComponent;
 import javax.swing.Scrollable;
 
@@ -119,19 +115,7 @@ public class JGraphicDriver extends JComponent implements IGraphicDriver, Scroll
 	
 	public IDrawable renderImage(String contentType, InputStream dataStream) throws IOException {
 		//		throw new UnsupportedOperationException("unsupported");
-		Iterator<ImageReader> readers = ImageIO.getImageReadersByMIMEType(contentType);
-		if (!readers.hasNext()) {
-			throw new UnsupportedOperationException("content type '" + contentType + "' isn't supported");
-		}
-		ImageReader reader = readers.next();
-		ImageInputStream stream = ImageIO.createImageInputStream(dataStream);
-		if (stream == null) {
-			throw new UnsupportedOperationException("Can't create image input stream");
-		}
-		reader.setInput(stream, true);
-		BufferedImage image = reader.read(0);
-//		BufferedImage image = ImageIO.read(dataStream);
-		return new AWTImageAdapter(this, image);
+		return new AWTImageAdapter(this, contentType, dataStream);
 	}
 
 	public int getPaperWidth() {

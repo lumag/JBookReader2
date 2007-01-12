@@ -205,11 +205,7 @@ public class RTFParser {
 	}
 
 	private void putChar(int ch) {
-		if ((ch & 0x80) != 0) {
-			builder.append(codePageTable[ch&0x7f]);
-		} else {
-			builder.append((char) ch);
-		}
+		builder.append(codePageTable[ch & 0xff]);
 	}
 	
 	public void setHandler(IRTFContentHandler handler) {

@@ -2102,41 +2102,52 @@ public class CodePageTables {
 	};
 
 	public static char[] getCodePageTable(int cpNumber) {
+		char[] table = new char[256];
+		for (int i = 0; i < 128; i++) {
+			table[i] = (char) i;
+		}
+
+		char[] cptable;
 		if (cpNumber == 437) {
-			return cp437;
+			cptable = cp437;
 		} else if (cpNumber == 720) {
-			return cp720;
+			cptable = cp720;
 		} else if (cpNumber == 850) {
-			return cp850;
+			cptable = cp850;
 		} else if (cpNumber == 852) {
-			return cp852;
+			cptable = cp852;
 		} else if (cpNumber == 862) {
-			return cp862;
+			cptable = cp862;
 		} else if (cpNumber == 866) {
-			return cp866;
+			cptable = cp866;
 		} else if (cpNumber == 874) {
-			return cp874;
+			cptable = cp874;
 		} else if (cpNumber == 1250) {
-			return cp1250;
+			cptable = cp1250;
 		} else if (cpNumber == 1251) {
-			return cp1251;
+			cptable = cp1251;
 		} else if (cpNumber == 1252) {
-			return cp1252;
+			cptable = cp1252;
 		} else if (cpNumber == 1253) {
-			return cp1253;
+			cptable = cp1253;
 		} else if (cpNumber == 1254) {
-			return cp1254;
+			cptable = cp1254;
 		} else if (cpNumber == 1255) {
-			return cp1255;
+			cptable = cp1255;
 		} else if (cpNumber == 1256) {
-			return cp1256;
+			cptable = cp1256;
 		} else if (cpNumber == 1257) {
-			return cp1257;
+			cptable = cp1257;
 		} else if (cpNumber == 1258) {
-			return cp1258;
+			cptable = cp1258;
 		} else {
 			System.err.println("Usupported codepage: " + cpNumber);
-			return cp437;
+			cptable = cp437;
 		}
+		for (int i = 128; i < 256; i++) {
+			table[i] = cptable[i - 128];
+		}
+		
+		return table;
 	}
 }

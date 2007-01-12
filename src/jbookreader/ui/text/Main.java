@@ -40,7 +40,7 @@ public class Main {
 			;
 		IBook book = FileFormatsLibrary.getDescriptorForFile(uri).parse(
 				uri, handler,
-				ClassFactory.createClass(IBookFactory.class, "jbookreader.book.factory"));
+				ClassFactory.createClass(IBookFactory.class, "jbookreader.factory.book"));
 		System.err.println("parsed");
 //		book.getFirstBody().accept(new BookDumper());
 		IGraphicDriver driver = new TextRenderer();

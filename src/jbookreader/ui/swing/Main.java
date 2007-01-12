@@ -59,7 +59,7 @@ public class Main {
 						try {
 							final IBook book = FileFormatsLibrary.getDescriptorForFile(filename).parse(
 									filename, handler,
-									ClassFactory.createClass(IBookFactory.class, "jbookreader.book.factory"));
+									ClassFactory.createClass(IBookFactory.class, "jbookreader.factory.book"));
 							SwingUtilities.invokeAndWait(new Runnable() {
 								public void run() {
 									driver.setBook(book);

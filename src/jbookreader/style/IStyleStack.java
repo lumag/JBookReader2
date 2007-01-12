@@ -5,6 +5,8 @@ import java.util.List;
 import jbookreader.book.INode;
 
 public interface IStyleStack {
+	void addStylesheet(IStylesheet stylesheet);
+	
 	void push(INode node);
 	void pop();
 	

@@ -34,7 +34,7 @@ public final class ClassFactory {
 	}
 	
 	public static void loadProperies(String pkg) {
-		InputStream stream;
+		InputStream stream = null;
 
 		String resourceName = "";
 		if (pkg != null && ! "".equals(pkg)) {
@@ -43,10 +43,7 @@ public final class ClassFactory {
 		resourceName = resourceName.replace('.', '/');
 		resourceName = resourceName + "classes.properties";
 
-		ClassLoader loader = Thread.currentThread().getContextClassLoader();
-		if (loader == null) {
-			loader = ClassLoader.class.getClassLoader();
-		}
+		ClassLoader loader = getClassLoader();
 
 		try {
 			if (loader == null) { 
@@ -57,12 +54,30 @@ public final class ClassFactory {
 			defaults.load(stream);
 		} catch (IOException e) {
 			e.printStackTrace();
+		} finally {
+			try {
+				if (stream != null) {
+					stream.close();
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
+	}
+
+	private static ClassLoader getClassLoader() {
+		ClassLoader loader = Thread.currentThread().getContextClassLoader();
+		if (loader == null) {
+			loader = ClassLoader.class.getClassLoader();
+		}
+		return loader;
 	}
 
 	public static <T> T createClass(Class<T> intf, String property) {
 		String className = findClassName(property); 
-		ClassLoader loader = Thread.currentThread().getContextClassLoader();
+		ClassLoader loader = getClassLoader();
+
 		try {
 			Class<? extends T> klass;
 			if (loader == null) {
@@ -82,5 +97,4 @@ public final class ClassFactory {
 			throw new UnknownError(e.getMessage());
 		}
 	}
-	
 }

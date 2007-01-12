@@ -6,7 +6,6 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
-import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
@@ -39,6 +38,7 @@ public class AWTImageAdapter implements IDrawable {
 		width = JGraphicDriver.pixelToDimension(reader.getWidth(0));
 		height = JGraphicDriver.pixelToDimension(reader.getHeight(0));
 
+		Thread imageThread =
 		new Thread(new Runnable() {
 			public void run() {
 				try {
@@ -51,7 +51,9 @@ public class AWTImageAdapter implements IDrawable {
 					e.printStackTrace();
 				}
 			}
-		}).start();
+		});
+		imageThread.setPriority(Thread.MIN_PRIORITY);
+		imageThread.start();
 	}
 
 	public AWTImageAdapter(JGraphicDriver driver, BufferedImage image) {

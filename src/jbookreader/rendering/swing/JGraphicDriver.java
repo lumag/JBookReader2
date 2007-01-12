@@ -27,7 +27,7 @@ import jbookreader.rendering.IDrawable;
 import jbookreader.rendering.IFont;
 import jbookreader.rendering.IGraphicDriver;
 import jbookreader.rendering.Position;
-import jbookreader.style.impl.FB2StyleStackImpl;
+import jbookreader.style.impl.StyleStackImpl;
 
 @SuppressWarnings("serial")
 public class JGraphicDriver extends JComponent implements IGraphicDriver, Scrollable {
@@ -183,7 +183,7 @@ public class JGraphicDriver extends JComponent implements IGraphicDriver, Scroll
 			System.err.println("formatting");
 			long before = System.nanoTime();
 			lines = formatEngine.format(this, compositor, book.getFirstBody(),
-					new FB2StyleStackImpl());
+					new StyleStackImpl());
 			long after = System.nanoTime();
 			System.err.println("done " + (after - before)/1000000 + "ms");
 			

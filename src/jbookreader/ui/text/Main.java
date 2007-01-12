@@ -12,7 +12,7 @@ import jbookreader.rendering.IDrawable;
 import jbookreader.rendering.IGraphicDriver;
 import jbookreader.rendering.Position;
 import jbookreader.rendering.text.TextRenderer;
-import jbookreader.style.impl.FB2StyleStackImpl;
+import jbookreader.style.impl.StyleStackImpl;
 import lumag.util.ClassFactory;
 
 
@@ -49,7 +49,7 @@ public class Main {
 		IFormatEngine engine = ClassFactory.createClass(IFormatEngine.class,
 				"jbookreader.formatengine");
 		List<IDrawable> lines = engine.format(driver, compositor, book.getFirstBody(),
-				new FB2StyleStackImpl());
+				new StyleStackImpl());
 		System.err.println("formatted");
 		for (IDrawable dr: lines) {
 			dr.draw(Position.MIDDLE);

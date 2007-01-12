@@ -20,7 +20,7 @@ import org.xml.sax.SAXException;
 
 class RichTextFormat implements IFileFormatDescriptor {
 
-	private class RTFHandler implements IRTFContentHandler {
+	private static class RTFHandler implements IRTFContentHandler {
 
 		private final IBookFactory factory;
 		private IBook book;

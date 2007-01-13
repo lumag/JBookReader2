@@ -12,8 +12,11 @@ import jbookreader.book.IContainerNode;
 import jbookreader.book.IImageNode;
 import jbookreader.book.INamedNode;
 import jbookreader.book.ITextNode;
+import jbookreader.css.CSSParser;
 import jbookreader.fileformats.IErrorHandler;
 import jbookreader.fileformats.IFileFormatDescriptor;
+import jbookreader.style.IStylesheet;
+import jbookreader.style.impl.CSSStylesheet;
 import lumag.util.Base64;
 
 import org.xml.sax.Attributes;
@@ -151,6 +154,7 @@ class FictionBook2 implements IFileFormatDescriptor {
 		}
 	}
 	private final Collection<String> extensions;
+	private IStylesheet stylesheet;
 
 	FictionBook2() {
 		extensions = new ArrayList<String>();
@@ -181,6 +185,20 @@ class FictionBook2 implements IFileFormatDescriptor {
 
 	public Collection<String> getExtensions() {
 		return Collections.unmodifiableCollection(extensions);
+	}
+
+	public IStylesheet getStylesheet() {
+		if (stylesheet == null) {
+			try {
+				stylesheet = CSSParser.parse("resources/css/fb2.css");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		if (stylesheet == null) {
+			return new CSSStylesheet();
+		}
+		return stylesheet;
 	}
 
 }

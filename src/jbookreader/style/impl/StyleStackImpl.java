@@ -70,6 +70,7 @@ public class StyleStackImpl implements IStyleStack {
 	}
 
 	public void addStylesheet(IStylesheet stylesheet) {
+		System.out.println("add " + stylesheet);
 		// TODO Auto-generated method stub
 		
 	}

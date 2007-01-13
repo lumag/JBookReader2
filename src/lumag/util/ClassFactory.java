@@ -33,6 +33,19 @@ public final class ClassFactory {
 		return className;
 	}
 	
+	public static InputStream getResourceStream(String resourceName) throws IOException {
+		ClassLoader loader = getClassLoader();
+
+		InputStream stream;
+		if (loader == null) { 
+			stream = new FileInputStream(resourceName);
+		} else {
+			stream = loader.getResourceAsStream(resourceName);
+		}
+		
+		return stream;
+	}
+	
 	public static void loadProperies(String pkg) {
 		InputStream stream = null;
 
@@ -43,14 +56,8 @@ public final class ClassFactory {
 		resourceName = resourceName.replace('.', '/');
 		resourceName = resourceName + "classes.properties";
 
-		ClassLoader loader = getClassLoader();
-
 		try {
-			if (loader == null) { 
-				stream = new FileInputStream(resourceName);
-			} else {
-				stream = loader.getResourceAsStream(resourceName);
-			}
+			stream = getResourceStream(resourceName);
 			defaults.load(stream);
 		} catch (IOException e) {
 			e.printStackTrace();

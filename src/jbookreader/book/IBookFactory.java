@@ -1,5 +1,6 @@
 package jbookreader.book;
 
+
 public interface IBookFactory {
 	public IBook newBook();
 	public ITextNode newTextNode();

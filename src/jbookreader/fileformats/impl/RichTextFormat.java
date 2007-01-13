@@ -11,8 +11,11 @@ import jbookreader.book.IBook;
 import jbookreader.book.IBookFactory;
 import jbookreader.book.IContainerNode;
 import jbookreader.book.ITextNode;
+import jbookreader.css.CSSParser;
 import jbookreader.fileformats.IErrorHandler;
 import jbookreader.fileformats.IFileFormatDescriptor;
+import jbookreader.style.IStylesheet;
+import jbookreader.style.impl.CSSStylesheet;
 import lumag.rtf.IRTFContentHandler;
 import lumag.rtf.RTFParser;
 
@@ -123,6 +126,7 @@ class RichTextFormat implements IFileFormatDescriptor {
 	}
 
 	private final Collection<String> extensions;
+	private IStylesheet stylesheet;
 	
 	public RichTextFormat() {
 		extensions = new ArrayList<String>();
@@ -154,6 +158,20 @@ class RichTextFormat implements IFileFormatDescriptor {
 
 	public Collection<String> getExtensions() {
 		return extensions;
+	}
+
+	public IStylesheet getStylesheet() {
+		if (stylesheet == null) {
+			try {
+				stylesheet = CSSParser.parse("resources/css/rtf.css");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		if (stylesheet == null) {
+			return new CSSStylesheet();
+		}
+		return stylesheet;
 	}
 
 }

@@ -5,6 +5,7 @@ import java.util.Map;
 
 import jbookreader.style.IStyleSelector;
 import jbookreader.style.StyleAttribute;
+import jbookreader.style.impl.CSSStylesheet;
 
 import org.w3c.css.sac.CSSException;
 import org.w3c.css.sac.DocumentHandler;
@@ -52,7 +53,9 @@ class CSSHandler implements DocumentHandler {
 		} else if ("display".equals(name)) {
 			attr = StyleAttribute.DISPLAY; 
 		} else {
-			throw new CSSException("property " + name + " not supported");
+//			throw new CSSException("property " + name + " not supported");
+			System.err.println("property " + name + " not supported");
+			return;
 		}
 
 		properties.put(attr, value.toString());

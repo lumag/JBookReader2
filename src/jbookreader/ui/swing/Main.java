@@ -8,6 +8,7 @@ import javax.swing.SwingUtilities;
 import jbookreader.book.IBook;
 import jbookreader.book.IBookFactory;
 import jbookreader.fileformats.IErrorHandler;
+import jbookreader.fileformats.IFileFormatDescriptor;
 import jbookreader.fileformats.impl.FileFormatsLibrary;
 import jbookreader.fileformats.impl.UnknownFormatException;
 import jbookreader.formatengine.ICompositor;
@@ -22,8 +23,8 @@ public class Main {
 		ClassFactory.loadProperies("jbookreader");
 
 		final String filename = args.length == 0?
-				//"tests/simple.fb2"
-				"tests/exupery_malenkiyi_princ.fb2"
+				"tests/simple.fb2"
+				//"tests/exupery_malenkiyi_princ.fb2"
 				//"tests/test.rtf"
 				//"tests/yekzyuperi_antuan_malenkii_princ.rtf"
 				: args[0];
@@ -57,11 +58,13 @@ public class Main {
 						};
 
 						try {
-							final IBook book = FileFormatsLibrary.getDescriptorForFile(filename).parse(
+							final IFileFormatDescriptor fileFormat = FileFormatsLibrary.getDescriptorForFile(filename);
+							final IBook book = fileFormat.parse(
 									filename, handler,
 									ClassFactory.createClass(IBookFactory.class, "jbookreader.factory.book"));
 							SwingUtilities.invokeAndWait(new Runnable() {
 								public void run() {
+									driver.setFormatStylesheet(fileFormat.getStylesheet());
 									driver.setBook(book);
 									
 									driver.repaint();

@@ -1,0 +1,48 @@
+/* This is a sample FB2 stylesheet. Note, it isn't complete yet! */
+FictonBook, body { 
+	display: block;
+}
+
+/* FIXME: more selectors! */
+title, epigraph, section, p, v {
+	display: block;
+}
+
+description, stylesheet, binary {
+	display: none;
+}
+
+strong, emphasis, style,
+a, strikethrough,
+sub, sup, code {
+	display: inline;
+}
+
+image {
+	display: block;
+}
+p image, v image {
+	display: inline;
+}
+
+a[href] {
+	text-decoration: underline;
+}
+
+empty-line:before {
+	content: "\a";
+}
+
+/* Visual appearance */
+title {
+	text-align: center;
+}
+
+strong {
+	font-weight: bold;
+}
+
+emphasis {
+	font-style: italic;
+}
+

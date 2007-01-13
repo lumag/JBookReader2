@@ -22,6 +22,7 @@ import jbookreader.rendering.IDrawable;
 import jbookreader.rendering.IFont;
 import jbookreader.rendering.IGraphicDriver;
 import jbookreader.rendering.Position;
+import jbookreader.style.IStylesheet;
 import jbookreader.style.impl.StyleStackImpl;
 
 @SuppressWarnings("serial")
@@ -41,6 +42,8 @@ public class JGraphicDriver extends JComponent implements IGraphicDriver, Scroll
 	private FontRenderContext fontRC;
 
 	private Graphics2D paperGraphics;
+
+	private IStylesheet formatStylesheet;
 	
 	static int pixelToDimension(float px) {
 		return Math.round(px * PIXEL_SCALE_FACTOR);
@@ -62,6 +65,10 @@ public class JGraphicDriver extends JComponent implements IGraphicDriver, Scroll
 		this.book = book;
 		lines = null;
 		clear();
+	}
+
+	public void setFormatStylesheet(IStylesheet formatStylesheet) {
+		this.formatStylesheet = formatStylesheet;
 	}
 
 	Graphics2D getPaperGraphics() {
@@ -164,9 +171,17 @@ public class JGraphicDriver extends JComponent implements IGraphicDriver, Scroll
 			) {
 			// FIXME: move to separate thread!
 			System.err.println("formatting");
+			StyleStackImpl styleStack = new StyleStackImpl();
+			if (formatStylesheet != null ) {
+				styleStack.addStylesheet(formatStylesheet);
+			}
+			IStylesheet bookStylesheet = book.getStylesheet();
+			if (bookStylesheet != null) {
+				styleStack.addStylesheet(bookStylesheet);
+			}
 			long before = System.nanoTime();
 			lines = formatEngine.format(this, compositor, book.getFirstBody(),
-					new StyleStackImpl());
+					styleStack);
 			long after = System.nanoTime();
 			System.err.println("done " + (after - before)/1000000 + "ms");
 			
@@ -187,7 +202,7 @@ public class JGraphicDriver extends JComponent implements IGraphicDriver, Scroll
 				hmin = pixelToDimension(rectangle.y);
 				hmax = pixelToDimension(rectangle.y + rectangle.height);
 			}
-			System.out.print("rendering ");
+			System.out.print("rendering from " + hmin + " to " + hmax + "... ");
 			horizontalPosition = verticalPosition = 0;
 			for (IDrawable dr: lines) {
 				if (verticalPosition + dr.getHeight() > hmin) {

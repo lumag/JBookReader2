@@ -1,0 +1,20 @@
+rtf {
+	display: block;
+}
+
+par {
+	display: block;
+}
+
+b, i {
+	display: inline;
+}
+
+b {
+	font-weight: bold;
+}
+
+i {
+	font-style: italic;
+}
+

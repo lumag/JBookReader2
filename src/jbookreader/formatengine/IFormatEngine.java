@@ -5,7 +5,6 @@ import java.util.List;
 import jbookreader.book.INode;
 import jbookreader.rendering.IDrawable;
 import jbookreader.rendering.IGraphicDriver;
-import jbookreader.style.IStyleStack;
 
 public interface IFormatEngine {
 

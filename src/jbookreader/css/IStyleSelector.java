@@ -1,4 +1,4 @@
-package jbookreader.style;
+package jbookreader.css;
 
 import jbookreader.book.INode;
 

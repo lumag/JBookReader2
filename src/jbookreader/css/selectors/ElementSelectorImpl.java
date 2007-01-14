@@ -3,7 +3,7 @@ package jbookreader.css.selectors;
 import jbookreader.book.INamedNode;
 import jbookreader.book.INode;
 import jbookreader.css.CSS;
-import jbookreader.style.IStyleSelector;
+import jbookreader.css.IStyleSelector;
 
 import org.w3c.css.sac.ElementSelector;
 

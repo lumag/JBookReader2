@@ -8,11 +8,11 @@ import jbookreader.fileformats.IErrorHandler;
 import jbookreader.fileformats.impl.FileFormatsLibrary;
 import jbookreader.formatengine.ICompositor;
 import jbookreader.formatengine.IFormatEngine;
+import jbookreader.formatengine.IStyleStack;
 import jbookreader.rendering.IDrawable;
 import jbookreader.rendering.IGraphicDriver;
 import jbookreader.rendering.Position;
 import jbookreader.rendering.text.TextRenderer;
-import jbookreader.style.impl.StyleStackImpl;
 import lumag.util.ClassFactory;
 
 
@@ -48,8 +48,10 @@ public class Main {
 				"jbookreader.compositor");
 		IFormatEngine engine = ClassFactory.createClass(IFormatEngine.class,
 				"jbookreader.formatengine");
+		IStyleStack styleStack = ClassFactory.createClass(IStyleStack.class,
+				"jbookreader.stylestack");
 		List<IDrawable> lines = engine.format(driver, compositor, book.getFirstBody(),
-				new StyleStackImpl());
+				styleStack);
 		System.err.println("formatted");
 		for (IDrawable dr: lines) {
 			dr.draw(Position.MIDDLE);

@@ -1,8 +1,12 @@
-package jbookreader.style;
+package jbookreader.formatengine;
 
 import java.util.List;
 
 import jbookreader.book.INode;
+import jbookreader.book.IStylesheet;
+import jbookreader.style.Alignment;
+import jbookreader.style.Display;
+import jbookreader.style.FontStyle;
 
 public interface IStyleStack {
 	void addStylesheet(IStylesheet stylesheet);

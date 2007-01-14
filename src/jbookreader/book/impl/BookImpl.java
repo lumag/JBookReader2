@@ -6,10 +6,10 @@ import java.util.Map;
 import jbookreader.book.IBinaryBlob;
 import jbookreader.book.IBook;
 import jbookreader.book.IContainerNode;
-import jbookreader.style.IStylesheet;
+import jbookreader.book.IStylesheet;
 
 
-class BookImpl implements IBook{
+class BookImpl implements IBook {
 	private Map<String, IContainerNode> bodies = new LinkedHashMap<String, IContainerNode>();
 	private Map<String, IBinaryBlob> blobs = new LinkedHashMap<String, IBinaryBlob>();
 	private IStylesheet stylesheet;

@@ -16,14 +16,15 @@ import javax.swing.JComponent;
 import javax.swing.Scrollable;
 
 import jbookreader.book.IBook;
+import jbookreader.book.IStylesheet;
 import jbookreader.formatengine.ICompositor;
 import jbookreader.formatengine.IFormatEngine;
+import jbookreader.formatengine.IStyleStack;
 import jbookreader.rendering.IDrawable;
 import jbookreader.rendering.IFont;
 import jbookreader.rendering.IGraphicDriver;
 import jbookreader.rendering.Position;
-import jbookreader.style.IStylesheet;
-import jbookreader.style.impl.StyleStackImpl;
+import lumag.util.ClassFactory;
 
 @SuppressWarnings("serial")
 public class JGraphicDriver extends JComponent implements IGraphicDriver, Scrollable {
@@ -171,10 +172,11 @@ public class JGraphicDriver extends JComponent implements IGraphicDriver, Scroll
 			) {
 			// FIXME: move to separate thread!
 			System.err.println("formatting");
-			StyleStackImpl styleStack = new StyleStackImpl();
+			IStyleStack styleStack = ClassFactory.createClass(IStyleStack.class, "jbookreader.stylestack");
 			if (formatStylesheet != null ) {
 				styleStack.addStylesheet(formatStylesheet);
 			}
+			// FIXME: try to remove this cast!
 			IStylesheet bookStylesheet = book.getStylesheet();
 			if (bookStylesheet != null) {
 				styleStack.addStylesheet(bookStylesheet);

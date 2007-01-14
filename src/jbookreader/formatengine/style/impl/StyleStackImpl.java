@@ -1,4 +1,4 @@
-package jbookreader.style.impl;
+package jbookreader.formatengine.style.impl;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -6,11 +6,11 @@ import java.util.List;
 
 import jbookreader.book.INode;
 import jbookreader.book.INodeVisitor;
+import jbookreader.book.IStylesheet;
+import jbookreader.formatengine.IStyleStack;
 import jbookreader.style.Alignment;
 import jbookreader.style.Display;
 import jbookreader.style.FontStyle;
-import jbookreader.style.IStyleStack;
-import jbookreader.style.IStylesheet;
 
 public class StyleStackImpl implements IStyleStack {
 	List<StyleStackState> stateStack = new ArrayList<StyleStackState>();

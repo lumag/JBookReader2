@@ -5,7 +5,7 @@ import java.util.Collection;
 
 import jbookreader.book.IBook;
 import jbookreader.book.IBookFactory;
-import jbookreader.style.IStylesheet;
+import jbookreader.book.IStylesheet;
 
 import org.xml.sax.SAXException;
 

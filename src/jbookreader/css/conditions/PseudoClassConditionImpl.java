@@ -2,7 +2,7 @@ package jbookreader.css.conditions;
 
 import jbookreader.book.INode;
 import jbookreader.css.CSS;
-import jbookreader.style.IStyleSelector;
+import jbookreader.css.IStyleSelector;
 
 import org.w3c.css.sac.AttributeCondition;
 

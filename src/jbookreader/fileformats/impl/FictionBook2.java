@@ -11,12 +11,12 @@ import jbookreader.book.IBookFactory;
 import jbookreader.book.IContainerNode;
 import jbookreader.book.IImageNode;
 import jbookreader.book.INamedNode;
+import jbookreader.book.IStylesheet;
 import jbookreader.book.ITextNode;
 import jbookreader.css.CSSParser;
+import jbookreader.css.CSSStylesheet;
 import jbookreader.fileformats.IErrorHandler;
 import jbookreader.fileformats.IFileFormatDescriptor;
-import jbookreader.style.IStylesheet;
-import jbookreader.style.impl.CSSStylesheet;
 import lumag.util.Base64;
 
 import org.xml.sax.Attributes;

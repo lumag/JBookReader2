@@ -10,12 +10,12 @@ import java.util.Collection;
 import jbookreader.book.IBook;
 import jbookreader.book.IBookFactory;
 import jbookreader.book.IContainerNode;
+import jbookreader.book.IStylesheet;
 import jbookreader.book.ITextNode;
 import jbookreader.css.CSSParser;
+import jbookreader.css.CSSStylesheet;
 import jbookreader.fileformats.IErrorHandler;
 import jbookreader.fileformats.IFileFormatDescriptor;
-import jbookreader.style.IStylesheet;
-import jbookreader.style.impl.CSSStylesheet;
 import lumag.rtf.IRTFContentHandler;
 import lumag.rtf.RTFParser;
 
@@ -118,7 +118,7 @@ class RichTextFormat implements IFileFormatDescriptor {
 		}
 
 		public void binaryBlob(byte[] bs) {
-			skipChars --;
+			skipChars--;
 			// TODO Auto-generated method stub
 			
 		}

@@ -12,12 +12,12 @@ import jbookreader.book.INodeVisitor;
 import jbookreader.book.ITextNode;
 import jbookreader.formatengine.ICompositor;
 import jbookreader.formatengine.IFormatEngine;
+import jbookreader.formatengine.IStyleStack;
 import jbookreader.rendering.IDrawable;
 import jbookreader.rendering.IFont;
 import jbookreader.rendering.IGraphicDriver;
 import jbookreader.style.Display;
 import jbookreader.style.FontStyle;
-import jbookreader.style.IStyleStack;
 
 
 public class FormatEngine implements IFormatEngine {

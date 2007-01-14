@@ -1,31 +1,29 @@
 package jbookreader.css;
 
-import java.util.Collection;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
-import jbookreader.style.IStyleSelector;
-import jbookreader.style.IStylesheet;
-import jbookreader.style.StyleAttribute;
+import jbookreader.book.INode;
+import jbookreader.book.IStylesheet;
+import jbookreader.style.IStyleRule;
 
-class CSSStylesheet implements IStylesheet {
-	Map<IStyleSelector, Map<StyleAttribute, String>> rules =
-		new LinkedHashMap<IStyleSelector, Map<StyleAttribute,String>>();
+public class CSSStylesheet implements IStylesheet {
+	Map<IStyleSelector, List<IStyleRule>> rules =
+		new LinkedHashMap<IStyleSelector, List<IStyleRule>>();
 
-	public Map<StyleAttribute, String> getRules(IStyleSelector selector) {
-		Map<StyleAttribute, String> properties = rules.get(selector);
-		if (properties == null) {
-			return null;
+	public List<IStyleRule> getApplicableRules(INode node) {
+		List<IStyleRule> result = new ArrayList<IStyleRule>();
+		for (Map.Entry<IStyleSelector, List<IStyleRule>> entry : rules.entrySet()) {
+			if (entry.getKey().applies(node)) {
+				result.addAll(entry.getValue());
+			}
 		}
-		return Collections.unmodifiableMap(properties);
+		return result;
 	}
 
-	public Collection<IStyleSelector> getSelectors() {
-		return Collections.unmodifiableCollection(rules.keySet());
-	}
-
-	public void add(IStyleSelector selector, Map<StyleAttribute, String> properties) {
+	public void add(IStyleSelector selector, List<IStyleRule> properties) {
 		rules.put(selector, properties);
 	}
 

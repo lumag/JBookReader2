@@ -1,11 +1,13 @@
 package jbookreader.css;
 
-import java.util.EnumMap;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
-import jbookreader.style.IStyleSelector;
+import jbookreader.style.IStyleRule;
 import jbookreader.style.StyleAttribute;
-import jbookreader.style.impl.CSSStylesheet;
 
 import org.w3c.css.sac.CSSException;
 import org.w3c.css.sac.DocumentHandler;
@@ -16,8 +18,7 @@ import org.w3c.css.sac.SelectorList;
 
 class CSSHandler implements DocumentHandler {
 	private CSSStylesheet stylesheet = new CSSStylesheet();
-	// FIXME: string
-	private Map<StyleAttribute, String> properties;
+	private Map<IStyleSelector, List<IStyleRule>> ruleSets;
 
 	public void comment(String text) throws CSSException {
 //		System.out.println("/* " + text + "*/");
@@ -32,16 +33,18 @@ class CSSHandler implements DocumentHandler {
 	}
 
 	public void startSelector(SelectorList selectors) throws CSSException {
-		// do nothing
-		properties = new EnumMap<StyleAttribute, String>(StyleAttribute.class);
+		int len = selectors.getLength();
+		ruleSets = new LinkedHashMap<IStyleSelector, List<IStyleRule>>();
+		for (int i = 0; i < len; i++) {
+			ruleSets.put((IStyleSelector) selectors.item(i), new ArrayList<IStyleRule>());
+		}
 	}
 
 	public void endSelector(SelectorList selectors) throws CSSException {
-		int len = selectors.getLength();
-		for (int i = 0; i < len; i++) {
-			stylesheet.add((IStyleSelector) selectors.item(i), properties);
+		for (Entry<IStyleSelector, List<IStyleRule>> rules : ruleSets.entrySet()) {
+			stylesheet.add(rules.getKey(), rules.getValue());
 		}
-		properties = null;
+		ruleSets = null;
 	}
 
 	public void property(String name, LexicalUnit value, boolean important)
@@ -58,7 +61,9 @@ class CSSHandler implements DocumentHandler {
 			return;
 		}
 
-		properties.put(attr, value.toString());
+		for (Entry<IStyleSelector, List<IStyleRule>> rules : ruleSets.entrySet()) {
+			rules.getValue().add(new StyleRuleImpl(attr, value.toString(), rules.getKey().getWeight()));
+		}
 	}
 
 	public void startPage(String name, String pseudo_page) throws CSSException {

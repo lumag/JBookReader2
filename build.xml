@@ -31,9 +31,6 @@
     </target>
     <target depends="init" name="build">
         <echo message="${ant.project.name}: ${ant.file}"/>
-	<javac debug="${build.debug}" destdir="bin" classpathref="project.classpath">
-            <src path="src"/>
-        </javac>
 	<copy todir="bin">
 		<fileset dir="src">
 			<exclude name="**/*.java" />
@@ -41,6 +38,9 @@
 			<exclude name="**/*.launch" />
 		</fileset>
 	</copy>
+	<javac debug="${build.debug}" destdir="bin" classpathref="project.classpath">
+            <src path="src"/>
+        </javac>
     </target>
     <target name="javadoc" depends="init">
     	<javadoc destdir="docs/api" version="true" use="true" author="true">

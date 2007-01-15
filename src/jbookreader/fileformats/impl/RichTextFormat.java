@@ -152,20 +152,22 @@ class RichTextFormat implements IFileFormatDescriptor {
 		}
 
 		public void endGroup() {
-			if (parser.getLevel() < ignoredLevel) {
+			if (parser.getLevel() <= ignoredLevel) {
 				ignoredLevel = Integer.MAX_VALUE;
 			}
-			// TODO Auto-generated method stub
-
+//			System.out.println("end " + parser.getLevel());
 		}
 
 		public void startGroup() {
-			// TODO Auto-generated method stub
-
+//			System.out.println("start " + parser.getLevel());
 		}
 
 		public void string(String string) {
 			if (parser.getLevel() >= ignoredLevel) {
+				return;
+			}
+			
+			if (string.length() == 0) {
 				return;
 			}
 			

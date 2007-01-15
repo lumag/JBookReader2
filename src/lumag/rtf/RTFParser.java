@@ -73,134 +73,169 @@ public class RTFParser {
 			byte b = bytes[offset + i];
 			switch (state) {
 			case TEXT:
-				if (b == '{') {
-					if (level < skipLevel) {
-						if (builder.length() != 0) {
-							handler.string(builder.toString());
-						}
-					}
-					builder.setLength(0);
-					level ++;
-					if (level < skipLevel) {
-						handler.startGroup();
-					}
-				} else if (b == '}') {
-					if (level < skipLevel) {
-						if (builder.length() != 0) {
-							handler.string(builder.toString());
-						}
-					}
-					builder.setLength(0);
-					level --;
-					if (level < skipLevel) {
-						skipLevel = Integer.MAX_VALUE;
-						handler.endGroup();
-					}
-				} else if (b == '\\') {
-					if (level < skipLevel) {
-						if (builder.length() != 0) {
-							handler.string(builder.toString());
-						}
-					}
-					builder.setLength(0);
-					state = State.BACKSLASH;
-				} else if (b == '\n' || b == '\r') {
-					// ignore
-				} else {
-					putChar(b);
-				}
+				processStateText(b);
 				break;
 			case BACKSLASH:
-				if (Character.isLetter(b)) {
-					state = State.CONTROL;
-					putChar(b);
-				} else if (b == '\'') {
-					state = State.BACKTICK;
-					tickedChar = 0;
-				} else if (b == '*') {
-					shouldSkipGroupIfUnknown = true;
-					state = State.TEXT;
-				} else {
-					processControlWord(String.valueOf((char) b), false, 1);
-					state = State.TEXT;
-				}
+				processStateBackslash(b);
 				break;
 			case CONTROL:
-				if (Character.isLetter(b)) {
-					putChar(b);
-				} else if (Character.isDigit(b) || b == '-') {
-					currentControl = builder.toString();
-					builder.setLength(0);
-					putChar(b);
-					state = State.PARAMETER;
-				} else {
-					currentControl = builder.toString();
-					builder.setLength(0);
-					processControlWord(currentControl, false, 1);
-					currentControl = null;
-					state = State.TEXT;
-					if (!Character.isWhitespace(b)) {
-						// XXX: a hack to reprocess current character; 
-						i--;
-					}
-				}
+				processStateControl(b);
 				break;
 			case PARAMETER:
-				if (Character.isDigit(b)) {
-					putChar(b);
-				} else {
-					if (currentControl.equals("bin")) {
-						blobBytesLeft = Long.valueOf(builder.toString());
-						builder.setLength(0);
-						if (blobBytesLeft > Integer.MAX_VALUE) {
-							blobBuffer = new ByteArrayOutputStream(Integer.MAX_VALUE);
-						} else {
-							blobBuffer = new ByteArrayOutputStream((int)blobBytesLeft);
-						}
-						state = State.BLOB;
-					} else {
-						int parameterValue = Integer.valueOf(builder.toString());
-						builder.setLength(0);
-						processControlWord(currentControl, true, parameterValue);
-						currentControl = null;
-						state = State.TEXT;
-						if (!Character.isWhitespace(b)) {
-							// XXX: a hack to reprocess current character; 
-							i--;
-						}
-					}
-				}
+				processStateParameter(b);
 				break;
 			case BACKTICK:
-				if (Character.digit(b, 16) == -1) {
-					state = State.TEXT;
-				} else {
-					tickedChar = Character.digit(b, 16);
-					state = State.BACKTICK_X;
-				}
+				processStateBacktick(b);
 				break;
 			case BACKTICK_X:
-				if (Character.digit(b, 16) != -1) {
-					tickedChar = (tickedChar << 4) + Character.digit(b, 16);
-					putChar(tickedChar);
-				}
-				state = State.TEXT;
+				processStateBacktickX(b);
 				break;
 			case BLOB:
-				blobBuffer.write(b);
-				blobBytesLeft --;
-				if (blobBytesLeft == 0) {
-					if (level < skipLevel) {
-						handler.binaryBlob(blobBuffer.toByteArray());
-					}
-					blobBuffer = null;
-					state = State.TEXT;
-				}
+				processStateBlob(b);
 				break;
 			default:
 				// really means something is broken
 				throw new InternalError("unsupported rtf state?");
 			}
+		}
+	}
+
+	private void processStateText(byte b) {
+		if (level < skipLevel) {
+			processStateTextNormal(b);
+		} else {
+			processStateTextIgnoredGroup(b);
+		}
+	}
+
+	private void processStateTextIgnoredGroup(byte b) {
+		builder.setLength(0);
+		if (b == '{') {
+			level ++;
+		} else if (b == '}') {
+			if (level == skipLevel) {
+				handler.endGroup();
+				skipLevel = Integer.MAX_VALUE;
+			}
+			level --;
+		} else if (b == '\\') {
+			builder.setLength(0);
+			state = State.BACKSLASH;
+		} else {
+			// ignore
+		}
+	}
+
+	private void processStateTextNormal(byte b) {
+		if (b == '{') {
+			handler.string(builder.toString());
+			builder.setLength(0);
+			level ++;
+			handler.startGroup();
+		} else if (b == '}') {
+			handler.string(builder.toString());
+			builder.setLength(0);
+			handler.endGroup();
+			level --;
+		} else if (b == '\\') {
+			handler.string(builder.toString());
+			builder.setLength(0);
+			state = State.BACKSLASH;
+		} else if (b == '\n' || b == '\r') {
+			// ignore
+		} else {
+			putChar(b);
+		}
+	}
+
+	private void processStateBackslash(byte b) {
+		if (Character.isLetter(b)) {
+			state = State.CONTROL;
+			putChar(b);
+		} else if (b == '\'') {
+			state = State.BACKTICK;
+			tickedChar = 0;
+		} else if (b == '*') {
+			shouldSkipGroupIfUnknown = true;
+			state = State.TEXT;
+		} else {
+			processControlWord(String.valueOf((char) b), false, 1);
+			state = State.TEXT;
+		}
+	}
+
+	private void processStateControl(byte b) {
+		if (Character.isLetter(b)) {
+			putChar(b);
+		} else if (Character.isDigit(b) || b == '-') {
+			currentControl = builder.toString();
+			builder.setLength(0);
+			putChar(b);
+			state = State.PARAMETER;
+		} else {
+			currentControl = builder.toString();
+			builder.setLength(0);
+			processControlWord(currentControl, false, 1);
+			currentControl = null;
+			state = State.TEXT;
+			if (!Character.isWhitespace(b)) {
+				processStateText(b);
+			}
+		}
+	}
+
+	private void processStateParameter(byte b) {
+		if (Character.isDigit(b)) {
+			putChar(b);
+		} else {
+			if (currentControl.equals("bin")) {
+				blobBytesLeft = Long.valueOf(builder.toString());
+				builder.setLength(0);
+				if (blobBytesLeft > Integer.MAX_VALUE) {
+					blobBuffer = new ByteArrayOutputStream(Integer.MAX_VALUE);
+				} else {
+					blobBuffer = new ByteArrayOutputStream((int)blobBytesLeft);
+				}
+				state = State.BLOB;
+			} else {
+				int parameterValue = Integer.valueOf(builder.toString());
+				builder.setLength(0);
+				processControlWord(currentControl, true, parameterValue);
+				currentControl = null;
+				state = State.TEXT;
+				if (!Character.isWhitespace(b)) {
+					processStateText(b);
+				}
+			}
+		}
+	}
+
+	private void processStateBacktick(byte b) {
+		if (Character.digit(b, 16) == -1) {
+			state = State.TEXT;
+		} else {
+			tickedChar = Character.digit(b, 16);
+			state = State.BACKTICK_X;
+		}
+	}
+
+	private void processStateBacktickX(byte b) {
+		if (Character.digit(b, 16) != -1) {
+			tickedChar = (tickedChar << 4) + Character.digit(b, 16);
+			putChar(tickedChar);
+		}
+		state = State.TEXT;
+	}
+
+	private void processStateBlob(byte b) {
+		blobBuffer.write(b);
+		blobBytesLeft --;
+		if (blobBytesLeft == 0) {
+			if (level < skipLevel) {
+				handler.binaryBlob(blobBuffer.toByteArray());
+			}
+			blobBuffer = null;
+			state = State.TEXT;
 		}
 	}
 

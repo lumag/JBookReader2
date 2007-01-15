@@ -38,7 +38,7 @@
 			<exclude name="**/*.launch" />
 		</fileset>
 	</copy>
-	<javac debug="${build.debug}" destdir="bin" classpathref="project.classpath">
+	<javac debug="${build.debug}" destdir="bin" classpathref="project.classpath" target="1.5">
             <src path="src"/>
         </javac>
     </target>

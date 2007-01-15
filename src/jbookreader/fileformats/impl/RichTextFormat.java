@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import jbookreader.book.IBook;
 import jbookreader.book.IBookFactory;
@@ -24,11 +26,18 @@ import org.xml.sax.SAXException;
 class RichTextFormat implements IFileFormatDescriptor {
 
 	private static class RTFHandler implements IRTFContentHandler {
+		private interface IControlHandler {
+			void control(String string, boolean hasParameter, int parameter);
+		}
 
 		private final IBookFactory factory;
-		private IBook book;
+		private final IBook book;
 		private IContainerNode container;
+
 		private final RTFParser parser;
+
+		private Map<String, IControlHandler> controlHandlers =
+			new HashMap<String, IControlHandler>();
 		
 		private int unicodeCharLength = 1;
 		private int skipChars;
@@ -39,11 +48,93 @@ class RichTextFormat implements IFileFormatDescriptor {
 		public RTFHandler(IBookFactory factory, RTFParser parser) {
 			this.factory = factory;
 			this.parser = parser;
+			
+			fillControlHandlers();
+
 			this.book = factory.newBook();
 			IContainerNode body = factory.newContainerNode();
+
 			book.addBody(body, "");
 			container = factory.newContainerNode();
 			body.add(container);
+		}
+
+		private void fillControlHandlers() {
+			controlHandlers.put("rtf", new IControlHandler() {
+				public void control(String string, boolean hasParameter, int parameter) {
+					System.out.println("RTF version " + parameter);
+				}
+			});
+			controlHandlers.put("ansicpg", new IControlHandler() {
+				public void control(String string, boolean hasParameter, int parameter) {
+					parser.setCharacterSet(parameter);
+				}
+			});
+			controlHandlers.put("par", new IControlHandler() {
+				public void control(String string, boolean hasParameter, int parameter) {
+					IContainerNode node = factory.newContainerNode();
+					container.getParentNode().add(node);
+					container = node;
+				}
+			});
+			controlHandlers.put("\n", new IControlHandler() {
+				public void control(String string, boolean hasParameter, int parameter) {
+					IContainerNode node = factory.newContainerNode();
+					container.getParentNode().add(node);
+					container = node;
+				}
+			});
+			controlHandlers.put("\r", new IControlHandler() {
+				public void control(String string, boolean hasParameter, int parameter) {
+					IContainerNode node = factory.newContainerNode();
+					container.getParentNode().add(node);
+					container = node;
+				}
+			});
+			controlHandlers.put("uc", new IControlHandler() {
+				public void control(String string, boolean hasParameter, int parameter) {
+					unicodeCharLength = parameter;
+				}
+			});
+			controlHandlers.put("u", new IControlHandler() {
+				public void control(String string, boolean hasParameter, int parameter) {
+					string(Character.valueOf((char) parameter).toString());
+					skipChars = unicodeCharLength;
+				}
+			});
+			controlHandlers.put("~", new IControlHandler() {
+				public void control(String string, boolean hasParameter, int parameter) {
+					// XXX: nbsp
+					string("\u00A0");
+				}
+			});
+			controlHandlers.put(" ", new IControlHandler() {
+				public void control(String string, boolean hasParameter, int parameter) {
+					// XXX: nbsp
+					string("\u00A0");
+				}
+			});
+			controlHandlers.put("_", new IControlHandler() {
+				public void control(String string, boolean hasParameter, int parameter) {
+					// XXX: nb dash;
+					string("\u2011");
+				}
+			});
+			controlHandlers.put("fonttbl", new IControlHandler() {
+				public void control(String string, boolean hasParameter, int parameter) {
+					ignoredLevel = parser.getLevel();
+				}
+			});
+			controlHandlers.put("stylesheet", new IControlHandler() {
+				public void control(String string, boolean hasParameter, int parameter) {
+					ignoredLevel = parser.getLevel();
+				}
+			});
+			controlHandlers.put("pict", new IControlHandler() {
+				public void control(String string, boolean hasParameter, int parameter) {
+					ignoredLevel = parser.getLevel();
+				}
+			});
 		}
 
 		public boolean control(String string, boolean hasParameter, int parameter) {
@@ -51,38 +142,13 @@ class RichTextFormat implements IFileFormatDescriptor {
 				// assume we support all controls in ignored destinations
 				return true;
 			}
-
-			if (string.equals("rtf")) {
-				System.out.println("RTF version " + parameter);
-			} else if (string.equals("ansicpg")) {
-				parser.setCharacterSet(parameter);
-			} else if (string.equals("par")
-					|| string.equals("\n")
-					|| string.equals("\r")) {
-				// new paragraph
-				IContainerNode node = factory.newContainerNode();
-				container.getParentNode().add(node);
-				container = node;
-			} else if (string.equals("uc")) {
-				unicodeCharLength = parameter;
-			} else if (string.equals("u")) {
-				string(Character.valueOf((char) parameter).toString());
-				skipChars = unicodeCharLength;
-			} else if (string.equals("~")
-					|| string.equals(" ")) {
-				// XXX: nbsp
-				string("\u00A0");
-			} else if (string.equals("_")) {
-				// XXX: nb dash;
-				string("\u2011");
-			} else if (string.equals("fonttbl")
-					|| string.equals("stylesheet")
-					|| string.equals("pict")) {
-				ignoredLevel = parser.getLevel();
-			} else {
-				return false;
+			
+			if (controlHandlers.containsKey(string)) {
+				controlHandlers.get(string).control(string, hasParameter, parameter);
+				return true;
 			}
-			return true;
+			
+			return false;
 		}
 
 		public void endGroup() {

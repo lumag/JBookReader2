@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 import jbookreader.book.IBinaryBlob;
 import jbookreader.book.IBook;
@@ -36,9 +38,34 @@ class FictionBook2 implements IFileFormatDescriptor {
 		private final StringBuilder textAccumulator = new StringBuilder();
 		private boolean mixedNode;
 
+		static Set<String> mixedNodes = new HashSet<String>();
+		
+		static {
+			String[] mixedNodeTags = new String[]{
+					"a",
+					"code",
+					"emphasis",
+					"p",
+					"strikethrough",
+					"strong",
+					"style",
+					"sub",
+					"subtitle",
+					"sup",
+					"td",
+					"text-author",
+					"th",
+					"v",
+			};
+			for (String tag: mixedNodeTags) {
+				mixedNodes.add(tag);
+			}
+		}
+
 		FB2ContentsHandler(final IBookFactory factory) {
 			this.factory = factory;
 			book = factory.newBook();
+
 		}
 
 		@Override
@@ -115,23 +142,7 @@ class FictionBook2 implements IFileFormatDescriptor {
 
 		private boolean isMixedNode(INamedNode node) {
 			String tag = node.getNodeTag();
-			if (
-					tag.equals("a") ||
-					tag.equals("code") ||
-					tag.equals("emphasis") ||
-					tag.equals("p") ||
-					tag.equals("strikethrough") ||
-					tag.equals("strong") ||
-					tag.equals("style") ||
-					tag.equals("sub") ||
-					tag.equals("subtitle") ||
-					tag.equals("sup") ||
-					tag.equals("td") ||
-					tag.equals("text-author") ||
-					tag.equals("th") ||
-					tag.equals("v") ||
-					false
-					) {
+			if (mixedNodes.contains(tag)) {
 				return true;
 			}
 			return false;

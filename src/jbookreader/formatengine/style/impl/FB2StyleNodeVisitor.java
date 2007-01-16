@@ -4,7 +4,9 @@
 package jbookreader.formatengine.style.impl;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.ListIterator;
+import java.util.Set;
 
 import jbookreader.book.IContainerNode;
 import jbookreader.book.IImageNode;
@@ -20,6 +22,25 @@ class FB2StyleNodeVisitor implements INodeVisitor {
 	 * 
 	 */
 	private final StyleStackImpl styleStack;
+	
+	private static final Set<String> INLINE_NODES = new HashSet<String>();
+	static {
+		String[] inlineNodeTags = new String[]{
+				"strong",
+				"emphasis",
+				"style",
+				"a",
+				"strikethrough",
+				"sub",
+				"sup",
+				"code",
+				"#text",
+		};
+
+		for (String tag: inlineNodeTags) {
+			INLINE_NODES.add(tag);
+		}
+	}
 
 	/**
 	 * @param impl
@@ -76,18 +97,7 @@ class FB2StyleNodeVisitor implements INodeVisitor {
 
 	private boolean isInlineNode() {
 		String tag = styleStack.currentState.nodeTag;
-		if (
-				"strong".equals(tag) ||
-				"emphasis".equals(tag) ||
-				"style".equals(tag) ||
-				"a".equals(tag) ||
-				"strikethrough".equals(tag) ||
-				"sub".equals(tag) ||
-				"sup".equals(tag) ||
-				"code".equals(tag) ||
-				"#text".equals(tag) ||
-				false
-				) {
+		if (INLINE_NODES.contains(tag)) {
 			return true;
 		}
 		if ("image".equals(tag)) {

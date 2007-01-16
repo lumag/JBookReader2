@@ -38,7 +38,7 @@ class FictionBook2 implements IFileFormatDescriptor {
 		private final StringBuilder textAccumulator = new StringBuilder();
 		private boolean mixedNode;
 
-		static Set<String> mixedNodes = new HashSet<String>();
+		private static final Set<String> MIXED_NODES = new HashSet<String>();
 		
 		static {
 			String[] mixedNodeTags = new String[]{
@@ -58,7 +58,7 @@ class FictionBook2 implements IFileFormatDescriptor {
 					"v",
 			};
 			for (String tag: mixedNodeTags) {
-				mixedNodes.add(tag);
+				MIXED_NODES.add(tag);
 			}
 		}
 
@@ -142,7 +142,7 @@ class FictionBook2 implements IFileFormatDescriptor {
 
 		private boolean isMixedNode(INamedNode node) {
 			String tag = node.getNodeTag();
-			if (mixedNodes.contains(tag)) {
+			if (MIXED_NODES.contains(tag)) {
 				return true;
 			}
 			return false;

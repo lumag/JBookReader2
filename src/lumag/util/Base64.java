@@ -14,27 +14,19 @@ public class Base64 {
 		for (int i = 0; i < len; i++) {
 			char ch = string.charAt(i);
 			
+			int nextBits;
 			if (Character.isWhitespace(ch)) {
 				continue;
-			} else if ('A' <= ch && ch <= 'Z') {
-				currentValue = (currentValue << 6) + ch - 'A';
-			} else if ('a' <= ch && ch <= 'z') {
-				currentValue = (currentValue << 6) + ch - 'a' + 26;
-			} else if ('0' <= ch && ch <= '9') {
-				currentValue = (currentValue << 6) + ch - '0' + 26 + 26;
-			} else if (ch == '+') {
-				currentValue = (currentValue << 6) + ch - '+' + 26 + 26 + 10;
-			} else if (ch == '/') {
-				currentValue = (currentValue << 6) + ch - '/' + 26 + 26 + 10 + 1;
 			} else if (ch == '=') {
-				currentValue <<= 6;
+				nextBits = 0;
 				skipChars ++;
 			} else {
-				throw new IllegalArgumentException(
-						"Bad character encountered: '" + ch +
-						"' (0x" + Integer.toHexString(ch));
+				nextBits = parseCharacter(ch);
 			}
+
+			currentValue = (currentValue << 6) + nextBits;
 			curChars ++;
+
 			if (curChars == 4) {
 				output.write((int) ((currentValue >> 16) & 0xff));
 				if (skipChars < 2) {
@@ -50,6 +42,24 @@ public class Base64 {
 			}
 		}
 		return output.toByteArray();
+	}
+
+	private static int parseCharacter(char ch) {
+		if ('A' <= ch && ch <= 'Z') {
+			return ch - 'A';
+		} else if ('a' <= ch && ch <= 'z') {
+			return ch - 'a' + 26;
+		} else if ('0' <= ch && ch <= '9') {
+			return ch - '0' + 26 + 26;
+		} else if (ch == '+') {
+			return ch - '+' + 26 + 26 + 10;
+		} else if (ch == '/') {
+			return ch - '/' + 26 + 26 + 10 + 1;
+		} else {
+			throw new IllegalArgumentException(
+					"Bad character encountered: '" + ch +
+					"' (0x" + Integer.toHexString(ch));
+		}
 	}
 
 }

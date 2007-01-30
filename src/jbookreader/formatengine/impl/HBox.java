@@ -41,24 +41,14 @@ class HBox implements IDrawable {
 		return width;
 	}
 
-	public void add(int index, IDrawable drawable) {
-		if (index == -1) {
-			index = elements.size();
-		}
+	public void add(IDrawable drawable) {
 		if (elements.isEmpty()) {
 			width = drawable.getWidth(Position.START);
-		} else if (index == 0) {
-			IDrawable first = elements.get(0);
-			width += drawable.getWidth(Position.START)
-				+ first.getWidth(Position.MIDDLE)
-				- first.getWidth(Position.START);
-		} else if (index == elements.size()) {
+		} else {
 			IDrawable last = elements.get(elements.size()-1);
 			width += drawable.getWidth(Position.END)
 				+ last.getWidth(Position.MIDDLE)
 				- last.getWidth(Position.END);
-		} else {
-			width += drawable.getWidth(Position.MIDDLE);
 		}
 		if (height < drawable.getHeight()) {
 			height = drawable.getHeight();
@@ -67,11 +57,7 @@ class HBox implements IDrawable {
 			depth = drawable.getDepth();
 		}
 
-		elements.add(index, drawable);
-	}
-
-	public void add(IDrawable drawable) {
-		add(elements.size(), drawable);
+		elements.add(drawable);
 	}
 
 	public void addAll(List<IDrawable> drawables) {

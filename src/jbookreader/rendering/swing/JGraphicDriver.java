@@ -167,31 +167,18 @@ public class JGraphicDriver extends JComponent implements IGraphicDriver, Scroll
 
 		fontRC = paperGraphics.getFontRenderContext();
 
-		if (lines == null || getPaperWidth() != 
-			lines.get(0).getWidth(Position.MIDDLE)
-			) {
-			// FIXME: move to separate thread!
-			System.err.println("formatting");
-			IStyleStack styleStack = ClassFactory.createClass(IStyleStack.class, "jbookreader.stylestack");
-			if (formatStylesheet != null ) {
-				styleStack.addStylesheet(formatStylesheet);
-			}
-			// FIXME: try to remove this cast!
-			IStylesheet bookStylesheet = book.getStylesheet();
-			if (bookStylesheet != null) {
-				styleStack.addStylesheet(bookStylesheet);
-			}
-			long before = System.nanoTime();
-			lines = formatEngine.format(this, compositor, book.getFirstBody(),
-					styleStack);
-			long after = System.nanoTime();
-			System.err.println("done " + (after - before)/1000000 + "ms");
-			
+		if (lines == null ||
+				(! lines.isEmpty() &&
+					getPaperWidth() != lines.get(0).getWidth(Position.MIDDLE))) {
+
+			reformatBook();
+
 			int height = 0;
 			for (IDrawable dr: lines) {
 				// FIXME: correct inter-line value!
 				height += dr.getHeight() + dr.getDepth();
 			}
+
 			setPreferredSize(new Dimension(getWidth(), Math.round(
 					dimensionToPixel(height) + insets.top + insets.bottom)));
 			revalidate();
@@ -224,6 +211,26 @@ public class JGraphicDriver extends JComponent implements IGraphicDriver, Scroll
 		fontRC = null;
 		paperGraphics.dispose();
 		paperGraphics = null;
+	}
+
+	private void reformatBook() {
+		// FIXME: move to separate thread!
+		System.err.println("formatting");
+		IStyleStack styleStack = ClassFactory.createClass(IStyleStack.class, "jbookreader.stylestack");
+		if (formatStylesheet != null ) {
+			styleStack.addStylesheet(formatStylesheet);
+		}
+		// FIXME: try to remove this cast!
+		IStylesheet bookStylesheet = book.getStylesheet();
+		if (bookStylesheet != null) {
+			styleStack.addStylesheet(bookStylesheet);
+		}
+		long before = System.nanoTime();
+		lines = formatEngine.format(this, compositor, book.getFirstBody(),
+				styleStack);
+		long after = System.nanoTime();
+		System.err.println("done " + (after - before)/1000000 + "ms");
+		
 	}
 
 	public Dimension getPreferredScrollableViewportSize() {

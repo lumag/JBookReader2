@@ -180,6 +180,7 @@ public class FormatEngine implements IFormatEngine {
 		}
 
 		public void flush() {
+			// do nothing
 		}
 
 	}

@@ -15,7 +15,6 @@ public class ElementSelectorImpl implements ElementSelector,
 
 	public ElementSelectorImpl(String namespaceURI, String tagName) {
 		this.namespaceURI = namespaceURI;
-		// TODO Auto-generated constructor stub
 		this.name = tagName;
 	}
 

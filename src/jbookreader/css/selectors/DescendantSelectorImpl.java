@@ -15,7 +15,6 @@ public class DescendantSelectorImpl implements DescendantSelector,
 
 	public DescendantSelectorImpl(Selector parent, SimpleSelector descendant) {
 		this.parent = parent;
-		// TODO Auto-generated constructor stub
 		this.descendant = descendant;
 	}
 

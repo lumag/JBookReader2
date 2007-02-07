@@ -187,8 +187,6 @@ class RichTextFormat implements IFileFormatDescriptor {
 
 		public void binaryBlob(byte[] bs) {
 			skipChars--;
-			// TODO Auto-generated method stub
-			
 		}
 
 	}

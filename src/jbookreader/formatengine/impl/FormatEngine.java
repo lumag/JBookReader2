@@ -17,7 +17,6 @@ import jbookreader.rendering.IDrawable;
 import jbookreader.rendering.IFont;
 import jbookreader.rendering.IGraphicDriver;
 import jbookreader.style.Alignment;
-import jbookreader.style.Display;
 import jbookreader.style.FontStyle;
 
 
@@ -48,18 +47,43 @@ public class FormatEngine implements IFormatEngine {
 
 		public void visitContainerNode(IContainerNode node) {
 			styleStack.push(node);
-			if (styleStack.getDisplay() == Display.INLINE) {
+			switch (styleStack.getDisplay()) {
+			case NONE:
+				styleStack.pop();
+				return;
+			case INLINE:
 				styleStack.pop();
 				formatInline(node);
-			} else {
+				break;
+			case BLOCK:
 				flushInline();
 				node.visitChildren(this);
 				styleStack.pop();
+				break;
 			}
 		}
 
 		public void visitTextNode(ITextNode node) {
 			formatInline(node);
+		}
+
+		public void visitImageNode(IImageNode node) {
+			styleStack.push(node);
+			boolean flush = false;
+			switch (styleStack.getDisplay()) {
+			case NONE:
+				styleStack.pop();
+				return;
+			case INLINE:
+				break;
+			case BLOCK:
+				styleStack.pop();
+				flush = true;
+			}
+			formatInline(node);
+			if (flush) {
+				flushInline();
+			}
 		}
 
 		private void formatInline(INode node) {
@@ -85,15 +109,6 @@ public class FormatEngine implements IFormatEngine {
 			textAlign = null;
 		}
 
-		public void visitImageNode(IImageNode node) {
-			formatInline(node);
-			styleStack.push(node);
-			if (styleStack.getDisplay() != Display.INLINE) {
-				flushInline();
-			}
-			styleStack.pop();
-		}
-
 		public void flush() {
 			flushInline();
 		}
@@ -113,8 +128,19 @@ public class FormatEngine implements IFormatEngine {
 
 		public void visitContainerNode(IContainerNode node) {
 			styleStack.push(node);
-			node.visitChildren(this);
-			styleStack.pop();
+			switch (styleStack.getDisplay()) {
+			case NONE:
+				styleStack.pop();
+				return;
+			case INLINE:
+				node.visitChildren(this);
+				styleStack.pop();
+				break;
+			case BLOCK:
+				System.err.println("BLOCK container in inline node isn't supported!");
+				styleStack.pop();
+				return;
+			}
 		}
 
 		public void visitTextNode(ITextNode node) {
@@ -160,12 +186,29 @@ public class FormatEngine implements IFormatEngine {
 
 		public void visitImageNode(IImageNode node) {
 			styleStack.push(node);
-			String href = node.getHRef();
+			switch (styleStack.getDisplay()) {
+			case NONE:
+				styleStack.pop();
+				return;
+			case INLINE:
+			case BLOCK:
+				IDrawable image = formatImage(node.getHRef(), node);
+				if (image != null) {
+					result.add(image);
+				} else {
+					visitTextNode(node);
+				}
+				styleStack.pop();
+				break;
+			}
+		}
+		
+		private IDrawable formatImage(String href, IImageNode node) {
 			if (href.length() >= 1 && href.charAt(0) == '#') {
 				IBinaryBlob blob = node.getBook().getBinaryBlob(href.substring(1));
 				if (blob != null) {
 					try {
-						result.add(driver.renderImage(blob.getContentType(), blob.getDataStream()));
+						return driver.renderImage(blob.getContentType(), blob.getDataStream());
 					} catch (UnsupportedOperationException e) {
 						System.err.println("Error: " + e.getMessage());
 					} catch (IOException e) {
@@ -175,8 +218,8 @@ public class FormatEngine implements IFormatEngine {
 			} else {
 				System.err.println("Bad image HRef: " + href);
 			}
-
-			styleStack.pop();
+			
+			return null;
 		}
 
 		public void flush() {

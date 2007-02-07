@@ -51,8 +51,9 @@
         <image xlink:href="#test.jpg" alt="test inline image"/>
       </p>
       <p>
-        But before this line.
+        But before this line. After it follows block image.
       </p>
+      <image xlink:href="#test.jpg" alt="test inline image"/>
       <p>– Due to first chars, parts of this line can be displayed with
 	      wrong baselines.</p>
       <p>A line with inline 
@@ -61,7 +62,7 @@
       <p><image xlink:href="#test.jpg" alt="test inline image"/>n image
 	as a first item in the line.</p>
       <p>
-	      <emphasis>The <strong>last</strong> line</emphasis>.
+	      <emphasis>The very <strong>last</strong> line</emphasis>.
       </p>
     </section>
   </body>

@@ -61,7 +61,7 @@
       <p><image xlink:href="#test.jpg" alt="test inline image"/>n image
 	as a first item in the line.</p>
       <p>
-        The last line.
+	      <emphasis>The <strong>last</strong> line</emphasis>.
       </p>
     </section>
   </body>

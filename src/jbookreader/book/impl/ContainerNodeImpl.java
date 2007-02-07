@@ -56,11 +56,4 @@ public class ContainerNodeImpl extends AbstractNamedNode implements IContainerNo
 		return children.hasPrevious(element);
 	}
 
-	@Override
-	public String toString() {
-		if (nodeClass != null) {
-			return nodeTag + "." + nodeClass;
-		}
-		return nodeTag;
-	}
 }

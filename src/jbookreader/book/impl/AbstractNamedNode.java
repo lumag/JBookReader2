@@ -21,4 +21,11 @@ public abstract class AbstractNamedNode extends AbstractNode {
 		this.nodeTag = nodeTag;
 	}
 
+	@Override
+	public String toString() {
+		if (nodeClass != null) {
+			return nodeTag + "." + nodeClass;
+		}
+		return nodeTag;
+	}
 }

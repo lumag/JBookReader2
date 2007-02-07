@@ -8,7 +8,8 @@ package jbookreader.book;
  *
  */
 public interface INodeVisitor {
-	boolean visitTextNode(ITextNode node);
-	boolean visitContainerNode(IContainerNode node);
-	boolean visitImageNode(IImageNode node);
+	void visitTextNode(ITextNode node);
+	void visitContainerNode(IContainerNode node);
+	void visitImageNode(IImageNode node);
+	void flush();
 }

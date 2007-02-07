@@ -21,17 +21,15 @@ public class ContainerNodeImpl extends AbstractNamedNode implements IContainerNo
 		this.children.add(node);
 	}
 
-	public boolean accept(INodeVisitor visitor) {
-		return visitor.visitContainerNode(this);
+	public void accept(INodeVisitor visitor) {
+		visitor.visitContainerNode(this);
 	}
 
 	public void visitChildren(INodeVisitor visitor) {
 		for (INode node: children) {
-			boolean stop = node.accept(visitor);
-			if (stop) {
-				return;
-			}
+			node.accept(visitor);
 		}
+		visitor.flush();
 	}
 
 	public boolean isEmpty() {

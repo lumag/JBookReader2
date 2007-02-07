@@ -16,6 +16,7 @@ import jbookreader.formatengine.IStyleStack;
 import jbookreader.rendering.IDrawable;
 import jbookreader.rendering.IFont;
 import jbookreader.rendering.IGraphicDriver;
+import jbookreader.style.Alignment;
 import jbookreader.style.Display;
 import jbookreader.style.FontStyle;
 
@@ -34,7 +35,10 @@ public class FormatEngine implements IFormatEngine {
 		private final List<IDrawable> result;
 		private final ICompositor compositor;
 		private final IStyleStack styleStack;
-
+		
+		private List<IDrawable> inline = null;
+		private Alignment textAlign = null;
+		
 		public BlockFormattingVisitor(IGraphicDriver driver, ICompositor compositor, List<IDrawable> result, IStyleStack styleStack) {
 			this.driver = driver;
 			this.compositor = compositor;
@@ -42,50 +46,56 @@ public class FormatEngine implements IFormatEngine {
 			this.styleStack = styleStack;
 		}
 
-		public boolean visitContainerNode(IContainerNode node) {
+		public void visitContainerNode(IContainerNode node) {
 			styleStack.push(node);
 			if (styleStack.getDisplay() == Display.INLINE) {
 				styleStack.pop();
-				formatInline(node.getParentNode());
-				return true;
+				formatInline(node);
+			} else {
+				flushInline();
+				node.visitChildren(this);
+				styleStack.pop();
 			}
-			node.visitChildren(this);
-			styleStack.pop();
-			return false;
 		}
 
-		public boolean visitTextNode(ITextNode node) {
-			formatInline(node.getParentNode());
-			return true;
+		public void visitTextNode(ITextNode node) {
+			formatInline(node);
 		}
 
 		private void formatInline(INode node) {
-			List<IDrawable> drawables = new ArrayList<IDrawable>();
+			if (inline == null) {
+				inline = new ArrayList<IDrawable>();
+				textAlign = styleStack.getTextAlign();
+			}
 
-			styleStack.pop();
-			
-			INodeVisitor visitor = new InlineFormattingVisitor(driver, drawables, styleStack);
+			INodeVisitor visitor = new InlineFormattingVisitor(driver, inline, styleStack);
 			node.accept(visitor);
-			
-			styleStack.push(node);
+		}
+		
+		private void flushInline() {
+			if (inline == null) {
+				return;
+			}
 
-			List<IDrawable> lines = compositor.compose(drawables, driver.getPaperWidth(),
-					styleStack.getTextAlign(), driver);
+			List<IDrawable> lines = compositor.compose(inline, driver.getPaperWidth(),
+					textAlign, driver);
 
 			result.addAll(lines);
-
+			inline = null;
+			textAlign = null;
 		}
 
-		public boolean visitImageNode(IImageNode node) {
-			styleStack.push(node);
-			if (styleStack.getDisplay() == Display.INLINE) {
-				styleStack.pop();
-				formatInline(node.getParentNode());
-				return true;
-			}
+		public void visitImageNode(IImageNode node) {
 			formatInline(node);
+			styleStack.push(node);
+			if (styleStack.getDisplay() != Display.INLINE) {
+				flushInline();
+			}
 			styleStack.pop();
-			return false;
+		}
+
+		public void flush() {
+			flushInline();
 		}
 
 	}
@@ -101,16 +111,20 @@ public class FormatEngine implements IFormatEngine {
 			this.styleStack = styleStack;
 		}
 
-		public boolean visitContainerNode(IContainerNode node) {
+		public void visitContainerNode(IContainerNode node) {
 			styleStack.push(node);
 			node.visitChildren(this);
 			styleStack.pop();
-			return false;
 		}
 
-		public boolean visitTextNode(ITextNode node) {
+		public void visitTextNode(ITextNode node) {
 			styleStack.push(node);
 
+			String text = node.getText();
+			if (text == null) {
+				styleStack.pop();
+				return;
+			}
 			// FIXME: better italic
 			IFont font = driver.getFont(
 					styleStack.getFirstFontFamily(),
@@ -118,11 +132,6 @@ public class FormatEngine implements IFormatEngine {
 					styleStack.getFontWeight() > 500,
 					styleStack.getFontStyle() != FontStyle.NORMAL);
 
-			String text = node.getText();
-			if (text == null) {
-				styleStack.pop();
-				return false;
-			}
 			char[] str = text.toCharArray();
 			int size = str.length;
 			for (int start = 0, end = start;
@@ -147,10 +156,9 @@ public class FormatEngine implements IFormatEngine {
 				}
 			}
 			styleStack.pop();
-			return false;
 		}
 
-		public boolean visitImageNode(IImageNode node) {
+		public void visitImageNode(IImageNode node) {
 			styleStack.push(node);
 			String href = node.getHRef();
 			if (href.length() >= 1 && href.charAt(0) == '#') {
@@ -158,8 +166,6 @@ public class FormatEngine implements IFormatEngine {
 				if (blob != null) {
 					try {
 						result.add(driver.renderImage(blob.getContentType(), blob.getDataStream()));
-						styleStack.pop();
-						return false;
 					} catch (UnsupportedOperationException e) {
 						System.err.println("Error: " + e.getMessage());
 					} catch (IOException e) {
@@ -171,7 +177,9 @@ public class FormatEngine implements IFormatEngine {
 			}
 
 			styleStack.pop();
-			return visitTextNode(node);
+		}
+
+		public void flush() {
 		}
 
 	}

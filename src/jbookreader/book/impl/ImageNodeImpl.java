@@ -7,8 +7,8 @@ public class ImageNodeImpl extends AbstractNamedNode implements IImageNode {
 	private String hRef;
 	private String text;
 
-	public boolean accept(INodeVisitor visitor) {
-		return visitor.visitImageNode(this);
+	public void accept(INodeVisitor visitor) {
+		visitor.visitImageNode(this);
 	}
 
 	public String getHRef() {

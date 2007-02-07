@@ -14,8 +14,8 @@ public class TextNodeImpl extends AbstractNode implements ITextNode {
 		this.text = text;
 	}
 
-	public boolean accept(INodeVisitor visitor) {
-		return visitor.visitTextNode(this);
+	public void accept(INodeVisitor visitor) {
+		visitor.visitTextNode(this);
 	}
 	
 	@Override

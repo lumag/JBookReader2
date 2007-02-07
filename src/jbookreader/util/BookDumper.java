@@ -8,7 +8,7 @@ import jbookreader.book.ITextNode;
 
 public class BookDumper implements INodeVisitor {
 
-	public boolean visitContainerNode(IContainerNode node) {
+	public void visitContainerNode(IContainerNode node) {
 		if (node.isEmpty()) {
 			System.out.print("<" + node.getNodeTag() + " />");
 		} else {
@@ -16,17 +16,18 @@ public class BookDumper implements INodeVisitor {
 			node.visitChildren(this);
 			System.out.print("</" + node.getNodeTag() + ">");
 		}
-		return false;
 	}
 
-	public boolean visitTextNode(ITextNode node) {
+	public void visitTextNode(ITextNode node) {
 		System.out.print(node.getText());
-		return false;
 	}
 
-	public boolean visitImageNode(IImageNode node) {
+	public void visitImageNode(IImageNode node) {
 		System.out.print("<image alt=\"" + node.getText() + "\" xlink:href=\"" + node.getHRef() + "\" />");
-		return false;
+	}
+
+	public void flush() {
+		// do nothing
 	}
 
 	

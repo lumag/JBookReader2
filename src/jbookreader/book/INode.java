@@ -6,9 +6,8 @@ public interface INode {
 	 * Each {@link INode} implementation should call corresponding
 	 * method from {@link INodeVisitor} interface.
 	 * @param visitor node traversing visitor
-	 * @return true if processing should be stopped.
 	 */
-	boolean accept(INodeVisitor visitor);
+	void accept(INodeVisitor visitor);
 	IContainerNode getParentNode();
 	IBook getBook();
 }

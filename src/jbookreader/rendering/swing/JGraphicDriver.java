@@ -220,7 +220,6 @@ public class JGraphicDriver extends JComponent implements IGraphicDriver, Scroll
 		if (formatStylesheet != null ) {
 			styleStack.addStylesheet(formatStylesheet);
 		}
-		// FIXME: try to remove this cast!
 		IStylesheet bookStylesheet = book.getStylesheet();
 		if (bookStylesheet != null) {
 			styleStack.addStylesheet(bookStylesheet);

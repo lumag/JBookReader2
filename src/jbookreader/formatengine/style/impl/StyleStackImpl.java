@@ -1,31 +1,55 @@
 package jbookreader.formatengine.style.impl;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 
 import jbookreader.book.INode;
-import jbookreader.book.INodeVisitor;
 import jbookreader.book.IStylesheet;
 import jbookreader.formatengine.IStyleStack;
 import jbookreader.style.Alignment;
 import jbookreader.style.Display;
 import jbookreader.style.FontStyle;
+import jbookreader.style.IStyleRule;
+import jbookreader.style.StyleAttribute;
 
 public class StyleStackImpl implements IStyleStack {
+	List<IStylesheet> stylesheets = new ArrayList<IStylesheet>();
 	List<StyleStackState> stateStack = new ArrayList<StyleStackState>();
 	StyleStackState currentState = new StyleStackState();
-	// FIXME
-	private final INodeVisitor visitor = new FB2StyleNodeVisitor(this); 
-	
+
 	public StyleStackImpl() {
 		stateStack.add(currentState);
 	}
 
+	public void addStylesheet(IStylesheet stylesheet) {
+		stylesheets.add(stylesheet);
+	}
+
 	public void push(INode node) {
-		currentState = currentState.clone();
+		Map<StyleAttribute, IStyleRule> rules =
+			new EnumMap<StyleAttribute, IStyleRule>(
+					StyleAttribute.class);
 		
-		node.accept(visitor);
+		for (IStylesheet stylesheet: stylesheets) {
+			for (IStyleRule rule:
+					stylesheet.getApplicableRules(node)) {
+				StyleAttribute attrib = rule.getAttribute();
+				long weight = rule.getWeight();
+				if (!rules.containsKey(attrib) ||
+					rules.get(attrib).getWeight() <= weight) {
+					rules.put(attrib, rule);
+				}
+			}
+		}
+		
+		System.out.println(node);
+		for (Map.Entry<StyleAttribute, IStyleRule> rule : rules.entrySet()) {
+			System.out.println(rule.getKey() + ": (" + rule.getValue().getValueType() + ") "+ rule.getValue().getValue(Object.class));
+		}
+		
+		currentState = new StyleStackState(currentState, rules);
 		
 		stateStack.add(currentState);
 	}
@@ -49,12 +73,12 @@ public class StyleStackImpl implements IStyleStack {
 		return currentState.textAlignment;
 	}
 
-	public List<String> getFontFamily() {
-		return Collections.unmodifiableList(currentState.fontFamily);
+	public String[] getFontFamily() {
+		return currentState.fontFamily;
 	}
 
 	public String getFirstFontFamily() {
-		return currentState.fontFamily.get(0);
+		return currentState.fontFamily[0];
 	}
 
 	public int getFontSize() {
@@ -67,12 +91,6 @@ public class StyleStackImpl implements IStyleStack {
 
 	public FontStyle getFontStyle() {
 		return currentState.fontStyle;
-	}
-
-	public void addStylesheet(IStylesheet stylesheet) {
-		System.out.println("add " + stylesheet);
-		// TODO Auto-generated method stub
-		
 	}
 
 }

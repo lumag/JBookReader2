@@ -24,7 +24,9 @@ public class CSSStylesheet implements IStylesheet {
 	}
 
 	public void add(IStyleSelector selector, List<IStyleRule> properties) {
-		rules.put(selector, properties);
+		if (!properties.isEmpty()) {
+			rules.put(selector, properties);
+		}
 	}
 
 }

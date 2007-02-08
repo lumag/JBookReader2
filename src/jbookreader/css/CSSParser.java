@@ -8,7 +8,6 @@ import lumag.util.ClassFactory;
 
 import org.w3c.css.sac.CSSException;
 import org.w3c.css.sac.ConditionFactory;
-import org.w3c.css.sac.DocumentHandler;
 import org.w3c.css.sac.InputSource;
 import org.w3c.css.sac.Parser;
 import org.w3c.css.sac.SelectorFactory;
@@ -26,7 +25,7 @@ public class CSSParser {
 	private static IStylesheet parse(InputSource source) throws CSSException, IOException {
 		Parser cssParser = ClassFactory.createClass(Parser.class,
 				"sac.parser");
-		DocumentHandler handler = new CSSHandler();
+		CSSHandler handler = new CSSHandler();
 		cssParser.setDocumentHandler(handler);
 		cssParser.setSelectorFactory(
                 ClassFactory.createClass(
@@ -36,11 +35,10 @@ public class CSSParser {
                 ClassFactory.createClass(
                                 ConditionFactory.class,
                                 "jbookreader.factory.sac.condition"));
-		cssParser.setDocumentHandler(new CSSHandler());
 		cssParser.setErrorHandler(new CSSErrorHandler());
 		
 		cssParser.parseStyleSheet(source);
 
-		return null;
+		return handler.getStylesheet();
 	}
 }

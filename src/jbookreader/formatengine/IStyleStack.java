@@ -1,7 +1,5 @@
 package jbookreader.formatengine;
 
-import java.util.List;
-
 import jbookreader.book.INode;
 import jbookreader.book.IStylesheet;
 import jbookreader.style.Alignment;
@@ -17,7 +15,7 @@ public interface IStyleStack {
 	Display getDisplay();
 	Alignment getTextAlign();
 	
-	List<String> getFontFamily();
+	String[] getFontFamily();
 	String getFirstFontFamily();
 	int getFontSize();
 	FontStyle getFontStyle();

@@ -6,6 +6,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import jbookreader.book.IStylesheet;
+import jbookreader.style.Alignment;
+import jbookreader.style.Display;
+import jbookreader.style.ERuleValueType;
+import jbookreader.style.FontStyle;
 import jbookreader.style.IStyleRule;
 import jbookreader.style.StyleAttribute;
 
@@ -46,23 +51,84 @@ class CSSHandler implements DocumentHandler {
 		}
 		ruleSets = null;
 	}
+	
+	private <T extends Enum<T>> ERuleValueType handleEnumValue(Class<T> en, LexicalUnit value, Object[] values) {
+		if (value.getLexicalUnitType() == LexicalUnit.SAC_INHERIT) {
+			values[0] = null;
+			return ERuleValueType.INHERIT;
+		}
+		if (value.getLexicalUnitType() != LexicalUnit.SAC_IDENT ||
+			value.getNextLexicalUnit() != null) {
+			throw new IllegalArgumentException("Bad value type: "
+							+ value.getLexicalUnitType() + " (" + value +")");
+		}
+		
+		String name = value.getStringValue().toUpperCase();
+
+		values[0] = Enum.valueOf(en, name);
+		return ERuleValueType.VALUE;
+	}
+
+	private ERuleValueType handleStringArray(LexicalUnit value, Object[] values) {
+		if (value.getLexicalUnitType() == LexicalUnit.SAC_INHERIT) {
+			values[0] = null;
+			return ERuleValueType.INHERIT;
+		}
+		List<String> strings = new ArrayList<String>();
+		for (LexicalUnit lex = value; lex != null; lex = lex.getNextLexicalUnit()) {
+//			System.err.println(lex.getLexicalUnitType() + " " + lex);
+			switch (lex.getLexicalUnitType()) {
+			case LexicalUnit.SAC_OPERATOR_COMMA:
+				// ignore
+				break;
+			case LexicalUnit.SAC_STRING_VALUE:
+			case LexicalUnit.SAC_IDENT:
+				strings.add(lex.getStringValue());
+				break;
+			default:
+				throw new IllegalArgumentException("Bad value type: "
+						+ value.getLexicalUnitType() + " (" + value +")");
+			}
+		}
+		values[0] = strings.toArray(new String[strings.size()]);
+		return ERuleValueType.STRING_ARRAY;
+	}
 
 	public void property(String name, LexicalUnit value, boolean important)
 	throws CSSException {
 		StyleAttribute attr;
+		ERuleValueType type;
+		// a pointer to the Object :)
+		Object[] values = new Object[1];
 
-		if (name == null) {
-			throw new CSSException("null property name");
-		} else if ("display".equals(name)) {
-			attr = StyleAttribute.DISPLAY; 
-		} else {
-//			throw new CSSException("property " + name + " not supported");
-			System.err.println("property " + name + " not supported");
-			return;
-		}
-
-		for (Entry<IStyleSelector, List<IStyleRule>> rules : ruleSets.entrySet()) {
-			rules.getValue().add(new StyleRuleImpl(attr, value.toString(), rules.getKey().getWeight()));
+		try {
+			if (name == null) {
+				throw new CSSException("null property name");
+			} else if ("display".equals(name)) {
+				attr = StyleAttribute.DISPLAY;
+				type = handleEnumValue(Display.class, value, values);
+			} else if ("font-style".equals(name)) {
+				attr = StyleAttribute.FONT_STYLE;
+				type = handleEnumValue(FontStyle.class, value, values);
+			} else if ("text-align".equals(name)) {
+				attr = StyleAttribute.TEXT_ALIGN;
+				type = handleEnumValue(Alignment.class, value, values);
+			} else if ("font-family".equals(name)) {
+				attr = StyleAttribute.FONT_FAMILY;
+				type = handleStringArray(value, values);
+			} else {
+	//			throw new CSSException("property " + name + " not supported");
+				System.err.println("property " + name + " not supported");
+				return;
+			}
+	
+			for (Entry<IStyleSelector, List<IStyleRule>> rules : ruleSets.entrySet()) {
+				rules.getValue().add(new StyleRuleImpl(attr, rules.getKey().getWeight(), type, values[0]));
+			}
+		} catch (IllegalArgumentException e){
+			System.err.println("Error during parsing property: \"" + name + ": " + value + "\"");
+			System.err.println("Caused by: ");
+			e.printStackTrace();
 		}
 	}
 
@@ -113,4 +179,7 @@ class CSSHandler implements DocumentHandler {
 		throw new CSSException("media not supported");
 	}
 
+	public IStylesheet getStylesheet() {
+		return stylesheet;
+	}
 }

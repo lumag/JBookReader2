@@ -20,7 +20,7 @@ class StyleStackState {
 	final FontStyle fontStyle;
 	
 	StyleStackState() {
-		display = Display.BLOCK;
+		display = Display.INLINE;
 		textAlignment = Alignment.JUSTIFY;
 		fontFamily = new String[]{"Serif"};
 		fontSize = 12;
@@ -32,9 +32,25 @@ class StyleStackState {
 		display = setEnumValue(Display.class, StyleAttribute.DISPLAY, rules, oldState.display);
 		textAlignment = setEnumValue(Alignment.class, StyleAttribute.TEXT_ALIGN, rules, oldState.textAlignment);
 		fontFamily = setStringArrayValue(StyleAttribute.FONT_FAMILY, rules, oldState.fontFamily);
-		fontSize = oldState.fontSize;
-		fontWeight = oldState.fontWeight;
+		fontSize = setSimpleValue(StyleAttribute.FONT_SIZE, rules, oldState.fontSize);
+		fontWeight = setSimpleValue(StyleAttribute.FONT_WEIGHT, rules, oldState.fontWeight);
 		fontStyle = setEnumValue(FontStyle.class, StyleAttribute.FONT_STYLE, rules, oldState.fontStyle);
+	}
+	
+	private <T> T setSimpleValue(StyleAttribute attribute, Map<StyleAttribute, IStyleRule> rules, T defValue) {
+		IStyleRule value = rules.get(attribute);
+
+		// FIXME: change to throw!
+		if (value == null) {
+			return defValue;
+		}
+		switch (value.getValueType()) {
+		case INHERIT:
+			return defValue;
+		default:
+			throw new IllegalArgumentException(
+					"Bad " + attribute + " value: " + value);
+		}
 	}
 	
 	private String[] setStringArrayValue(StyleAttribute attribute, Map<StyleAttribute, IStyleRule> rules, String[] defValue) {

@@ -12,11 +12,11 @@ description, stylesheet, binary {
 	display: none;
 }
 
-strong, emphasis, style,
+/*strong, emphasis, style,
 a, strikethrough,
 sub, sup, code {
 	display: inline;
-}
+}*/
 
 image {
 	display: block;
@@ -47,5 +47,5 @@ emphasis {
 }
 
 title {
-	font-family: "Comic Sans MS", "Helvetica", sans
+	font-family: "Comic Sans MS", "Helvetica", sans-serif
 }

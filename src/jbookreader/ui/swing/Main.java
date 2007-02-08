@@ -7,6 +7,8 @@ import javax.swing.SwingUtilities;
 
 import jbookreader.book.IBook;
 import jbookreader.book.IBookFactory;
+import jbookreader.book.IStylesheet;
+import jbookreader.css.CSSParser;
 import jbookreader.fileformats.IErrorHandler;
 import jbookreader.fileformats.IFileFormatDescriptor;
 import jbookreader.fileformats.impl.FileFormatsLibrary;
@@ -58,12 +60,14 @@ public class Main {
 						};
 
 						try {
+							final IStylesheet defaultStylesheet = CSSParser.parse("resources/css/default.css");
 							final IFileFormatDescriptor fileFormat = FileFormatsLibrary.getDescriptorForFile(filename);
 							final IBook book = fileFormat.parse(
 									filename, handler,
 									ClassFactory.createClass(IBookFactory.class, "jbookreader.factory.book"));
 							SwingUtilities.invokeAndWait(new Runnable() {
 								public void run() {
+									driver.setDefaultStylesheet(defaultStylesheet);
 									driver.setFormatStylesheet(fileFormat.getStylesheet());
 									driver.setBook(book);
 									

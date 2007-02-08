@@ -44,6 +44,7 @@ public class JGraphicDriver extends JComponent implements IGraphicDriver, Scroll
 
 	private Graphics2D paperGraphics;
 
+	private IStylesheet defaultStylesheet;
 	private IStylesheet formatStylesheet;
 	
 	static int pixelToDimension(float px) {
@@ -66,6 +67,10 @@ public class JGraphicDriver extends JComponent implements IGraphicDriver, Scroll
 		this.book = book;
 		lines = null;
 		clear();
+	}
+
+	public void setDefaultStylesheet(IStylesheet defaultStylesheet) {
+		this.defaultStylesheet = defaultStylesheet;
 	}
 
 	public void setFormatStylesheet(IStylesheet formatStylesheet) {
@@ -217,6 +222,9 @@ public class JGraphicDriver extends JComponent implements IGraphicDriver, Scroll
 		// FIXME: move to separate thread!
 		System.err.println("formatting");
 		IStyleStack styleStack = ClassFactory.createClass(IStyleStack.class, "jbookreader.stylestack");
+		if (defaultStylesheet != null ) {
+			styleStack.addStylesheet(defaultStylesheet);
+		}
 		if (formatStylesheet != null ) {
 			styleStack.addStylesheet(formatStylesheet);
 		}

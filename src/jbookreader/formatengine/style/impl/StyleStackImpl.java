@@ -77,10 +77,6 @@ public class StyleStackImpl implements IStyleStack {
 		return currentState.fontFamily;
 	}
 
-	public String getFirstFontFamily() {
-		return currentState.fontFamily[0];
-	}
-
 	public int getFontSize() {
 		return currentState.fontSize;
 	}

@@ -16,7 +16,6 @@ public interface IStyleStack {
 	Alignment getTextAlign();
 	
 	String[] getFontFamily();
-	String getFirstFontFamily();
 	int getFontSize();
 	FontStyle getFontStyle();
 	int getFontWeight();

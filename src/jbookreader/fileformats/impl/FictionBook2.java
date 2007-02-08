@@ -30,6 +30,8 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 class FictionBook2 implements IFileFormatDescriptor {
 	private static class FB2ContentsHandler extends DefaultHandler {
+		private static final Set<String> MIXED_NODES = new HashSet<String>();
+		
 		private final IBookFactory factory;
 		private final IBook book;
 		private IContainerNode containerNode;
@@ -38,8 +40,6 @@ class FictionBook2 implements IFileFormatDescriptor {
 		private final StringBuilder textAccumulator = new StringBuilder();
 		private boolean mixedNode;
 
-		private static final Set<String> MIXED_NODES = new HashSet<String>();
-		
 		static {
 			String[] mixedNodeTags = new String[]{
 					"a",

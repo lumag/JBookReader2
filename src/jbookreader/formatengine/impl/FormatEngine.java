@@ -153,7 +153,7 @@ public class FormatEngine implements IFormatEngine {
 			}
 			// FIXME: better italic
 			IFont font = driver.getFont(
-					styleStack.getFirstFontFamily(),
+					styleStack.getFontFamily()[0],
 					styleStack.getFontSize(),
 					styleStack.getFontWeight() > 500,
 					styleStack.getFontStyle() != FontStyle.NORMAL);

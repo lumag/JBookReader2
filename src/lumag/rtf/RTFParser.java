@@ -66,6 +66,8 @@ public class RTFParser {
 				System.err.println("Ignored unsupported control: " + ctrl);
 			}
 		}
+
+		state = State.TEXT;
 	}
 
 	public void process(byte[] bytes, int offset, int length) {
@@ -160,7 +162,6 @@ public class RTFParser {
 			state = State.TEXT;
 		} else {
 			processControlWord(String.valueOf((char) b), false, 1);
-			state = State.TEXT;
 		}
 	}
 
@@ -177,7 +178,6 @@ public class RTFParser {
 			builder.setLength(0);
 			processControlWord(currentControl, false, 1);
 			currentControl = null;
-			state = State.TEXT;
 			if (!Character.isWhitespace(b)) {
 				processStateText(b);
 			}
@@ -202,7 +202,6 @@ public class RTFParser {
 				builder.setLength(0);
 				processControlWord(currentControl, true, parameterValue);
 				currentControl = null;
-				state = State.TEXT;
 				if (!Character.isWhitespace(b)) {
 					processStateText(b);
 				}

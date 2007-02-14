@@ -2,6 +2,8 @@ JBookReader2-*.jar
 TEST*.xml
 bin
 docs/report
+reports
+tests/temp
 src/jbookreader/fileformats/impl/FileFormatsLibrary.java
 src/jbookreader/fileformats/impl/RichTextFormat.java
 src/jbookreader/fileformats/impl/UnknownFormatException.java

@@ -1,11 +1,15 @@
 package jbookreader.fileformats.impl;
 
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.zip.ZipInputStream;
 
 import jbookreader.book.IBinaryBlob;
 import jbookreader.book.IBook;
@@ -170,13 +174,34 @@ class FictionBook2 implements IFileFormatDescriptor {
 	FictionBook2() {
 		extensions = new ArrayList<String>();
 		extensions.add(".fb2");
-// FIXME: support zipped fb2
-//		extensions.add(".fb2.zip");
-//		extensions.add(".fbz");
+		extensions.add(".fb2.zip");
+		extensions.add(".fbz");
+	}
+	
+	private InputStream constructInputStream(InputStream ins) throws IOException {
+		InputStream stream;
+		if (ins.markSupported()) {
+			stream = ins;
+		} else {
+			stream = new BufferedInputStream(ins);
+		}
+		stream.mark(2);
+		byte[] header = new byte[2];
+		stream.read(header);
+		stream.reset();
+		if (header[0] == 'P' && header[1] == 'K') {
+			ZipInputStream zip = new ZipInputStream(stream);
+			zip.getNextEntry();
+			return zip;
+		}
+		return stream;
 	}
 
 	public IBook parse(String uri, IErrorHandler handler, IBookFactory factory) throws SAXException, IOException {
-		return parse(new InputSource(uri), handler, factory);
+		InputSource source = new InputSource();
+		source.setByteStream(constructInputStream(new BufferedInputStream(new FileInputStream(uri))));
+		source.setSystemId(uri);
+		return parse(source, handler, factory);
 	}
 
 	private IBook parse(InputSource source, IErrorHandler handler, IBookFactory factory) throws SAXException, IOException {

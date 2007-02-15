@@ -120,7 +120,7 @@ public class SimpleCompositor implements ICompositor {
 			}
 		}
 		break;
-		default: throw new RuntimeException("Unsupported alignment type: " + alignment);
+		default: throw new InternalError("Unhandled alignment type: " + alignment);
 		}
 		return hbox;
 	}

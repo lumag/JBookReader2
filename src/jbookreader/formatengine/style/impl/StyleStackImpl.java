@@ -14,6 +14,8 @@ import jbookreader.style.FontStyle;
 import jbookreader.style.IStyleRule;
 import jbookreader.style.StyleAttribute;
 
+import static jbookreader.style.StyleAttribute.*;
+
 public class StyleStackImpl implements IStyleStack {
 	List<IStylesheet> stylesheets = new ArrayList<IStylesheet>();
 	List<StyleStackState> stateStack = new ArrayList<StyleStackState>();
@@ -66,27 +68,27 @@ public class StyleStackImpl implements IStyleStack {
 	}
 
 	public Display getDisplay() {
-		return currentState.display;
+		return currentState.getAttributeValue(DISPLAY, Display.class);
 	}
 
 	public Alignment getTextAlign() {
-		return currentState.textAlignment;
+		return currentState.getAttributeValue(TEXT_ALIGN, Alignment.class);
 	}
 
 	public String[] getFontFamily() {
-		return currentState.fontFamily;
+		return currentState.getAttributeValue(FONT_FAMILY, String[].class);
 	}
 
 	public int getFontSize() {
-		return currentState.fontSize;
+		return currentState.getAttributeValue(FONT_SIZE, Integer.class);
 	}
 
 	public int getFontWeight() {
-		return currentState.fontWeight;
+		return currentState.getAttributeValue(FONT_WEIGHT, Integer.class);
 	}
 
 	public FontStyle getFontStyle() {
-		return currentState.fontStyle;
+		return currentState.getAttributeValue(FONT_STYLE, FontStyle.class);
 	}
 
 }

@@ -11,6 +11,7 @@ import jbookreader.style.Alignment;
 import jbookreader.style.Display;
 import jbookreader.style.ERuleValueType;
 import jbookreader.style.FontStyle;
+import jbookreader.style.FontWeight;
 import jbookreader.style.IStyleRule;
 import jbookreader.style.StyleAttribute;
 
@@ -94,6 +95,15 @@ class CSSHandler implements DocumentHandler {
 		return ERuleValueType.STRING_ARRAY;
 	}
 
+	private ERuleValueType handleFontWeight(LexicalUnit value, Object[] values) {
+		if (value.getLexicalUnitType() == LexicalUnit.SAC_INTEGER) {
+			values[0] = value.getIntegerValue();
+			return ERuleValueType.INTEGER;
+		}
+		
+		return handleEnumValue(FontWeight.class, value, values);
+	}
+
 	public void property(String name, LexicalUnit value, boolean important)
 	throws CSSException {
 		StyleAttribute attr;
@@ -116,6 +126,9 @@ class CSSHandler implements DocumentHandler {
 			} else if ("font-family".equals(name)) {
 				attr = StyleAttribute.FONT_FAMILY;
 				type = handleStringArray(value, values);
+			} else if ("font-weight".equals(name)) {
+				attr = StyleAttribute.FONT_WEIGHT;
+				type = handleFontWeight(value, values);
 			} else {
 	//			throw new CSSException("property " + name + " not supported");
 				System.err.println("property " + name + " not supported");

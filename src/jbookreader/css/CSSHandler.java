@@ -1,17 +1,14 @@
 package jbookreader.css;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import jbookreader.book.IStylesheet;
-import jbookreader.style.Alignment;
-import jbookreader.style.Display;
 import jbookreader.style.ERuleValueType;
-import jbookreader.style.FontStyle;
-import jbookreader.style.FontWeight;
 import jbookreader.style.IStyleRule;
 import jbookreader.style.StyleAttribute;
 
@@ -25,6 +22,15 @@ import org.w3c.css.sac.SelectorList;
 class CSSHandler implements DocumentHandler {
 	private CSSStylesheet stylesheet = new CSSStylesheet();
 	private Map<IStyleSelector, List<IStyleRule>> ruleSets;
+	private static Map<String, IRuleHandler> handlers = new HashMap<String, IRuleHandler>();
+	
+	static {
+		handlers.put("display", new EnumHandler(StyleAttribute.DISPLAY));
+		handlers.put("font-style", new EnumHandler(StyleAttribute.FONT_STYLE));
+		handlers.put("font-family", new StringArrayHandler(StyleAttribute.FONT_FAMILY));
+		handlers.put("text-align", new EnumHandler(StyleAttribute.TEXT_ALIGN));
+		handlers.put("font-weight", new FontWeightHandler());
+	}
 
 	public void comment(String text) throws CSSException {
 //		System.out.println("/* " + text + "*/");
@@ -52,96 +58,31 @@ class CSSHandler implements DocumentHandler {
 		}
 		ruleSets = null;
 	}
-	
-	private <T extends Enum<T>> ERuleValueType handleEnumValue(Class<T> en, LexicalUnit value, Object[] values) {
-		if (value.getLexicalUnitType() == LexicalUnit.SAC_INHERIT) {
-			values[0] = null;
-			return ERuleValueType.INHERIT;
-		}
-		if (value.getLexicalUnitType() != LexicalUnit.SAC_IDENT ||
-			value.getNextLexicalUnit() != null) {
-			throw new IllegalArgumentException("Bad value type: "
-							+ value.getLexicalUnitType() + " (" + value +")");
-		}
-		
-		String name = value.getStringValue().toUpperCase();
-
-		values[0] = Enum.valueOf(en, name);
-		return ERuleValueType.VALUE;
-	}
-
-	private ERuleValueType handleStringArray(LexicalUnit value, Object[] values) {
-		if (value.getLexicalUnitType() == LexicalUnit.SAC_INHERIT) {
-			values[0] = null;
-			return ERuleValueType.INHERIT;
-		}
-		List<String> strings = new ArrayList<String>();
-		for (LexicalUnit lex = value; lex != null; lex = lex.getNextLexicalUnit()) {
-//			System.err.println(lex.getLexicalUnitType() + " " + lex);
-			switch (lex.getLexicalUnitType()) {
-			case LexicalUnit.SAC_OPERATOR_COMMA:
-				// ignore
-				break;
-			case LexicalUnit.SAC_STRING_VALUE:
-			case LexicalUnit.SAC_IDENT:
-				strings.add(lex.getStringValue());
-				break;
-			default:
-				throw new IllegalArgumentException("Bad value type: "
-						+ value.getLexicalUnitType() + " (" + value +")");
-			}
-		}
-		values[0] = strings.toArray(new String[strings.size()]);
-		return ERuleValueType.STRING_ARRAY;
-	}
-
-	private ERuleValueType handleFontWeight(LexicalUnit value, Object[] values) {
-		if (value.getLexicalUnitType() == LexicalUnit.SAC_INTEGER) {
-			values[0] = value.getIntegerValue();
-			return ERuleValueType.INTEGER;
-		}
-		
-		return handleEnumValue(FontWeight.class, value, values);
-	}
 
 	public void property(String name, LexicalUnit value, boolean important)
 	throws CSSException {
-		StyleAttribute attr;
-		ERuleValueType type;
-		// a pointer to the Object :)
-		Object[] values = new Object[1];
-
 		try {
+			IRuleHandler handler;
 			if (name == null) {
 				throw new CSSException("null property name");
-			} else if ("display".equals(name)) {
-				attr = StyleAttribute.DISPLAY;
-				type = handleEnumValue(Display.class, value, values);
-			} else if ("font-style".equals(name)) {
-				attr = StyleAttribute.FONT_STYLE;
-				type = handleEnumValue(FontStyle.class, value, values);
-			} else if ("text-align".equals(name)) {
-				attr = StyleAttribute.TEXT_ALIGN;
-				type = handleEnumValue(Alignment.class, value, values);
-			} else if ("font-family".equals(name)) {
-				attr = StyleAttribute.FONT_FAMILY;
-				type = handleStringArray(value, values);
-			} else if ("font-weight".equals(name)) {
-				attr = StyleAttribute.FONT_WEIGHT;
-				type = handleFontWeight(value, values);
-			} else {
-	//			throw new CSSException("property " + name + " not supported");
+			}
+			handler = handlers.get(name);
+			if (handler == null) {
+				// throw new CSSException("property " + name + " not supported");
 				System.err.println("property " + name + " not supported");
 				return;
 			}
-	
-			for (Entry<IStyleSelector, List<IStyleRule>> rules : ruleSets.entrySet()) {
-				rules.getValue().add(new StyleRuleImpl(attr, rules.getKey().getWeight(), type, values[0]));
-			}
+			handler.handle(this, value);
 		} catch (IllegalArgumentException e){
 			System.err.println("Error during parsing property: \"" + name + ": " + value + "\"");
 			System.err.println("Caused by: ");
 			e.printStackTrace();
+		}
+	}
+
+	public void addRule(StyleAttribute attr, ERuleValueType type, Object value) {
+		for (Entry<IStyleSelector, List<IStyleRule>> rules : ruleSets.entrySet()) {
+			rules.getValue().add(new StyleRuleImpl(attr, rules.getKey().getWeight(), type, value));
 		}
 	}
 

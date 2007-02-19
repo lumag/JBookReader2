@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 import java.util.zip.ZipInputStream;
 
@@ -17,12 +19,13 @@ import jbookreader.book.IBookFactory;
 import jbookreader.book.IContainerNode;
 import jbookreader.book.IImageNode;
 import jbookreader.book.INamedNode;
+import jbookreader.book.INode;
 import jbookreader.book.IStylesheet;
 import jbookreader.book.ITextNode;
 import jbookreader.css.CSSParser;
-import jbookreader.css.CSSStylesheet;
 import jbookreader.fileformats.IErrorHandler;
 import jbookreader.fileformats.IFileFormatDescriptor;
+import jbookreader.style.IStyleRule;
 import lumag.util.Base64;
 
 import org.xml.sax.Attributes;
@@ -232,7 +235,12 @@ class FictionBook2 implements IFileFormatDescriptor {
 			}
 		}
 		if (stylesheet == null) {
-			return new CSSStylesheet();
+			return new IStylesheet() {
+				private List<IStyleRule> list = new LinkedList<IStyleRule>();
+				public List<IStyleRule> getApplicableRules(INode node) {
+					return Collections.unmodifiableList(list);
+				}
+			};
 		}
 		return stylesheet;
 	}

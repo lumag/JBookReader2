@@ -2,7 +2,7 @@ package jbookreader.css.selectors;
 
 import jbookreader.book.INamedNode;
 import jbookreader.book.INode;
-import jbookreader.css.CSS;
+import jbookreader.css.CSSParser;
 import jbookreader.css.IStyleSelector;
 
 import org.w3c.css.sac.ElementSelector;
@@ -44,6 +44,6 @@ public class ElementSelectorImpl implements ElementSelector,
 	}
 
 	public long getWeight() {
-		return CSS.getWeight(0,0,0,1);
+		return CSSParser.getWeight(0,0,0,1);
 	}
 }

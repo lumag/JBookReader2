@@ -1,7 +1,7 @@
 package jbookreader.css.conditions;
 
 import jbookreader.book.INode;
-import jbookreader.css.CSS;
+import jbookreader.css.CSSParser;
 import jbookreader.css.IStyleSelector;
 
 import org.w3c.css.sac.AttributeCondition;
@@ -47,7 +47,7 @@ class AttributeConditionImpl implements AttributeCondition,
 	}
 
 	public long getWeight() {
-		return CSS.getWeight(0, 0, 1, 0);
+		return CSSParser.getWeight(0, 0, 1, 0);
 	}
 
 }

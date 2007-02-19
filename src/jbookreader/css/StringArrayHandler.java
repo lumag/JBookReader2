@@ -8,7 +8,7 @@ import jbookreader.style.StyleAttribute;
 
 import org.w3c.css.sac.LexicalUnit;
 
-public class StringArrayHandler implements IRuleHandler {
+class StringArrayHandler implements IRuleHandler {
 
 	private final StyleAttribute attribute;
 

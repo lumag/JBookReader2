@@ -6,18 +6,22 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import jbookreader.book.IBook;
 import jbookreader.book.IBookFactory;
 import jbookreader.book.IContainerNode;
+import jbookreader.book.INode;
 import jbookreader.book.IStylesheet;
 import jbookreader.book.ITextNode;
 import jbookreader.css.CSSParser;
-import jbookreader.css.CSSStylesheet;
 import jbookreader.fileformats.IErrorHandler;
 import jbookreader.fileformats.IFileFormatDescriptor;
+import jbookreader.style.IStyleRule;
 import lumag.rtf.IRTFContentHandler;
 import lumag.rtf.RTFParser;
 
@@ -235,7 +239,12 @@ class RichTextFormat implements IFileFormatDescriptor {
 			}
 		}
 		if (stylesheet == null) {
-			return new CSSStylesheet();
+			return new IStylesheet() {
+				private List<IStyleRule> list = new LinkedList<IStyleRule>();
+				public List<IStyleRule> getApplicableRules(INode node) {
+					return Collections.unmodifiableList(list);
+				}
+			};
 		}
 		return stylesheet;
 	}

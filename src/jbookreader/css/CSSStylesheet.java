@@ -9,7 +9,7 @@ import jbookreader.book.INode;
 import jbookreader.book.IStylesheet;
 import jbookreader.style.IStyleRule;
 
-public class CSSStylesheet implements IStylesheet {
+class CSSStylesheet implements IStylesheet {
 	Map<IStyleSelector, List<IStyleRule>> rules =
 		new LinkedHashMap<IStyleSelector, List<IStyleRule>>();
 

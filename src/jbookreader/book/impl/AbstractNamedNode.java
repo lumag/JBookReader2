@@ -1,9 +1,11 @@
 package jbookreader.book.impl;
 
-public abstract class AbstractNamedNode extends AbstractNode {
+import jbookreader.book.INamedNode;
 
-	protected String nodeClass;
-	protected String nodeTag;
+abstract class AbstractNamedNode extends AbstractNode implements INamedNode {
+
+	private String nodeClass;
+	private String nodeTag;
 
 	public String getNodeClass() {
 		return nodeClass;

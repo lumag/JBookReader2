@@ -4,8 +4,7 @@ import jbookreader.style.FontWeight;
 import jbookreader.style.IStyleRule;
 import jbookreader.style.StyleAttribute;
 
-
-public class FontWeightValueComputer extends IntegerValueComputer {
+class FontWeightValueComputer extends IntegerValueComputer {
 
 	@Override
 	protected Object handleEnumValue(StyleAttribute attribute, IStyleRule rule, StyleStackState oldState) {

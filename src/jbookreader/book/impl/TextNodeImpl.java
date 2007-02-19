@@ -3,7 +3,7 @@ package jbookreader.book.impl;
 import jbookreader.book.INodeVisitor;
 import jbookreader.book.ITextNode;
 
-public class TextNodeImpl extends AbstractNode implements ITextNode {
+class TextNodeImpl extends AbstractNode implements ITextNode {
 	private String text;
 
 	public String getText() {

@@ -8,7 +8,7 @@ import jbookreader.book.INodeVisitor;
 import lumag.util.OrderedSet;
 
 
-public class ContainerNodeImpl extends AbstractNamedNode implements IContainerNode {
+class ContainerNodeImpl extends AbstractNamedNode implements IContainerNode {
 	private OrderedSet<INode> children = new OrderedSet<INode>();
 
 	public void add(INode node) {

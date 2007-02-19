@@ -5,7 +5,9 @@ import java.util.Collection;
 import java.util.Collections;
 
 import jbookreader.fileformats.IFileFormatDescriptor;
+import jbookreader.fileformats.UnknownFormatException;
 
+//FIXME: rework to remove public class from .impl package!
 public class FileFormatsLibrary {
 	private static final Collection<IFileFormatDescriptor> FILE_FORMATS = new ArrayList<IFileFormatDescriptor>();
 	

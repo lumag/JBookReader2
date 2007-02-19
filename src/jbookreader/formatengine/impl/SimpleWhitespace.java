@@ -4,7 +4,7 @@ import jbookreader.rendering.IDrawable;
 import jbookreader.rendering.IGraphicDriver;
 import jbookreader.rendering.Position;
 
-public class SimpleWhitespace implements IDrawable {
+class SimpleWhitespace implements IDrawable {
 	private final IGraphicDriver driver;
 	private final int space;
 

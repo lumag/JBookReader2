@@ -7,13 +7,13 @@ import org.w3c.css.sac.DescendantSelector;
 import org.w3c.css.sac.Selector;
 import org.w3c.css.sac.SimpleSelector;
 
-public class DescendantSelectorImpl implements DescendantSelector,
+class DescendantSelectorImpl implements DescendantSelector,
 		IStyleSelector {
 
 	private final Selector parent;
 	private final SimpleSelector descendant;
 
-	public DescendantSelectorImpl(Selector parent, SimpleSelector descendant) {
+	DescendantSelectorImpl(Selector parent, SimpleSelector descendant) {
 		this.parent = parent;
 		this.descendant = descendant;
 	}

@@ -3,7 +3,7 @@ package jbookreader.book.impl;
 import jbookreader.book.IImageNode;
 import jbookreader.book.INodeVisitor;
 
-public class ImageNodeImpl extends AbstractNamedNode implements IImageNode {
+class ImageNodeImpl extends AbstractNamedNode implements IImageNode {
 	private String hRef;
 	private String text;
 

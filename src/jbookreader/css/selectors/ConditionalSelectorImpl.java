@@ -7,13 +7,13 @@ import org.w3c.css.sac.Condition;
 import org.w3c.css.sac.ConditionalSelector;
 import org.w3c.css.sac.SimpleSelector;
 
-public class ConditionalSelectorImpl implements ConditionalSelector,
+class ConditionalSelectorImpl implements ConditionalSelector,
 		IStyleSelector {
 
 	private final SimpleSelector selector;
 	private final Condition condition;
 
-	public ConditionalSelectorImpl(SimpleSelector selector, Condition condition) {
+	ConditionalSelectorImpl(SimpleSelector selector, Condition condition) {
 		this.selector = selector;
 		this.condition = condition;
 	}

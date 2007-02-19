@@ -7,13 +7,13 @@ import jbookreader.css.IStyleSelector;
 
 import org.w3c.css.sac.ElementSelector;
 
-public class ElementSelectorImpl implements ElementSelector,
+class ElementSelectorImpl implements ElementSelector,
 		IStyleSelector {
 
 	private final String namespaceURI;
 	private final String name;
 
-	public ElementSelectorImpl(String namespaceURI, String tagName) {
+	ElementSelectorImpl(String namespaceURI, String tagName) {
 		this.namespaceURI = namespaceURI;
 		this.name = tagName;
 	}

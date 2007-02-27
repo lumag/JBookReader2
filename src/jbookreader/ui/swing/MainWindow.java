@@ -34,6 +34,7 @@ class MainWindow extends JFrame {
 		display.setBorder(BorderFactory.createEmptyBorder(
 				BORDER_WIDTH, BORDER_WIDTH,
 				BORDER_WIDTH, BORDER_WIDTH));
+//		display.setBorder(BorderFactory.createLineBorder(java.awt.Color.RED, BORDER_WIDTH));
 		JScrollPane pane = new JScrollPane(display,
 				ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
 				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);

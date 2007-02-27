@@ -15,6 +15,7 @@ import java.util.List;
 import javax.swing.JComponent;
 import javax.swing.Scrollable;
 import javax.swing.SwingConstants;
+import javax.swing.border.Border;
 
 import jbookreader.book.IBook;
 import jbookreader.book.IStylesheet;
@@ -134,6 +135,14 @@ public class JGraphicDriver extends JComponent implements IGraphicDriver, Scroll
 	/*
 	 * Swing methods
 	 */
+    @Override
+	protected void paintBorder(Graphics g) {
+		Rectangle rectangle = getVisibleRect();
+        Border border = getBorder();
+        if (border != null) {
+            border.paintBorder(this, g, rectangle.x, rectangle.y, rectangle.width, rectangle.height);
+        }
+    }
 	@Override
 	protected void paintComponent(Graphics g) {
 		System.err.println("REPAINT " + getWidth() + "x" + getHeight());
@@ -151,7 +160,13 @@ public class JGraphicDriver extends JComponent implements IGraphicDriver, Scroll
 		int h = getHeight() - insets.top - insets.bottom;
 		System.out.println(w + "x" + h);
 	
+		Rectangle visible = getVisibleRect();
 		paperGraphics = (Graphics2D) g.create(insets.left, insets.top, w, h);
+		paperGraphics.setClip(
+				visible.x,
+				visible.y,
+				visible.width - insets.top - insets.right,
+				visible.height - insets.top - insets.bottom);
 		paperGraphics.setBackground(getBackground());
 		paperGraphics.setColor(Color.BLACK);
 
@@ -162,8 +177,6 @@ public class JGraphicDriver extends JComponent implements IGraphicDriver, Scroll
                 RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
 		fontRC = paperGraphics.getFontRenderContext();
-		if (lines != null)
-			System.out.println(getPaperWidth() + " " +  lines.get(0).getWidth(Position.MIDDLE) + " " + (getPaperWidth() - lines.get(0).getWidth(Position.MIDDLE)));
 
 		if (lines == null || lines.isEmpty()
 				|| getPaperWidth() != lines.get(0).getWidth(Position.MIDDLE)
@@ -171,12 +184,13 @@ public class JGraphicDriver extends JComponent implements IGraphicDriver, Scroll
 
 			reformatBook();
 
-			int height = 0;
+			float height = 0;
 			for (IDrawable dr: lines) {
 				// FIXME: correct inter-line value!
 				height += dr.getHeight() + dr.getDepth();
 			}
 
+			System.out.println(height + insets.top + insets.bottom);
 			setPreferredSize(new Dimension(getWidth(), Math.round(
 					height + insets.top + insets.bottom)));
 			revalidate();
@@ -188,9 +202,11 @@ public class JGraphicDriver extends JComponent implements IGraphicDriver, Scroll
 			if (rectangle != null) {
 				hmin = rectangle.y;
 				hmax = rectangle.y + rectangle.height;
+				
 			}
 			System.out.print("rendering from " + hmin + " to " + hmax + "... ");
 			horizontalPosition = verticalPosition = 0;
+			long before = System.nanoTime();
 			for (IDrawable dr: lines) {
 				if (verticalPosition + dr.getHeight() > hmin) {
 					dr.draw(Position.MIDDLE);
@@ -202,7 +218,8 @@ public class JGraphicDriver extends JComponent implements IGraphicDriver, Scroll
 					break;
 				}
 			}
-			System.out.println("done");
+			long after = System.nanoTime();
+			System.err.println("done " + (after - before)/1000000 + "ms");
 			
 		}
 
@@ -241,7 +258,6 @@ public class JGraphicDriver extends JComponent implements IGraphicDriver, Scroll
 				h -= dr.getHeight() + dr.getDepth();
 				float move = - h;
 				if (move > 1) {
-					System.out.println("move " + move);
 					return Math.round(move);
 				}
 			}
@@ -252,7 +268,6 @@ public class JGraphicDriver extends JComponent implements IGraphicDriver, Scroll
 					h -= dr.getHeight() + dr.getDepth();
 				} else {
 					float move = h; 
-					System.out.println("move " + move);
 					return Math.round(move);
 				}
 			}

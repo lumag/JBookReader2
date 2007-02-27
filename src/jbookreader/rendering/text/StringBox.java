@@ -22,15 +22,15 @@ class StringBox implements IDrawable {
 		this.renderer.append(string);
 	}
 
-	public int getDepth() {
+	public float getDepth() {
 		return 0;
 	}
 
-	public int getHeight() {
+	public float getHeight() {
 		return 1;
 	}
 
-	public int getWidth(Position position) {
+	public float getWidth(Position position) {
 		return string.length();
 	}
 

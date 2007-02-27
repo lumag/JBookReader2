@@ -11,9 +11,9 @@ package jbookreader.rendering;
  *
  */
 public interface IDrawable {
-	int getWidth(Position position);
-	int getHeight();
-	int getDepth();
+	float getWidth(Position position);
+	float getHeight();
+	float getDepth();
 	
 	void draw(Position position);
 }

@@ -46,10 +46,10 @@ public class StyleStackImpl implements IStyleStack {
 			}
 		}
 		
-		System.out.println(node);
-		for (Map.Entry<StyleAttribute, IStyleRule> rule : rules.entrySet()) {
-			System.out.println(rule.getKey() + ": (" + rule.getValue().getValueType() + ") "+ rule.getValue().getValue(Object.class));
-		}
+//		System.out.println(node);
+//		for (Map.Entry<StyleAttribute, IStyleRule> rule : rules.entrySet()) {
+//			System.out.println(rule.getKey() + ": (" + rule.getValue().getValueType() + ") "+ rule.getValue().getValue(Object.class));
+//		}
 		
 		currentState = new StyleStackState(currentState, rules);
 		

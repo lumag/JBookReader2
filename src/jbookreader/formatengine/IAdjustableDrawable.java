@@ -5,10 +5,10 @@ import jbookreader.rendering.Position;
 
 public interface IAdjustableDrawable extends IDrawable {
 
-	int getShrink(Position position);
+	float getShrink(Position position);
 
-	int getStretch(Position position);
+	float getStretch(Position position);
 
-	void adjust(int adjust);
+	void adjust(float adjust);
 
 }

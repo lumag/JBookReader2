@@ -12,9 +12,9 @@ final class SimpleSwingString implements IDrawable {
 	private final JGraphicDriver driver;
 	private final String string;
 	private final AWTFontAdapter font;
-	private int height;
-	private int depth;
-	private int width;
+	private float height;
+	private float depth;
+	private float width;
 
 	SimpleSwingString(JGraphicDriver driver, String string, AWTFontAdapter font) {
 		this.driver = driver;
@@ -24,16 +24,16 @@ final class SimpleSwingString implements IDrawable {
 		LineMetrics metrics = font.getFont().getLineMetrics(string, driver.getFontRC());
 		Rectangle2D bounds = font.getFont().getStringBounds(string, driver.getFontRC());
 //		System.out.println(bounds);
-		height = JGraphicDriver.pixelToDimension(metrics.getAscent());
-		depth = JGraphicDriver.pixelToDimension(metrics.getDescent());
+		height = metrics.getAscent();
+		depth = metrics.getDescent();
 
 		// There are some problems if we use bounds for height/depth:
 		//     if the first char is some type of long dash \u2013, then we get incorrect
 		//     measurements (the base line is shifted)
-//		height = JGraphicDriver.pixelToDimension((float) bounds.getHeight());
-//		depth = JGraphicDriver.pixelToDimension((float) (bounds.getHeight() + bounds.getY()));
+//		height = (float) bounds.getHeight();
+//		depth = (float) (bounds.getHeight() + bounds.getY());
 
-		width = JGraphicDriver.pixelToDimension((float) bounds.getWidth());
+		width = (float) bounds.getWidth();
 	}
 
 	public void draw(Position position) {
@@ -43,21 +43,21 @@ final class SimpleSwingString implements IDrawable {
 		}
 //		System.out.println(width + " x " + height + " + " + depth);
 		graphics.drawString(string,
-				(int) JGraphicDriver.dimensionToPixel(this.driver.horizontalPosition),
-				(int) JGraphicDriver.dimensionToPixel(this.driver.verticalPosition + height));
+				this.driver.horizontalPosition,
+				this.driver.verticalPosition + height);
 
 		this.driver.horizontalPosition += width;
 	}
 
-	public int getDepth() {
+	public float getDepth() {
 		return depth;
 	}
 
-	public int getHeight() {
+	public float getHeight() {
 		return height;
 	}
 
-	public int getWidth(Position position) {
+	public float getWidth(Position position) {
 		return width;
 	}
 

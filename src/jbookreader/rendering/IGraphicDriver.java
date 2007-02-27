@@ -15,11 +15,11 @@ public interface IGraphicDriver {
 	// drawing methods
 	void clear();
 
-	void addHorizontalSpace(int amount);
-	void addVerticalSpace(int amount);
+	void addHorizontalSpace(float amount);
+	void addVerticalSpace(float amount);
 
-	int getHorizontalPosition();
-	int getVerticalPosition();
+	float getHorizontalPosition();
+	float getVerticalPosition();
 
 	int getPaperWidth();
 	int getPaperHeight();

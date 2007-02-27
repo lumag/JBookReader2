@@ -6,9 +6,9 @@ import jbookreader.rendering.Position;
 
 class SimpleWhitespace implements IDrawable {
 	private final IGraphicDriver driver;
-	private final int space;
+	private final float space;
 
-	SimpleWhitespace(final IGraphicDriver driver, final int space) {
+	SimpleWhitespace(final IGraphicDriver driver, final float space) {
 		this.driver = driver;
 		this.space = space;
 	}
@@ -17,15 +17,15 @@ class SimpleWhitespace implements IDrawable {
 		driver.addHorizontalSpace(space);
 	}
 
-	public int getDepth() {
+	public float getDepth() {
 		return 0;
 	}
 
-	public int getHeight() {
+	public float getHeight() {
 		return 0;
 	}
 
-	public int getWidth(Position position) {
+	public float getWidth(Position position) {
 		return space;
 	}
 

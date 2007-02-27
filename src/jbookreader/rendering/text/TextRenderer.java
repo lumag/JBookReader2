@@ -10,14 +10,14 @@ public class TextRenderer implements IGraphicDriver {
 	private static final int WIDTH = 80; 
 	private int xPosition;
 	private int yPosition;
-	public void addHorizontalSpace(int amount) {
+	public void addHorizontalSpace(float amount) {
 		for (int i = 0; i < amount; i++) {
 			append(" ");
 		}
 //		xPosition += amount;
 	}
 
-	public void addVerticalSpace(int amount) {
+	public void addVerticalSpace(float amount) {
 		yPosition += amount;
 	}
 
@@ -30,11 +30,11 @@ public class TextRenderer implements IGraphicDriver {
 		return Integer.MAX_VALUE;
 	}
 
-	public int getHorizontalPosition() {
+	public float getHorizontalPosition() {
 		return xPosition;
 	}
 
-	public int getVerticalPosition() {
+	public float getVerticalPosition() {
 		return yPosition;
 	}
 

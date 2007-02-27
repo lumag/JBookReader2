@@ -11,19 +11,19 @@ final class SwingString implements IDrawable {
 
 	private final TextLayout layout;
 
-	private final int depth;
+	private final float depth;
 
-	private final int height;
+	private final float height;
 
-	private final int width;
+	private final float width;
 
 	SwingString(JGraphicDriver driver, String s, AWTFontAdapter font) {
 		this.driver = driver;
 		layout = new TextLayout(s, font.getFont(), this.driver.getFontRC());
 
-		depth = JGraphicDriver.pixelToDimension(layout.getDescent());
-		height = JGraphicDriver.pixelToDimension(layout.getAscent());
-		width = JGraphicDriver.pixelToDimension(layout.getAdvance());
+		depth = layout.getDescent();
+		height = layout.getAscent();
+		width = layout.getAdvance();
 	}
 
 	public void draw(Position position) {
@@ -32,20 +32,20 @@ final class SwingString implements IDrawable {
 			throw new IllegalStateException("draw with g2d = null");
 		}
 		layout.draw(g2d,
-				JGraphicDriver.dimensionToPixel(this.driver.horizontalPosition),
-				JGraphicDriver.dimensionToPixel(this.driver.verticalPosition + height));
+				this.driver.horizontalPosition,
+				this.driver.verticalPosition + height);
 		this.driver.horizontalPosition += width;
 	}
 
-	public int getDepth() {
+	public float getDepth() {
 		return depth;
 	}
 
-	public int getHeight() {
+	public float getHeight() {
 		return height;
 	}
 
-	public int getWidth(Position position) {
+	public float getWidth(Position position) {
 		return width;
 	}
 

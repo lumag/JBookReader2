@@ -6,40 +6,40 @@ import jbookreader.rendering.IGraphicDriver;
 import jbookreader.rendering.Position;
 
 class Glue implements IDrawable, IAdjustableDrawable {
-	private final int space;
-	private final int stretch;
-	private final int shrink;
+	private final float space;
+	private final float stretch;
+	private final float shrink;
 	private final IGraphicDriver driver;
-	private int adjustment;
+	private float adjustment;
 
-	Glue(final IGraphicDriver driver, final int space, final int stretch, final int shrink) {
+	Glue(final IGraphicDriver driver, final float space, final float stretch, final float shrink) {
 		this.driver = driver;
 		this.space = space;
 		this.stretch = stretch;
 		this.shrink = shrink;
 	}
-	public int getShrink(Position position) {
+	public float getShrink(Position position) {
 		if (position != Position.MIDDLE) {
 			return 0;
 		}
 		return stretch;
 	}
-	public int getWidth(Position position) {
+	public float getWidth(Position position) {
 		if (position != Position.MIDDLE) {
 			return 0;
 		}
 		return space + adjustment;
 	}
-	public int getStretch(Position position) {
+	public float getStretch(Position position) {
 		if (position != Position.MIDDLE) {
 			return 0;
 		}
 		return stretch;
 	}
-	public int getDepth() {
+	public float getDepth() {
 		return 0;
 	}
-	public int getHeight() {
+	public float getHeight() {
 		return 0;
 	}
 
@@ -52,7 +52,7 @@ class Glue implements IDrawable, IAdjustableDrawable {
 		return "Glue: " + space + "+" + adjustment + ":" + stretch + ":" + shrink;
 	}
 
-	public void adjust(int adjust) {
+	public void adjust(float adjust) {
 		this.adjustment = adjust;
 	}
 }

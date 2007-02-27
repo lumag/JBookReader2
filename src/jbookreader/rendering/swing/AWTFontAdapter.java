@@ -8,7 +8,7 @@ import jbookreader.rendering.IFont;
 
 class AWTFontAdapter implements IFont {
 	private Font font;
-	private int spaceWidth;
+	private float spaceWidth;
 
 	AWTFontAdapter(String name, int size, FontRenderContext frc, boolean bold, boolean italic) {
 		int style = Font.PLAIN;
@@ -20,14 +20,14 @@ class AWTFontAdapter implements IFont {
 		}
 		font = new Font(name, style, size);
 		Rectangle2D r2d = font.createGlyphVector(frc, new char[]{' '}).getLogicalBounds();
-		spaceWidth = JGraphicDriver.pixelToDimension((float) (r2d.getMaxX() - r2d.getMinX()));
+		spaceWidth = (float) (r2d.getMaxX() - r2d.getMinX());
 	}
 	
 	Font getFont() {
 		return font;
 	}
 
-	public int getSpaceWidth() {
+	public float getSpaceWidth() {
 		return spaceWidth;
 	}
 

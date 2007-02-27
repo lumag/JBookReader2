@@ -14,7 +14,7 @@ class TextFont implements IFont {
 		this.size = size;
 	}
 
-	public int getSpaceWidth() {
+	public float getSpaceWidth() {
 		return 1;
 	}
 

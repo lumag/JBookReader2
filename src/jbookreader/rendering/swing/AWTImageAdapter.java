@@ -35,8 +35,8 @@ class AWTImageAdapter implements IDrawable {
 		}
 		reader.setInput(stream, true);
 
-		width = JGraphicDriver.pixelToDimension(reader.getWidth(0));
-		height = JGraphicDriver.pixelToDimension(reader.getHeight(0));
+		width = reader.getWidth(0);
+		height = reader.getHeight(0);
 
 		Thread imageThread =
 		new Thread(new Runnable() {
@@ -59,8 +59,8 @@ class AWTImageAdapter implements IDrawable {
 	AWTImageAdapter(JGraphicDriver driver, BufferedImage image) {
 		this.driver = driver;
 		this.image = image;
-		width = JGraphicDriver.pixelToDimension(image.getWidth());
-		height = JGraphicDriver.pixelToDimension(image.getHeight());
+		width = image.getWidth();
+		height = image.getHeight();
 	}
 
 	public void draw(Position position) {
@@ -71,29 +71,29 @@ class AWTImageAdapter implements IDrawable {
 		}
 		if (drawImage == null) {
 			driver.getPaperGraphics().draw(new Rectangle2D.Float(
-						JGraphicDriver.dimensionToPixel(driver.getHorizontalPosition()),
-						JGraphicDriver.dimensionToPixel(driver.getVerticalPosition()),
-						JGraphicDriver.dimensionToPixel(width),
-						JGraphicDriver.dimensionToPixel(height)));
+						driver.getHorizontalPosition(),
+						driver.getVerticalPosition(),
+						width,
+						height));
 		} else {
 			driver.getPaperGraphics().drawImage(image,
 					AffineTransform.getTranslateInstance(
-						JGraphicDriver.dimensionToPixel(driver.getHorizontalPosition()),
-						JGraphicDriver.dimensionToPixel(driver.getVerticalPosition())),
+						driver.getHorizontalPosition(),
+						driver.getVerticalPosition()),
 					driver);
 		}
 		driver.horizontalPosition += width;
 	}
 
-	public int getDepth() {
+	public float getDepth() {
 		return 0;
 	}
 
-	public int getHeight() {
+	public float getHeight() {
 		return height;
 	}
 
-	public int getWidth(Position position) {
+	public float getWidth(Position position) {
 		return width;
 	}
 

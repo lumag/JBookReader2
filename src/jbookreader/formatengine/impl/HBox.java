@@ -11,9 +11,9 @@ import jbookreader.rendering.Position;
 class HBox implements IDrawable {
 	private final List<IDrawable> elements = new ArrayList<IDrawable>();
 
-	private int width;
-	private int height;
-	private int depth;
+	private float width;
+	private float height;
+	private float depth;
 
 	public void draw(Position position) {
 		for (ListIterator<IDrawable> it = elements.listIterator();
@@ -29,15 +29,15 @@ class HBox implements IDrawable {
 		}
 	}
 
-	public int getDepth() {
+	public float getDepth() {
 		return depth;
 	}
 
-	public int getHeight() {
+	public float getHeight() {
 		return height;
 	}
 
-	public int getWidth(Position position) {
+	public float getWidth(Position position) {
 		return width;
 	}
 

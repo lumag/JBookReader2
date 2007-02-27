@@ -29,11 +29,9 @@ import lumag.util.ClassFactory;
 @SuppressWarnings("serial")
 public class JGraphicDriver extends JComponent implements IGraphicDriver, Scrollable {
 	
-	private static final int PIXEL_SCALE_FACTOR = 100;
-	
 	// FIXME: these should not be exposed. perhaps I should encapsulate draw(Shape) process.
-	int horizontalPosition;
-	int verticalPosition;
+	float horizontalPosition;
+	float verticalPosition;
 
 	private IFormatEngine formatEngine;
 	private ICompositor compositor;
@@ -47,14 +45,6 @@ public class JGraphicDriver extends JComponent implements IGraphicDriver, Scroll
 	private IStylesheet defaultStylesheet;
 	private IStylesheet formatStylesheet;
 	
-	static int pixelToDimension(float px) {
-		return Math.round(px * PIXEL_SCALE_FACTOR);
-	}
-	
-	static float dimensionToPixel(int dim) {
-		return (dim * 1.0f/PIXEL_SCALE_FACTOR);
-	}
-
 	public void setCompositor(ICompositor compositor) {
 		this.compositor = compositor;
 	}
@@ -89,11 +79,11 @@ public class JGraphicDriver extends JComponent implements IGraphicDriver, Scroll
 	 * IGraphicDriver methods
 	 */
 
-	public void addHorizontalSpace(int amount) {
+	public void addHorizontalSpace(float amount) {
 		horizontalPosition += amount;
 	}
 
-	public void addVerticalSpace(int amount) {
+	public void addVerticalSpace(float amount) {
 		verticalPosition += amount;
 	}
 
@@ -105,11 +95,11 @@ public class JGraphicDriver extends JComponent implements IGraphicDriver, Scroll
 		return new AWTFontAdapter(name, size, fontRC, bold, italic);
 	}
 
-	public int getHorizontalPosition() {
+	public float getHorizontalPosition() {
 		return horizontalPosition;
 	}
 
-	public int getVerticalPosition() {
+	public float getVerticalPosition() {
 		return verticalPosition;
 	}
 
@@ -132,12 +122,12 @@ public class JGraphicDriver extends JComponent implements IGraphicDriver, Scroll
 
 	public int getPaperWidth() {
 		Insets insets = getInsets();
-		return pixelToDimension(getWidth() - insets.left - insets.right);
+		return getWidth() - insets.left - insets.right;
 	}
 
 	public int getPaperHeight() {
 		Insets insets = getInsets();
-		return pixelToDimension(getHeight() - insets.top - insets.bottom);
+		return getHeight() - insets.top - insets.bottom;
 	}
 
 	/*
@@ -171,10 +161,12 @@ public class JGraphicDriver extends JComponent implements IGraphicDriver, Scroll
                 RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
 		fontRC = paperGraphics.getFontRenderContext();
+		if (lines != null)
+			System.out.println(getPaperWidth() + " " +  lines.get(0).getWidth(Position.MIDDLE) + " " + (getPaperWidth() - lines.get(0).getWidth(Position.MIDDLE)));
 
-		if (lines == null ||
-				(! lines.isEmpty() &&
-					getPaperWidth() != lines.get(0).getWidth(Position.MIDDLE))) {
+		if (lines == null || lines.isEmpty()
+				|| getPaperWidth() != lines.get(0).getWidth(Position.MIDDLE)
+					) {
 
 			reformatBook();
 
@@ -185,7 +177,7 @@ public class JGraphicDriver extends JComponent implements IGraphicDriver, Scroll
 			}
 
 			setPreferredSize(new Dimension(getWidth(), Math.round(
-					dimensionToPixel(height) + insets.top + insets.bottom)));
+					height + insets.top + insets.bottom)));
 			revalidate();
 			repaint();
 		} else {
@@ -193,8 +185,8 @@ public class JGraphicDriver extends JComponent implements IGraphicDriver, Scroll
 			int hmax = getPaperHeight();
 			Rectangle rectangle = paperGraphics.getClipBounds();
 			if (rectangle != null) {
-				hmin = pixelToDimension(rectangle.y);
-				hmax = pixelToDimension(rectangle.y + rectangle.height);
+				hmin = rectangle.y;
+				hmax = rectangle.y + rectangle.height;
 			}
 			System.out.print("rendering from " + hmin + " to " + hmax + "... ");
 			horizontalPosition = verticalPosition = 0;

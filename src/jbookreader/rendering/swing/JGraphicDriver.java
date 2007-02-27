@@ -14,6 +14,7 @@ import java.util.List;
 
 import javax.swing.JComponent;
 import javax.swing.Scrollable;
+import javax.swing.SwingConstants;
 
 import jbookreader.book.IBook;
 import jbookreader.book.IStylesheet;
@@ -232,6 +233,33 @@ public class JGraphicDriver extends JComponent implements IGraphicDriver, Scroll
 		
 	}
 
+	private int findNextHeight(float height, int direction) {
+		float h = height;
+		if (direction > 0) {
+			for (IDrawable dr: lines) {
+				// FIXME: correct inter-line value!
+				h -= dr.getHeight() + dr.getDepth();
+				float move = - h;
+				if (move > 1) {
+					System.out.println("move " + move);
+					return Math.round(move);
+				}
+			}
+		} else {
+			for (IDrawable dr: lines) {
+				// FIXME: correct inter-line value!
+				if (h > dr.getHeight() + dr.getDepth() + 1) {
+					h -= dr.getHeight() + dr.getDepth();
+				} else {
+					float move = h; 
+					System.out.println("move " + move);
+					return Math.round(move);
+				}
+			}
+		}
+		return 0;
+	}
+
 	public Dimension getPreferredScrollableViewportSize() {
 		return getPreferredSize();
 	}
@@ -245,13 +273,27 @@ public class JGraphicDriver extends JComponent implements IGraphicDriver, Scroll
 	}
 
 	public int getScrollableUnitIncrement(Rectangle visibleRect, int orientation, int direction) {
-		// FIXME: provide real value :)
-		return 10;
+		if (lines == null || lines.isEmpty() || orientation == SwingConstants.HORIZONTAL) {
+			return 0;
+		}
+
+		float height = visibleRect.y;
+		return findNextHeight(height, direction);
 	}
 
 	public int getScrollableBlockIncrement(Rectangle visibleRect, int orientation, int direction) {
-		// FIXME: provide real value :)
-		return 100;
+		final int pageSize = 100;
+		if (lines == null || lines.isEmpty() || orientation == SwingConstants.HORIZONTAL) {
+			return 0;
+		}
+
+		float height = visibleRect.y;
+		if (direction > 0) {
+			height += pageSize;
+		} else {
+			height -= pageSize;
+		}
+		return pageSize + findNextHeight(height, direction);
 	}
 
 }

@@ -36,7 +36,7 @@ public class JGraphicDriver extends JComponent implements IGraphicDriver, Scroll
 	float verticalPosition;
 
 	private IFormatEngine formatEngine;
-	private ICompositor compositor;
+	private Compositor compositor;
 	private IBook book;
 	private List<IDrawable> lines;
 
@@ -48,7 +48,7 @@ public class JGraphicDriver extends JComponent implements IGraphicDriver, Scroll
 	private IStylesheet formatStylesheet;
 	
 	public void setCompositor(ICompositor compositor) {
-		this.compositor = compositor;
+		this.compositor = new Compositor(compositor);
 	}
 
 	public void setFormatEngine(IFormatEngine engine) {
@@ -118,8 +118,8 @@ public class JGraphicDriver extends JComponent implements IGraphicDriver, Scroll
 	}
 	
 	public IDrawable renderImage(String contentType, InputStream dataStream) throws IOException {
-		//		throw new UnsupportedOperationException("unsupported");
-		return new AWTImageAdapter(this, contentType, dataStream);
+		throw new UnsupportedOperationException("unsupported");
+//		return new AWTImageAdapter(this, contentType, dataStream);
 	}
 
 	public int getPaperWidth() {
@@ -240,11 +240,14 @@ public class JGraphicDriver extends JComponent implements IGraphicDriver, Scroll
 		if (bookStylesheet != null) {
 			styleStack.addStylesheet(bookStylesheet);
 		}
+		compositor.clearTotal();
 		long before = System.nanoTime();
 		lines = formatEngine.format(this, compositor, book.getFirstBody(),
 				styleStack);
 		long after = System.nanoTime();
-		System.err.println("done " + (after - before)/1000000 + "ms");
+		long format = (after - before)/1000000;
+		long compose = compositor.getTotal();
+		System.err.println("done " + format + "ms (" + compose+ "ms for composition)");
 		
 	}
 

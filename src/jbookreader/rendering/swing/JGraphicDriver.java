@@ -118,8 +118,8 @@ public class JGraphicDriver extends JComponent implements IGraphicDriver, Scroll
 	}
 	
 	public IDrawable renderImage(String contentType, InputStream dataStream) throws IOException {
-		throw new UnsupportedOperationException("unsupported");
-//		return new AWTImageAdapter(this, contentType, dataStream);
+		// throw new UnsupportedOperationException("unsupported");
+		return new AWTImageAdapter(this, contentType, dataStream);
 	}
 
 	public int getPaperWidth() {

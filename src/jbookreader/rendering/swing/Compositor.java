@@ -16,7 +16,7 @@ class Compositor implements ICompositor {
 	}
 
 	long getTotal() {
-		return total;
+		return total/1000000;
 	}
 
 	void clearTotal() {
@@ -30,7 +30,7 @@ class Compositor implements ICompositor {
 		List<IDrawable> result = realCompositor.compose(particles, width, alignment, driver);
 
 		long after = System.nanoTime();
-		total += (after - before)/1000000;
+		total += (after - before);
 
 		return result;
 	}

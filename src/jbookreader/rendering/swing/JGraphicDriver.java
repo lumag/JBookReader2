@@ -155,18 +155,16 @@ public class JGraphicDriver extends JComponent implements IGraphicDriver, Scroll
 			return;
 		}
 		
-		Insets insets = getInsets();
-		int w = getWidth() - insets.left - insets.right;
-		int h = getHeight() - insets.top - insets.bottom;
-		System.out.println(w + "x" + h);
-	
 		Rectangle visible = getVisibleRect();
-		paperGraphics = (Graphics2D) g.create(insets.left, insets.top, w, h);
-		paperGraphics.setClip(
-				visible.x,
-				visible.y,
-				visible.width - insets.top - insets.right,
-				visible.height - insets.top - insets.bottom);
+		Insets insets = getInsets();
+		int w = visible.width - insets.top - insets.right;
+		int h = visible.height - insets.top - insets.bottom;
+		int offset = visible.y;
+		System.out.println(w + "x" + h + "@" + offset);
+	
+		paperGraphics = (Graphics2D) g.create(
+				visible.x + insets.left,
+				visible.y + insets.top, w, h);
 		paperGraphics.setBackground(getBackground());
 		paperGraphics.setColor(Color.BLACK);
 
@@ -202,10 +200,10 @@ public class JGraphicDriver extends JComponent implements IGraphicDriver, Scroll
 			if (rectangle != null) {
 				hmin = rectangle.y;
 				hmax = rectangle.y + rectangle.height;
-				
 			}
 			System.out.print("rendering from " + hmin + " to " + hmax + "... ");
-			horizontalPosition = verticalPosition = 0;
+			horizontalPosition = 0;
+			verticalPosition = - offset;
 			long before = System.nanoTime();
 			for (IDrawable dr: lines) {
 				if (verticalPosition + dr.getHeight() > hmin) {

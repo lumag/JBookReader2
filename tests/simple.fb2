@@ -64,6 +64,7 @@
       <p>
 	      <emphasis>The very <strong>last</strong> line</emphasis>.
       </p>
+      <image xlink:href="#test.jpg" alt="test inline image"/>
     </section>
   </body>
   <binary content-type="image/jpeg" id="test.jpg">

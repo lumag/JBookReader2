@@ -5,6 +5,7 @@ import java.io.InputStream;
 import jbookreader.rendering.IDrawable;
 import jbookreader.rendering.IFont;
 import jbookreader.rendering.IGraphicDriver;
+import jbookreader.style.FontDescriptor;
 
 public class TextRenderer implements IGraphicDriver {
 	private static final int WIDTH = 80; 
@@ -59,8 +60,8 @@ public class TextRenderer implements IGraphicDriver {
 		xPosition += s.length();
 	}
 
-	public IFont getFont(String name, int size, boolean bold, boolean italic) {
-		return new TextFont(name, size);
+	public IFont getFont(FontDescriptor fd) {
+		return new TextFont(fd.getFamily(), fd.getSize());
 	}
 
 }

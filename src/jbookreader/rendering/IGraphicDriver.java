@@ -3,6 +3,8 @@ package jbookreader.rendering;
 import java.io.IOException;
 import java.io.InputStream;
 
+import jbookreader.style.FontDescriptor;
+
 
 public interface IGraphicDriver {
 	// factory methods
@@ -10,7 +12,7 @@ public interface IGraphicDriver {
 	IDrawable renderBox(int width, int height, int depth);
 	IDrawable renderImage(String contentType, InputStream dataStream) throws IOException;
 
-	IFont getFont(String name, int size, boolean bold, boolean italic);
+	IFont getFont(FontDescriptor fd);
 	
 	// drawing methods
 	void clear();

@@ -17,6 +17,7 @@ import jbookreader.rendering.IDrawable;
 import jbookreader.rendering.IFont;
 import jbookreader.rendering.IGraphicDriver;
 import jbookreader.style.Alignment;
+import jbookreader.style.FontDescriptor;
 import jbookreader.style.FontStyle;
 
 
@@ -152,11 +153,13 @@ public class FormatEngine implements IFormatEngine {
 				return;
 			}
 			// FIXME: better italic
+			// FIXME: maybe cache FontDescriptor
 			IFont font = driver.getFont(
+					new FontDescriptor(
 					styleStack.getFontFamily()[0],
 					styleStack.getFontSize(),
 					styleStack.getFontWeight() > 500,
-					styleStack.getFontStyle() != FontStyle.NORMAL);
+					styleStack.getFontStyle() != FontStyle.NORMAL));
 
 			char[] str = text.toCharArray();
 			int size = str.length;

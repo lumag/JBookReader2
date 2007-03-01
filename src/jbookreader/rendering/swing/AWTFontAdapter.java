@@ -5,24 +5,25 @@ import java.awt.font.FontRenderContext;
 import java.awt.geom.Rectangle2D;
 
 import jbookreader.rendering.IFont;
+import jbookreader.style.FontDescriptor;
 
 class AWTFontAdapter implements IFont {
-	private Font font;
-	private float spaceWidth;
+	private final Font font;
+	private final float spaceWidth;
 
-	AWTFontAdapter(String name, int size, FontRenderContext frc, boolean bold, boolean italic) {
+	AWTFontAdapter(FontDescriptor fd, FontRenderContext frc) {
 		int style = Font.PLAIN;
-		if (bold) {
+		if (fd.isBold()) {
 			style |= Font.BOLD;
 		}
-		if (italic) {
+		if (fd.isItalic()) {
 			style |= Font.ITALIC;
 		}
-		font = new Font(name, style, size);
+		font = new Font(fd.getFamily(), style, fd.getSize());
 		Rectangle2D r2d = font.createGlyphVector(frc, new char[]{' '}).getLogicalBounds();
 		spaceWidth = (float) (r2d.getMaxX() - r2d.getMinX());
 	}
-	
+
 	Font getFont() {
 		return font;
 	}

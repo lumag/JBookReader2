@@ -26,10 +26,20 @@ import jbookreader.rendering.IDrawable;
 import jbookreader.rendering.IFont;
 import jbookreader.rendering.IGraphicDriver;
 import jbookreader.rendering.Position;
+import jbookreader.style.FontDescriptor;
 import lumag.util.ClassFactory;
+import lumag.util.SimpleCache;
 
 @SuppressWarnings("serial")
 public class JGraphicDriver extends JComponent implements IGraphicDriver, Scrollable {
+	// TODO: move to separate layer between IGraphicDriver and IFormatEngine
+	private SimpleCache<FontDescriptor, IFont> fontsCache = new SimpleCache<FontDescriptor, IFont>(
+			new SimpleCache.Getter<FontDescriptor, IFont>(){
+
+				public IFont process(FontDescriptor fd) {
+					return new AWTFontAdapter(fd, JGraphicDriver.this.getFontRC());
+				}
+			});
 	
 	// FIXME: these should not be exposed. perhaps I should encapsulate draw(Shape) process.
 	float horizontalPosition;
@@ -93,8 +103,9 @@ public class JGraphicDriver extends JComponent implements IGraphicDriver, Scroll
 		horizontalPosition = verticalPosition = 0;
 	}
 
-	public AWTFontAdapter getFont(String name, int size, boolean bold, boolean italic) {
-		return new AWTFontAdapter(name, size, fontRC, bold, italic);
+	public IFont getFont(FontDescriptor fd) {
+//		return new AWTFontAdapter(fd, getFontRC());
+		return fontsCache.get(fd);
 	}
 
 	public float getHorizontalPosition() {

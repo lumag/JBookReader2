@@ -9,8 +9,8 @@ import jbookreader.style.IStyleRule;
 import jbookreader.style.StyleAttribute;
 
 class StyleStackState {
-	static Map<StyleAttribute, IStyleValueComputer> specials;
-	static Map<ERuleValueType, IStyleValueComputer> generics; 
+	private static Map<StyleAttribute, IStyleValueComputer> specials;
+	private static Map<ERuleValueType, IStyleValueComputer> generics; 
 	static {
 		specials = new EnumMap<StyleAttribute, IStyleValueComputer>(StyleAttribute.class);
 		specials.put(StyleAttribute.FONT_WEIGHT, new FontWeightValueComputer());
@@ -21,6 +21,26 @@ class StyleStackState {
 		generics.put(ERuleValueType.STRING_ARRAY, new StringArrayValueComputer());
 		generics.put(ERuleValueType.ENUM, new EnumValueComputer());
 	}
+	
+	private static final IStyleRule inheritRule = new IStyleRule() {
+
+		public StyleAttribute getAttribute() {
+			throw new InternalError("Attribute requested for special inheritance rule");
+		}
+
+		public <T> T getValue(Class<T> klass) throws ClassCastException {
+			return null;
+		}
+
+		public ERuleValueType getValueType() {
+			return ERuleValueType.INHERIT;
+		}
+
+		public long getWeight() {
+			return 0;
+		}
+		
+	};
 	
 	private final Map<StyleAttribute, Object> attributes;
 	private final IDimensionConvertor convertor = new DimensionConvertor();
@@ -43,13 +63,13 @@ class StyleStackState {
 
 			if (rule == null) {
 				if (attribute.isInherit()) {
-					attributes.put(attribute, oldState.getAttributeValue(attribute));
+					rule = inheritRule;
 				} else {
-					attributes.put(attribute, computer.compute(attribute, attribute, oldState));
+					rule = attribute;
 				}
-			} else {
-				attributes.put(attribute, computer.compute(attribute, rule, oldState));
 			}
+
+			attributes.put(attribute, computer.compute(attribute, rule, oldState));
 		}
 	}
 

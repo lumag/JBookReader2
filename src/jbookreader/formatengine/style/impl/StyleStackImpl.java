@@ -82,7 +82,7 @@ public class StyleStackImpl implements IStyleStack {
 	}
 	
 	public int getWidth() {
-		return currentState.getAttributeValue(WIDTH);
+		return currentState.<Integer>getAttributeValue(WIDTH);
 	}
 
 	public Alignment getTextAlign() {
@@ -94,11 +94,11 @@ public class StyleStackImpl implements IStyleStack {
 	}
 
 	public int getFontSize() {
-		return currentState.getAttributeValue(FONT_SIZE);
+		return currentState.<Integer>getAttributeValue(FONT_SIZE);
 	}
 
 	public int getFontWeight() {
-		return currentState.getAttributeValue(FONT_WEIGHT); 
+		return currentState.<Integer>getAttributeValue(FONT_WEIGHT); 
 	}
 
 	public FontStyle getFontStyle() {

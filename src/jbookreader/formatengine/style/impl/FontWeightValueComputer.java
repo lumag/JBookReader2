@@ -16,13 +16,13 @@ class FontWeightValueComputer extends IntegerValueComputer {
 		case BOLD:
 			return 700;
 		case LIGHTER:
-			val = (Integer) oldState.getDefaultValue(attribute);
+			val = oldState.<Integer>getAttributeValue(attribute);
 			if (val - 100 < 100) {
 				return 100;
 			}
 			return val - 100;
 		case BOLDER:
-			val = (Integer) oldState.getDefaultValue(attribute);
+			val = oldState.<Integer>getAttributeValue(attribute);
 			if (val + 100 > 900) {
 				return 900;
 			}

@@ -11,7 +11,7 @@ abstract class BasicStyleValueComputer implements IStyleValueComputer {
 	public Object compute(StyleAttribute attribute, IStyleRule rule, StyleStackState oldState) {
 		switch (rule.getValueType()) {
 		case INHERIT:
-			return oldState.getDefaultValue(attribute);
+			return oldState.getAttributeValue(attribute);
 		case STRING_ARRAY:
 			return handleStringArray(attribute, rule, oldState);
 		case VALUE:

@@ -17,8 +17,7 @@ public class FontSizeValueComputer extends BasicStyleValueComputer implements
 	protected Object handleEnumValue(StyleAttribute attribute, IStyleRule rule, StyleStackState oldState) {
 		FontSize size = rule.getValue(FontSize.class);
 		// FIXME: change base value to config?
-		return Math.round(size.getScale() *
-			Integer.class.cast(StyleAttribute.FONT_SIZE.getInitialValue()));
+		return Math.round(size.getScale() * 10);
 	}
 	
 }

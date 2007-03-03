@@ -39,7 +39,7 @@ class BasicHandler implements IRuleHandler {
 				String name = value.getStringValue().toUpperCase().replace('-', '_');
 
 				handler.addRule(getAttribute(),
-						ERuleValueType.VALUE,
+						ERuleValueType.ENUM,
 						Enum.valueOf(enumClass.asSubclass(Enum.class), name));
 		} else {
 			throw new IllegalArgumentException("Bad value for attribute '"

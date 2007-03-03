@@ -14,7 +14,7 @@ abstract class BasicStyleValueComputer implements IStyleValueComputer {
 			return oldState.getAttributeValue(attribute);
 		case STRING_ARRAY:
 			return handleStringArray(attribute, rule, oldState);
-		case VALUE:
+		case ENUM:
 			return handleEnumValue(attribute, rule, oldState);
 		case INTEGER:
 			return handleInteger(attribute, rule, oldState);

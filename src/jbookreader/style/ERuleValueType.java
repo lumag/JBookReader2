@@ -5,6 +5,6 @@ public enum ERuleValueType {
 	DIMENSION,
 //	STRING,
 	STRING_ARRAY,
-	VALUE,
+	ENUM,
 	INTEGER;
 }

@@ -25,10 +25,10 @@ class CSSHandler implements DocumentHandler {
 	private static Map<String, IRuleHandler> handlers = new HashMap<String, IRuleHandler>();
 	
 	static {
-		handlers.put("display", new EnumHandler(StyleAttribute.DISPLAY));
-		handlers.put("font-style", new EnumHandler(StyleAttribute.FONT_STYLE));
+		handlers.put("display", new BasicHandler(StyleAttribute.DISPLAY));
+		handlers.put("font-style", new BasicHandler(StyleAttribute.FONT_STYLE));
 		handlers.put("font-family", new StringArrayHandler(StyleAttribute.FONT_FAMILY));
-		handlers.put("text-align", new EnumHandler(StyleAttribute.TEXT_ALIGN));
+		handlers.put("text-align", new BasicHandler(StyleAttribute.TEXT_ALIGN));
 		handlers.put("font-weight", new FontWeightHandler());
 	}
 

@@ -6,7 +6,7 @@ import jbookreader.style.ERuleValueType;
 import jbookreader.style.FontWeight;
 import jbookreader.style.StyleAttribute;
 
-class FontWeightHandler extends EnumHandler implements IRuleHandler {
+class FontWeightHandler extends BasicHandler implements IRuleHandler {
 	FontWeightHandler() {
 		super(StyleAttribute.FONT_WEIGHT, FontWeight.class);
 	}

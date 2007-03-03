@@ -4,6 +4,7 @@ import java.util.EnumMap;
 import java.util.Map;
 
 import jbookreader.style.AttributeType;
+import jbookreader.style.IDimensionConvertor;
 import jbookreader.style.IStyleRule;
 import jbookreader.style.StyleAttribute;
 
@@ -13,6 +14,7 @@ class StyleStackState {
 	static {
 		specials = new EnumMap<StyleAttribute, IStyleValueComputer>(StyleAttribute.class);
 		specials.put(StyleAttribute.FONT_WEIGHT, new FontWeightValueComputer());
+		specials.put(StyleAttribute.FONT_SIZE, new FontSizeValueComputer());
 		
 		generics = new EnumMap<AttributeType, IStyleValueComputer>(AttributeType.class);
 		generics.put(AttributeType.INTEGER, new IntegerValueComputer());
@@ -21,6 +23,7 @@ class StyleStackState {
 	}
 	
 	private final Map<StyleAttribute, Object> attributes;
+	private final IDimensionConvertor convertor = new DimensionConvertor();
 
 	StyleStackState() {
 		attributes = new EnumMap<StyleAttribute, Object>(StyleAttribute.class);
@@ -60,8 +63,12 @@ class StyleStackState {
 		return attribute.getInitialValue();
 	}
 	
-	public <T> T getAttributeValue(StyleAttribute attribute, Class<T> klass) {
+	<T> T getAttributeValue(StyleAttribute attribute, Class<T> klass) {
 		// XXX maybe add more checks about T vs attribute.getAttributeValueClass()
 		return klass.cast(attributes.get(attribute));
+	}
+	
+	IDimensionConvertor getDimensionConvertor() {
+		return convertor;
 	}
 }

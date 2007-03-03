@@ -2,7 +2,7 @@ package jbookreader.style;
 
 public enum ERuleValueType {
 	INHERIT,
-//	DIMENSION,
+	DIMENSION,
 //	STRING,
 	STRING_ARRAY,
 	VALUE,

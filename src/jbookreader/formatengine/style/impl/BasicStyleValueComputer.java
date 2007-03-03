@@ -18,11 +18,18 @@ abstract class BasicStyleValueComputer implements IStyleValueComputer {
 			return handleEnumValue(attribute, rule, oldState);
 		case INTEGER:
 			return handleInteger(attribute, rule, oldState);
+		case DIMENSION:
+			return handleDimension(attribute, rule, oldState);
 		default:
 			throw new InternalError("Undandled rule value type: " + rule.getValueType());
 		}
 	}
 	
+	protected Object handleDimension(StyleAttribute attribute, IStyleRule rule, StyleStackState oldState) {
+		throw new IllegalArgumentException(
+				"Bad " + attribute + " rule: " + rule);
+	}
+
 	protected Object handleStringArray(StyleAttribute attribute, IStyleRule rule, StyleStackState oldState) {
 		throw new IllegalArgumentException(
 				"Bad " + attribute + " rule: " + rule);

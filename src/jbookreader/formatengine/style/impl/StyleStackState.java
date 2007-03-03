@@ -63,12 +63,17 @@ class StyleStackState {
 		return attribute.getInitialValue();
 	}
 	
-	<T> T getAttributeValue(StyleAttribute attribute, Class<T> klass) {
-		// XXX maybe add more checks about T vs attribute.getAttributeValueClass()
-		return klass.cast(attributes.get(attribute));
+	@SuppressWarnings("unchecked")
+	<T extends Object> T getAttributeValue(StyleAttribute attribute) {
+		return (T) attribute.getAttributeValueClass().cast(attributes.get(attribute));
 	}
 	
+	void setAttributeValue(StyleAttribute attribute, Object object) {
+		attributes.put(attribute, attribute.getAttributeValueClass().cast(object));
+	}
+
 	IDimensionConvertor getDimensionConvertor() {
 		return convertor;
 	}
+
 }

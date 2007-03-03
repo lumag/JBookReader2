@@ -7,12 +7,16 @@ import jbookreader.style.Display;
 import jbookreader.style.FontStyle;
 
 public interface IStyleStack {
-	void addStylesheet(IStylesheet stylesheet);
+	void setConfig(final IStyleConfig config);
+	void addStylesheet(final IStylesheet stylesheet);
 	
 	void push(INode node);
 	void pop();
 	
 	Display getDisplay();
+
+	public int getWidth();
+
 	Alignment getTextAlign();
 	
 	String[] getFontFamily();

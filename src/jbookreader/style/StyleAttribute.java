@@ -4,11 +4,12 @@ import static jbookreader.style.AttributeType.*;
 
 public enum StyleAttribute {
 	DISPLAY(		ENUM,		Display.class,		false,	Display.INLINE),
+
+	WIDTH(			INTEGER,	Integer.class,		false,	-1),
 	
 	TEXT_ALIGN(		ENUM,		Alignment.class,	true,	Alignment.JUSTIFY),
 	
 	FONT_FAMILY(	STRING_ARRAY, String[].class,	true,	new String[]{"default"}),
-	// FIXME change to dimension
 	FONT_SIZE(		INTEGER,	Integer.class,		true,	10),
 	FONT_STYLE(		ENUM,		FontStyle.class,	true,	FontStyle.NORMAL),
 	FONT_WEIGHT(	INTEGER,	Integer.class,		true,	400);

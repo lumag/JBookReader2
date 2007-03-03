@@ -7,6 +7,7 @@ import java.util.Map;
 
 import jbookreader.book.INode;
 import jbookreader.book.IStylesheet;
+import jbookreader.formatengine.IStyleConfig;
 import jbookreader.formatengine.IStyleStack;
 import jbookreader.style.Alignment;
 import jbookreader.style.Display;
@@ -17,15 +18,24 @@ import jbookreader.style.StyleAttribute;
 import static jbookreader.style.StyleAttribute.*;
 
 public class StyleStackImpl implements IStyleStack {
-	List<IStylesheet> stylesheets = new ArrayList<IStylesheet>();
-	List<StyleStackState> stateStack = new ArrayList<StyleStackState>();
-	StyleStackState currentState = new StyleStackState();
+	private List<IStylesheet> stylesheets = new ArrayList<IStylesheet>();
+	private List<StyleStackState> stateStack = new ArrayList<StyleStackState>();
+	private StyleStackState currentState = new StyleStackState();
+	private IStyleConfig config;
 
 	public StyleStackImpl() {
 		stateStack.add(currentState);
 	}
+	
+	public void setConfig(final IStyleConfig config) {
+		this.config = config;
+	}
+	
+	IStyleConfig getConfig() {
+		return config;
+	}
 
-	public void addStylesheet(IStylesheet stylesheet) {
+	public void addStylesheet(final IStylesheet stylesheet) {
 		stylesheets.add(stylesheet);
 	}
 
@@ -66,29 +76,33 @@ public class StyleStackImpl implements IStyleStack {
 			currentState = stateStack.get(stateStack.size() - 1);
 		}
 	}
-
+	
 	public Display getDisplay() {
-		return currentState.getAttributeValue(DISPLAY, Display.class);
+		return currentState.getAttributeValue(DISPLAY);
+	}
+	
+	public int getWidth() {
+		return currentState.getAttributeValue(WIDTH);
 	}
 
 	public Alignment getTextAlign() {
-		return currentState.getAttributeValue(TEXT_ALIGN, Alignment.class);
+		return currentState.getAttributeValue(TEXT_ALIGN);
 	}
 
 	public String[] getFontFamily() {
-		return currentState.getAttributeValue(FONT_FAMILY, String[].class);
+		return currentState.getAttributeValue(FONT_FAMILY);
 	}
 
 	public int getFontSize() {
-		return currentState.getAttributeValue(FONT_SIZE, Integer.class);
+		return currentState.getAttributeValue(FONT_SIZE);
 	}
 
 	public int getFontWeight() {
-		return currentState.getAttributeValue(FONT_WEIGHT, Integer.class);
+		return currentState.getAttributeValue(FONT_WEIGHT); 
 	}
 
 	public FontStyle getFontStyle() {
-		return currentState.getAttributeValue(FONT_STYLE, FontStyle.class);
+		return currentState.getAttributeValue(FONT_STYLE);
 	}
 
 }

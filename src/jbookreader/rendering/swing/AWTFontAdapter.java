@@ -20,6 +20,7 @@ class AWTFontAdapter implements IFont {
 			style |= Font.ITALIC;
 		}
 		font = new Font(fd.getFamily(), style, fd.getSize());
+		System.out.println(font);
 		Rectangle2D r2d = font.createGlyphVector(frc, new char[]{' '}).getLogicalBounds();
 		spaceWidth = (float) (r2d.getMaxX() - r2d.getMinX());
 	}

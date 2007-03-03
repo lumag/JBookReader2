@@ -30,6 +30,7 @@ class CSSHandler implements DocumentHandler {
 		handlers.put("font-family", new StringArrayHandler(StyleAttribute.FONT_FAMILY));
 		handlers.put("text-align", new BasicHandler(StyleAttribute.TEXT_ALIGN));
 		handlers.put("font-weight", new FontWeightHandler());
+		handlers.put("font-size", new FontSizeHandler());
 	}
 
 	public void comment(String text) throws CSSException {

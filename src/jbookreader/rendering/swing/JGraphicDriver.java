@@ -184,6 +184,8 @@ public class JGraphicDriver extends JComponent implements IGraphicDriver, Scroll
                 RenderingHints.VALUE_ANTIALIAS_ON);
 		paperGraphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
                 RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+		paperGraphics.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
+				RenderingHints.VALUE_FRACTIONALMETRICS_ON);
 
 		fontRC = paperGraphics.getFontRenderContext();
 

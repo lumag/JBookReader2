@@ -47,5 +47,10 @@ emphasis {
 }
 
 title {
-	font-family: "Comic Sans MS", "Helvetica", sans-serif
+	font-family: "Comic Sans MS", "Helvetica", sans-serif;
+	font-size: xx-large;
+}
+
+section title {
+	font-size: x-large;
 }

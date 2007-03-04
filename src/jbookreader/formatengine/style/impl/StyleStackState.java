@@ -1,6 +1,7 @@
 package jbookreader.formatengine.style.impl;
 
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.Map;
 
 import jbookreader.formatengine.IStyleConfig;
@@ -11,16 +12,16 @@ import jbookreader.style.StyleAttribute;
 
 class StyleStackState {
 	private static Map<StyleAttribute, IStyleValueComputer> specials;
-	private static Map<ERuleValueType, IStyleValueComputer> generics; 
+	private static Map<Class<?>, IStyleValueComputer> generics; 
 	static {
 		specials = new EnumMap<StyleAttribute, IStyleValueComputer>(StyleAttribute.class);
 		specials.put(StyleAttribute.FONT_WEIGHT, new FontWeightValueComputer());
 		specials.put(StyleAttribute.FONT_SIZE, new FontSizeValueComputer());
 		
-		generics = new EnumMap<ERuleValueType, IStyleValueComputer>(ERuleValueType.class);
-		generics.put(ERuleValueType.INTEGER, new IntegerValueComputer());
-		generics.put(ERuleValueType.STRING_ARRAY, new StringArrayValueComputer());
-		generics.put(ERuleValueType.ENUM, new EnumValueComputer());
+		generics = new HashMap<Class<?>, IStyleValueComputer>();
+		generics.put(Integer.class, new IntegerValueComputer());
+		generics.put(String[].class, new StringArrayValueComputer());
+		generics.put(Enum.class, new EnumValueComputer());
 	}
 	
 	private static final IStyleRule inheritRule = new IStyleRule() {
@@ -77,7 +78,12 @@ class StyleStackState {
 	private IStyleValueComputer findComputer(StyleAttribute attrib) throws InternalError {
 		IStyleValueComputer computer = specials.get(attrib);
 		if (computer == null) {
-			computer = generics.get(attrib.getValueType());
+			for (Class<?> klass = attrib.getAttributeValueClass();
+				computer == null && klass != null;
+				klass = klass.getSuperclass()) {
+				
+				computer = generics.get(klass);
+			}
 		}
 		
 		if (computer == null) {

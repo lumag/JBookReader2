@@ -14,16 +14,16 @@ public enum StyleAttribute implements IStyleRule {
 	FONT_STYLE(		FontStyle.class,	true,	ENUM,	FontStyle.NORMAL),
 	FONT_WEIGHT(	Integer.class,		true,	ENUM,	FontWeight.NORMAL);
 	
-	private final ERuleValueType attributeType;
 	private final Class<?> attributeValueClass;
-	private final Object initialValue;
 	private final boolean inherit;
+	private final ERuleValueType initialValueType;
+	private final Object initialValue;
 	
-	StyleAttribute(Class<?> klass, boolean inherit, ERuleValueType attributeType, Object initialValue) {
-		this.attributeType = attributeType;
+	StyleAttribute(Class<?> klass, boolean inherit, ERuleValueType initialValueType, Object initialValue) {
 		this.attributeValueClass = klass;
-		this.initialValue = initialValue;
 		this.inherit = inherit;
+		this.initialValueType = initialValueType;
+		this.initialValue = initialValue;
 	}
 	
 	public StyleAttribute getAttribute() {
@@ -31,7 +31,7 @@ public enum StyleAttribute implements IStyleRule {
 	}
 
 	public ERuleValueType getValueType() {
-		return attributeType;
+		return initialValueType;
 	}
 
 	public Class<?> getAttributeValueClass() {

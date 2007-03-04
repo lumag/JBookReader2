@@ -15,7 +15,7 @@ public interface IStyleStack {
 	
 	Display getDisplay();
 
-	public int getWidth();
+//	int getWidth();
 
 	Alignment getTextAlign();
 	

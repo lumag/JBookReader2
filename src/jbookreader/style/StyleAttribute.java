@@ -5,7 +5,7 @@ import static jbookreader.style.ERuleValueType.*;
 public enum StyleAttribute implements IStyleRule {
 	DISPLAY(		Display.class,		false,	ENUM,	Display.INLINE),
 
-	WIDTH(			Integer.class,		false,	INTEGER,	-1),
+//	WIDTH(			Integer.class,		false,	INTEGER,	-1),
 	
 	TEXT_ALIGN(		Alignment.class,	true,	ENUM,	Alignment.JUSTIFY),
 	

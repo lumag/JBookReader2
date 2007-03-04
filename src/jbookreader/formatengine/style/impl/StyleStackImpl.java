@@ -89,10 +89,10 @@ public class StyleStackImpl implements IStyleStack {
 		return currentState.getAttributeValue(DISPLAY);
 	}
 	
-	public int getWidth() {
-		return currentState.<Integer>getAttributeValue(WIDTH);
-	}
-
+//	public int getWidth() {
+//		return currentState.<Integer>getAttributeValue(WIDTH);
+//	}
+//
 	public Alignment getTextAlign() {
 		return currentState.getAttributeValue(TEXT_ALIGN);
 	}

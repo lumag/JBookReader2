@@ -3,6 +3,7 @@ package jbookreader.formatengine.style.impl;
 import java.util.EnumMap;
 import java.util.Map;
 
+import jbookreader.formatengine.IStyleConfig;
 import jbookreader.style.ERuleValueType;
 import jbookreader.style.IDimensionConvertor;
 import jbookreader.style.IStyleRule;
@@ -45,16 +46,16 @@ class StyleStackState {
 	private final Map<StyleAttribute, Object> attributes;
 	private final IDimensionConvertor convertor = new DimensionConvertor();
 
-	StyleStackState() {
+	StyleStackState(final IStyleConfig config) {
 		attributes = new EnumMap<StyleAttribute, Object>(StyleAttribute.class);
 		
 		for (StyleAttribute attribute : StyleAttribute.values()) {
 			IStyleValueComputer computer = findComputer(attribute);
-			attributes.put(attribute, computer.compute(attribute, attribute, null));
+			attributes.put(attribute, computer.compute(attribute, attribute, null, config));
 		}
 	}
 	
-	StyleStackState(StyleStackState oldState, Map<StyleAttribute, IStyleRule> rules) {
+	StyleStackState(StyleStackState oldState, Map<StyleAttribute, IStyleRule> rules, IStyleConfig config) {
 		attributes = new EnumMap<StyleAttribute, Object>(StyleAttribute.class);
 		for (StyleAttribute attribute: StyleAttribute.values()) {
 			IStyleValueComputer computer = findComputer(attribute);
@@ -69,7 +70,7 @@ class StyleStackState {
 				}
 			}
 
-			attributes.put(attribute, computer.compute(attribute, rule, oldState));
+			attributes.put(attribute, computer.compute(attribute, rule, oldState, config));
 		}
 	}
 

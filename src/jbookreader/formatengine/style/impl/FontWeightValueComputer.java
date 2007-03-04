@@ -1,5 +1,6 @@
 package jbookreader.formatengine.style.impl;
 
+import jbookreader.formatengine.IStyleConfig;
 import jbookreader.style.FontWeight;
 import jbookreader.style.IStyleRule;
 import jbookreader.style.StyleAttribute;
@@ -7,7 +8,7 @@ import jbookreader.style.StyleAttribute;
 class FontWeightValueComputer extends IntegerValueComputer {
 
 	@Override
-	protected Object handleEnumValue(StyleAttribute attribute, IStyleRule rule, StyleStackState oldState) {
+	protected Object handleEnumValue(StyleAttribute attribute, IStyleRule rule, StyleStackState oldState, IStyleConfig config) {
 		FontWeight weight = rule.getValue(FontWeight.class);
 		int val;
 		switch (weight) {

@@ -20,15 +20,23 @@ import static jbookreader.style.StyleAttribute.*;
 public class StyleStackImpl implements IStyleStack {
 	private List<IStylesheet> stylesheets = new ArrayList<IStylesheet>();
 	private List<StyleStackState> stateStack = new ArrayList<StyleStackState>();
-	private StyleStackState currentState = new StyleStackState();
+	private StyleStackState currentState;
 	private IStyleConfig config;
 
 	public StyleStackImpl() {
-		stateStack.add(currentState);
+		// do nothing
 	}
 	
 	public void setConfig(final IStyleConfig config) {
+		if (currentState != null) {
+			throw new IllegalStateException(
+					"Can't change config in the middle of operation");
+		}
+
 		this.config = config;
+
+		currentState = new StyleStackState(config);
+		stateStack.add(currentState);
 	}
 	
 	IStyleConfig getConfig() {
@@ -61,7 +69,7 @@ public class StyleStackImpl implements IStyleStack {
 //			System.out.println(rule.getKey() + ": (" + rule.getValue().getValueType() + ") "+ rule.getValue().getValue(Object.class));
 //		}
 		
-		currentState = new StyleStackState(currentState, rules);
+		currentState = new StyleStackState(currentState, rules, config);
 		
 		stateStack.add(currentState);
 	}
@@ -69,7 +77,7 @@ public class StyleStackImpl implements IStyleStack {
 	public void pop() {
 		stateStack.remove(currentState);
 		if (stateStack.isEmpty()) {
-			currentState = new StyleStackState();
+			currentState = new StyleStackState(config);
 			stateStack.add(currentState);
 			System.err.println("style stack became empty!");
 		} else {

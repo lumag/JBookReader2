@@ -21,6 +21,7 @@ import jbookreader.book.IBook;
 import jbookreader.book.IStylesheet;
 import jbookreader.formatengine.ICompositor;
 import jbookreader.formatengine.IFormatEngine;
+import jbookreader.formatengine.IStyleConfig;
 import jbookreader.formatengine.IStyleStack;
 import jbookreader.rendering.IDrawable;
 import jbookreader.rendering.IFont;
@@ -56,6 +57,8 @@ public class JGraphicDriver extends JComponent implements IGraphicDriver, Scroll
 
 	private IStylesheet defaultStylesheet;
 	private IStylesheet formatStylesheet;
+
+	private IStyleConfig config = new JGraphicDriverConfig(this);
 	
 	public void setCompositor(ICompositor compositor) {
 		this.compositor = new Compositor(compositor);
@@ -243,6 +246,7 @@ public class JGraphicDriver extends JComponent implements IGraphicDriver, Scroll
 		// FIXME: move to separate thread!
 		System.err.println("formatting");
 		IStyleStack styleStack = ClassFactory.createClass(IStyleStack.class, "jbookreader.stylestack");
+		styleStack.setConfig(config);
 		if (defaultStylesheet != null ) {
 			styleStack.addStylesheet(defaultStylesheet);
 		}

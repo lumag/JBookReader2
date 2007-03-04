@@ -131,8 +131,8 @@ public class SimpleCompositor implements ICompositor {
 			hbox.addAll(line);
 			return hbox;
 		}
-		int currentWidth = 0;
-		int currentStretch = 0;
+		float currentWidth = 0;
+		float currentStretch = 0;
 		for (ListIterator<IDrawable> iter = line.listIterator(); iter.hasNext();) {
 			IDrawable d = iter.next();
 			if (iter.previousIndex() == 0) {

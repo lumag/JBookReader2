@@ -171,7 +171,7 @@ public class JGraphicDriver extends JComponent implements IGraphicDriver, Scroll
 		
 		Rectangle visible = getVisibleRect();
 		Insets insets = getInsets();
-		int w = visible.width - insets.top - insets.right;
+		int w = visible.width - insets.left - insets.right;
 		int h = visible.height - insets.top - insets.bottom;
 		int offset = visible.y;
 		System.out.println(w + "x" + h + "@" + offset);

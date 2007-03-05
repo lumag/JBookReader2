@@ -104,6 +104,7 @@
 	    <manifest>
 	    	<attribute name="Sealed" value="true" />
 		<attribute name="Main-Class" value="jbookreader.ui.swing.Main" />
+		<attribute name="Class-Path" value="lib/sac.jar lib/flute.jar" />
 	    </manifest>
 	</jar>
     </target>

@@ -97,7 +97,7 @@
 	<fail if="project.test.failed" />
     </target>
     <target name="jar" depends="test">
-	<jar destfile="${ant.project.name}-${project.version}.jar">
+	<jar destfile="${ant.project.name}-${project.version}.jar" index="true">
 	    <fileset dir="bin" excludes="**/*Test*" />
 	    <fileset dir="." includes="resources/**" />
 	    <fileset file="COPYING" />
@@ -106,6 +106,9 @@
 		<attribute name="Main-Class" value="jbookreader.ui.swing.Main" />
 		<attribute name="Class-Path" value="lib/sac.jar lib/flute.jar" />
 	    </manifest>
+	    <indexjars>
+		<fileset dir="lib" includes="**.jar" />
+	    </indexjars>
 	</jar>
     </target>
     <target name="srczip" >

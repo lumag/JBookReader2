@@ -10,4 +10,6 @@ public interface INode {
 	void accept(INodeVisitor visitor);
 	IContainerNode getParentNode();
 	IBook getBook();
+	
+	String getNodeRef();
 }

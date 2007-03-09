@@ -18,6 +18,11 @@ class TextNodeImpl extends AbstractNode implements ITextNode {
 		visitor.visitTextNode(this);
 	}
 	
+	public String getNodeRef() {
+		// FIXME: provide real implementation
+		return getParentNode().getNodeRef();
+	}
+
 	@Override
 	public String toString() {
 		return "#text";

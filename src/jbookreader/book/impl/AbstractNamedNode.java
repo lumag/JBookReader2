@@ -1,6 +1,8 @@
 package jbookreader.book.impl;
 
+import jbookreader.book.IContainerNode;
 import jbookreader.book.INamedNode;
+import jbookreader.book.INode;
 
 abstract class AbstractNamedNode extends AbstractNode implements INamedNode {
 
@@ -21,6 +23,43 @@ abstract class AbstractNamedNode extends AbstractNode implements INamedNode {
 
 	public void setNodeTag(String nodeTag) {
 		this.nodeTag = nodeTag;
+	}
+	
+	private String getNodeRefElement() {
+		StringBuilder builder = new StringBuilder();
+		String tag = this.nodeTag;
+
+		builder.append('/');
+		builder.append(tag);
+
+		IContainerNode parent = getParentNode();
+		if (parent != null) {
+			int count = 0;
+
+			for (INode node = this;
+					parent.hasPrevious(node);
+					node = parent.getPrevious(node)) {
+				if (node instanceof INamedNode) {
+					INamedNode namedNode = (INamedNode) node;
+					if (tag.equals(namedNode.getNodeTag())) {
+						count ++;
+					}
+				}
+			}
+			
+			builder.append('[');
+			builder.append(count);
+			builder.append(']');
+		}
+		
+		return builder.toString();
+	}
+	
+	public String getNodeRef() {
+		if (getParentNode() != null) {
+			return getParentNode().getNodeRef() + getNodeRefElement();
+		}
+		return getNodeRefElement();
 	}
 
 	@Override

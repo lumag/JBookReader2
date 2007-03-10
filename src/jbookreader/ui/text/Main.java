@@ -4,6 +4,7 @@ import java.util.List;
 
 import jbookreader.book.IBook;
 import jbookreader.book.IBookFactory;
+import jbookreader.book.INode;
 import jbookreader.fileformats.IErrorHandler;
 import jbookreader.fileformats.impl.FileFormatsLibrary;
 import jbookreader.formatengine.ICompositor;
@@ -18,6 +19,7 @@ import lumag.util.ClassFactory;
 
 public class Main {
 
+	@SuppressWarnings("unchecked")
 	public static void main(String[] args) throws Exception {
 		ClassFactory.loadProperies("jbookreader");
 
@@ -43,17 +45,17 @@ public class Main {
 				ClassFactory.createClass(IBookFactory.class, "jbookreader.factory.book"));
 		System.err.println("parsed");
 //		book.getFirstBody().accept(new BookDumper());
-		IGraphicDriver driver = new TextRenderer();
-		ICompositor compositor = ClassFactory.createClass(ICompositor.class,
+		IGraphicDriver<INode> driver = new TextRenderer<INode>();
+		ICompositor<INode> compositor = ClassFactory.createClass(ICompositor.class,
 				"jbookreader.compositor");
-		IFormatEngine engine = ClassFactory.createClass(IFormatEngine.class,
+		IFormatEngine<INode> engine = ClassFactory.createClass(IFormatEngine.class,
 				"jbookreader.formatengine");
-		IStyleStack styleStack = ClassFactory.createClass(IStyleStack.class,
+		IStyleStack<INode> styleStack = ClassFactory.createClass(IStyleStack.class,
 				"jbookreader.stylestack");
-		List<IDrawable> lines = engine.format(driver, compositor, book.getFirstBody(),
+		List<IDrawable<INode>> lines = engine.format(driver, compositor, book.getFirstBody(),
 				styleStack);
 		System.err.println("formatted");
-		for (IDrawable dr: lines) {
+		for (IDrawable<?> dr: lines) {
 			dr.draw(Position.MIDDLE);
 			driver.clear();
 			System.out.println();

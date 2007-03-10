@@ -21,25 +21,26 @@ import jbookreader.style.FontDescriptor;
 import jbookreader.style.FontStyle;
 
 
-public class FormatEngine implements IFormatEngine {
+public class FormatEngine implements IFormatEngine<INode> {
 
-	public List<IDrawable> format(IGraphicDriver driver, ICompositor compositor, INode node, IStyleStack styleStack) {
-		List<IDrawable> result = new ArrayList<IDrawable> ();
+	public List<IDrawable<INode>> format(IGraphicDriver<INode> driver,
+			ICompositor<INode> compositor, INode node, IStyleStack<INode> styleStack) {
+		List<IDrawable<INode>> result = new ArrayList<IDrawable<INode>> ();
 		node.accept(new BlockFormattingVisitor(driver, compositor, result, styleStack));
 		return result;
 	}
 
 	private static class BlockFormattingVisitor implements INodeVisitor {
 
-		private final IGraphicDriver driver;
-		private final List<IDrawable> result;
-		private final ICompositor compositor;
-		private final IStyleStack styleStack;
+		private final IGraphicDriver<INode> driver;
+		private final List<IDrawable<INode>> result;
+		private final ICompositor<INode> compositor;
+		private final IStyleStack<INode> styleStack;
 		
-		private List<IDrawable> inline = null;
+		private List<IDrawable<? extends INode>> inline = null;
 		private Alignment textAlign = null;
 		
-		public BlockFormattingVisitor(IGraphicDriver driver, ICompositor compositor, List<IDrawable> result, IStyleStack styleStack) {
+		public BlockFormattingVisitor(IGraphicDriver<INode> driver, ICompositor<INode> compositor, List<IDrawable<INode>> result, IStyleStack<INode> styleStack) {
 			this.driver = driver;
 			this.compositor = compositor;
 			this.result = result;
@@ -89,7 +90,7 @@ public class FormatEngine implements IFormatEngine {
 
 		private void formatInline(INode node) {
 			if (inline == null) {
-				inline = new ArrayList<IDrawable>();
+				inline = new ArrayList<IDrawable<? extends INode>>();
 				textAlign = styleStack.getTextAlign();
 			}
 
@@ -102,7 +103,7 @@ public class FormatEngine implements IFormatEngine {
 				return;
 			}
 
-			List<IDrawable> lines = compositor.compose(inline, driver.getPaperWidth(),
+			List<IDrawable<INode>> lines = compositor.compose(inline, driver.getPaperWidth(),
 					textAlign, driver);
 
 			result.addAll(lines);
@@ -117,11 +118,11 @@ public class FormatEngine implements IFormatEngine {
 	}
 
 	private static class InlineFormattingVisitor implements INodeVisitor {
-		private final List<IDrawable> result;
-		private final IGraphicDriver driver;
-		private final IStyleStack styleStack;
+		private final List<IDrawable<? extends INode>> result;
+		private final IGraphicDriver<INode> driver;
+		private final IStyleStack<INode> styleStack;
 
-		public InlineFormattingVisitor(IGraphicDriver driver, List<IDrawable> result, IStyleStack styleStack) {
+		public InlineFormattingVisitor(IGraphicDriver<INode> driver, List<IDrawable<? extends INode>> result, IStyleStack<INode> styleStack) {
 			this.driver = driver;
 			this.result = result;
 			this.styleStack = styleStack;
@@ -170,7 +171,7 @@ public class FormatEngine implements IFormatEngine {
 					start ++;
 				}
 				if (start > end) {
-					result.add(new Glue(driver, font.getSpaceWidth(), 1, 1));
+					result.add(new Glue<INode>(driver, font.getSpaceWidth(), 1, 1, node));
 				}
 				for (end = start; end < size; end ++) {
 					if (str[end] <= '\u0020') {
@@ -180,7 +181,7 @@ public class FormatEngine implements IFormatEngine {
 
 				if (end != start) {
 					String s = new String(str, start, end - start);
-					result.add(driver.renderString(s, font));
+					result.add(driver.renderString(s, font, node));
 					start = end;
 				}
 			}
@@ -195,7 +196,7 @@ public class FormatEngine implements IFormatEngine {
 				return;
 			case INLINE:
 			case BLOCK:
-				IDrawable image = formatImage(node.getHRef(), node);
+				IDrawable<INode> image = formatImage(node.getHRef(), node);
 				if (image != null) {
 					result.add(image);
 				} else {
@@ -206,12 +207,12 @@ public class FormatEngine implements IFormatEngine {
 			}
 		}
 		
-		private IDrawable formatImage(String href, IImageNode node) {
+		private IDrawable<INode> formatImage(String href, IImageNode node) {
 			if (href.length() >= 1 && href.charAt(0) == '#') {
 				IBinaryBlob blob = node.getBook().getBinaryBlob(href.substring(1));
 				if (blob != null) {
 					try {
-						return driver.renderImage(blob.getContentType(), blob.getDataStream());
+						return driver.renderImage(blob.getContentType(), blob.getDataStream(), node);
 					} catch (UnsupportedOperationException e) {
 						System.err.println("Error: " + e.getMessage());
 					} catch (IOException e) {

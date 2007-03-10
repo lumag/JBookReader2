@@ -1,6 +1,5 @@
 package jbookreader.rendering;
 
-
 /**
  * This interface represents a basic typing convention &mdash;
  * a box. The height is calculated over and the depth
@@ -10,10 +9,12 @@ package jbookreader.rendering;
  * @author Dmitry Baryshkov (dbaryshkov@gmail.com)
  *
  */
-public interface IDrawable {
+public interface IDrawable<T> {
 	float getWidth(Position position);
 	float getHeight();
 	float getDepth();
 	
 	void draw(Position position);
+	
+	T getContext();
 }

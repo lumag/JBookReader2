@@ -17,7 +17,7 @@ import jbookreader.style.StyleAttribute;
 
 import static jbookreader.style.StyleAttribute.*;
 
-public class StyleStackImpl implements IStyleStack {
+public class StyleStackImpl implements IStyleStack<INode> {
 	private List<IStylesheet> stylesheets = new ArrayList<IStylesheet>();
 	private List<StyleStackState> stateStack = new ArrayList<StyleStackState>();
 	private StyleStackState currentState;

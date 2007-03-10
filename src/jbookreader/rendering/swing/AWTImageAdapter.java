@@ -14,15 +14,17 @@ import javax.imageio.stream.ImageInputStream;
 import jbookreader.rendering.IDrawable;
 import jbookreader.rendering.Position;
 
-class AWTImageAdapter implements IDrawable {
+class AWTImageAdapter<T> implements IDrawable<T> {
 
 	private final JGraphicDriver driver;
 	private BufferedImage image;
 	private final int width;
 	private final int height;
+	private final T context;
 
-	AWTImageAdapter(JGraphicDriver driver, String contentType, InputStream dataStream) throws IOException {
+	AWTImageAdapter(final JGraphicDriver driver, final String contentType, final InputStream dataStream, final T context) throws IOException {
 		this.driver = driver;
+		this.context = context;
 
 		Iterator<ImageReader> readers = ImageIO.getImageReadersByMIMEType(contentType);
 		if (!readers.hasNext()) {
@@ -56,9 +58,11 @@ class AWTImageAdapter implements IDrawable {
 		imageThread.start();
 	}
 
-	AWTImageAdapter(JGraphicDriver driver, BufferedImage image) {
+	AWTImageAdapter(JGraphicDriver driver, BufferedImage image, T context) {
 		this.driver = driver;
 		this.image = image;
+		this.context = context;
+
 		width = image.getWidth();
 		height = image.getHeight();
 	}
@@ -95,6 +99,10 @@ class AWTImageAdapter implements IDrawable {
 
 	public float getWidth(Position position) {
 		return width;
+	}
+
+	public T getContext() {
+		return context;
 	}
 
 }

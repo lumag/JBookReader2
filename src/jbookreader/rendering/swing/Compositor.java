@@ -7,11 +7,11 @@ import jbookreader.rendering.IDrawable;
 import jbookreader.rendering.IGraphicDriver;
 import jbookreader.style.Alignment;
 
-class Compositor implements ICompositor {
-	private final ICompositor realCompositor;
+class Compositor<T> implements ICompositor<T> {
+	private final ICompositor<T> realCompositor;
 	private long total;
 
-	Compositor(ICompositor realCompositor) {
+	Compositor(ICompositor<T> realCompositor) {
 		this.realCompositor = realCompositor;
 	}
 
@@ -23,11 +23,11 @@ class Compositor implements ICompositor {
 		total = 0;
 	}
 
-	public List<IDrawable> compose(List<IDrawable> particles, int width, Alignment alignment, IGraphicDriver driver) {
+	public List<IDrawable<T>> compose(List<IDrawable<? extends T>> particles, int width, Alignment alignment, IGraphicDriver<? extends T> driver) {
 
 		long before = System.nanoTime();
 
-		List<IDrawable> result = realCompositor.compose(particles, width, alignment, driver);
+		List<IDrawable<T>> result = realCompositor.compose(particles, width, alignment, driver);
 
 		long after = System.nanoTime();
 		total += (after - before);

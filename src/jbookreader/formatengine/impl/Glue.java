@@ -1,22 +1,23 @@
 package jbookreader.formatengine.impl;
 
 import jbookreader.formatengine.IAdjustableDrawable;
-import jbookreader.rendering.IDrawable;
 import jbookreader.rendering.IGraphicDriver;
 import jbookreader.rendering.Position;
 
-class Glue implements IDrawable, IAdjustableDrawable {
+class Glue<T> implements IAdjustableDrawable<T> {
 	private final float space;
 	private final float stretch;
 	private final float shrink;
-	private final IGraphicDriver driver;
+	private final IGraphicDriver<?> driver;
 	private float adjustment;
+	private final T context;
 
-	Glue(final IGraphicDriver driver, final float space, final float stretch, final float shrink) {
+	Glue(final IGraphicDriver<?> driver, final float space, final float stretch, final float shrink, final T context) {
 		this.driver = driver;
 		this.space = space;
 		this.stretch = stretch;
 		this.shrink = shrink;
+		this.context = context;
 	}
 	public float getShrink(Position position) {
 		if (position != Position.MIDDLE) {
@@ -55,4 +56,9 @@ class Glue implements IDrawable, IAdjustableDrawable {
 	public void adjust(float adjust) {
 		this.adjustment = adjust;
 	}
+
+	public T getContext() {
+		return context;
+	}
+
 }

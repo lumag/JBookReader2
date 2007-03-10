@@ -6,11 +6,11 @@ import java.io.InputStream;
 import jbookreader.style.FontDescriptor;
 
 
-public interface IGraphicDriver {
+public interface IGraphicDriver<T> {
 	// factory methods
-	IDrawable renderString(String s, IFont font);
-	IDrawable renderBox(int width, int height, int depth);
-	IDrawable renderImage(String contentType, InputStream dataStream) throws IOException;
+	IDrawable<T> renderString(String s, IFont font, T context);
+	IDrawable<T> renderBox(int width, int height, int depth, T context);
+	IDrawable<T> renderImage(String contentType, InputStream dataStream, T context) throws IOException;
 
 	IFont getFont(FontDescriptor fd);
 	

@@ -7,19 +7,21 @@ import java.awt.geom.Rectangle2D;
 import jbookreader.rendering.IDrawable;
 import jbookreader.rendering.Position;
 
-final class SimpleSwingString implements IDrawable {
+final class SimpleSwingString<T> implements IDrawable<T> {
 
 	private final JGraphicDriver driver;
 	private final String string;
 	private final AWTFontAdapter font;
-	private float height;
-	private float depth;
-	private float width;
+	private final float height;
+	private final float depth;
+	private final float width;
+	private final T context;
 
-	SimpleSwingString(JGraphicDriver driver, String string, AWTFontAdapter font) {
+	SimpleSwingString(final JGraphicDriver driver, final String string, final AWTFontAdapter font, final T context) {
 		this.driver = driver;
 		this.string = string;
 		this.font = font;
+		this.context = context;
 
 		LineMetrics metrics = font.getFont().getLineMetrics(string, driver.getFontRC());
 		Rectangle2D bounds = font.getFont().getStringBounds(string, driver.getFontRC());
@@ -59,6 +61,10 @@ final class SimpleSwingString implements IDrawable {
 
 	public float getWidth(Position position) {
 		return width;
+	}
+
+	public T getContext() {
+		return context;
 	}
 
 }

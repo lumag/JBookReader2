@@ -8,17 +8,17 @@ import jbookreader.rendering.IDrawable;
 import jbookreader.rendering.Position;
 
 
-class HBox implements IDrawable {
-	private final List<IDrawable> elements = new ArrayList<IDrawable>();
+class HBox<T> implements IDrawable<T> {
+	private final List<IDrawable<? extends T>> elements = new ArrayList<IDrawable<? extends T>>();
 
 	private float width;
 	private float height;
 	private float depth;
 
 	public void draw(Position position) {
-		for (ListIterator<IDrawable> it = elements.listIterator();
+		for (ListIterator<IDrawable<? extends T>> it = elements.listIterator();
 			it.hasNext();) {
-			IDrawable drawable = it.next();
+			IDrawable<? extends T> drawable = it.next();
 			if (it.previousIndex() == 0) {
 				drawable.draw(Position.START);
 			} else if (it.hasNext()) {
@@ -41,11 +41,19 @@ class HBox implements IDrawable {
 		return width;
 	}
 
-	public void add(IDrawable drawable) {
+	public T getContext() {
+		if (elements.isEmpty()) {
+			throw new IllegalStateException("Can't get context for an empty hbox");
+		}
+		
+		return elements.get(0).getContext();
+	}
+
+	public void add(IDrawable<? extends T> drawable) {
 		if (elements.isEmpty()) {
 			width = drawable.getWidth(Position.START);
 		} else {
-			IDrawable last = elements.get(elements.size()-1);
+			IDrawable<? extends T> last = elements.get(elements.size()-1);
 			width += drawable.getWidth(Position.END)
 				+ last.getWidth(Position.MIDDLE)
 				- last.getWidth(Position.END);
@@ -60,11 +68,11 @@ class HBox implements IDrawable {
 		elements.add(drawable);
 	}
 
-	public void addAll(List<IDrawable> drawables) {
-		for (ListIterator<IDrawable> it = drawables.listIterator();
+	public void addAll(List<IDrawable<? extends T>> drawables) {
+		for (ListIterator<IDrawable<? extends T>> it = drawables.listIterator();
 			it.hasNext();
 			) {
-			IDrawable drawable = it.next();
+			IDrawable<? extends T> drawable = it.next();
 			if (it.previousIndex() == 0 && elements.size() == 0) {
 				width += drawable.getWidth(Position.START);
 			} else if (it.hasNext()) {

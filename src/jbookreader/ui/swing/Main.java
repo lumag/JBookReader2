@@ -32,6 +32,7 @@ public class Main {
 				: args[0];
 		SwingUtilities.invokeLater(new Runnable() {
 
+			@SuppressWarnings("unchecked")
 			public void run() {
 				// JFrame.setDefaultLookAndFeelDecorated(true);
 				MainWindow window = new MainWindow();

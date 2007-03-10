@@ -7,7 +7,7 @@ import jbookreader.rendering.IFont;
 import jbookreader.rendering.IGraphicDriver;
 import jbookreader.style.FontDescriptor;
 
-public class TextRenderer implements IGraphicDriver {
+public class TextRenderer<T> implements IGraphicDriver<T> {
 	private static final int WIDTH = 80; 
 	private int xPosition;
 	private int yPosition;
@@ -43,15 +43,15 @@ public class TextRenderer implements IGraphicDriver {
 		return WIDTH;
 	}
 
-	public IDrawable renderBox(int width, int height, int depth) {
+	public IDrawable<T> renderBox(int width, int height, int depth, T context) {
 		throw new UnsupportedOperationException("boxes aren't supported");
 	}
 
-	public IDrawable renderString(String s, IFont font) {
-		return new StringBox(this, s);
+	public IDrawable<T> renderString(String s, IFont font, T context) {
+		return new StringBox<T>(this, s, context);
 	}
 	
-	public IDrawable renderImage(String contentType, InputStream dataStream) {
+	public IDrawable<T> renderImage(String contentType, InputStream dataStream, T context) {
 		throw new UnsupportedOperationException("image rendering isn't supported");
 	}
 

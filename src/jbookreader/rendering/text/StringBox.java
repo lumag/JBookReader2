@@ -6,16 +6,18 @@ package jbookreader.rendering.text;
 import jbookreader.rendering.IDrawable;
 import jbookreader.rendering.Position;
 
-class StringBox implements IDrawable {
+class StringBox<T> implements IDrawable<T> {
 	/**
 	 * 
 	 */
-	private final TextRenderer renderer;
+	private final TextRenderer<T> renderer;
 	private final String string;
+	private final T context;
 
-	StringBox(TextRenderer renderer, final String string) {
+	StringBox(final TextRenderer<T> renderer, final String string, final T context) {
 		this.renderer = renderer;
 		this.string = string;
+		this.context = context;
 	}
 
 	public void draw(Position position) {
@@ -32,6 +34,10 @@ class StringBox implements IDrawable {
 
 	public float getWidth(Position position) {
 		return string.length();
+	}
+
+	public T getContext() {
+		return context;
 	}
 
 	@Override

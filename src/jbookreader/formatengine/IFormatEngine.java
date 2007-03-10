@@ -2,13 +2,12 @@ package jbookreader.formatengine;
 
 import java.util.List;
 
-import jbookreader.book.INode;
 import jbookreader.rendering.IDrawable;
 import jbookreader.rendering.IGraphicDriver;
 
-public interface IFormatEngine {
+public interface IFormatEngine<T> {
 
-	List<IDrawable> format(IGraphicDriver driver,
-			ICompositor compositor, INode node, IStyleStack styleStack);
+	List<IDrawable<T>> format(IGraphicDriver<T> driver,
+			ICompositor<T> compositor, T context, IStyleStack<T> styleStack);
 
 }

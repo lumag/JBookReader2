@@ -7,6 +7,6 @@ import jbookreader.rendering.IGraphicDriver;
 import jbookreader.style.Alignment;
 
 
-public interface ICompositor {
-	List<IDrawable> compose(List<IDrawable> particles, int width, Alignment alignment, IGraphicDriver driver); 
+public interface ICompositor<T> {
+	List<IDrawable<T>> compose(List<IDrawable<? extends T>> particles, int width, Alignment alignment, IGraphicDriver<? extends T> driver); 
 }

@@ -12,18 +12,18 @@ import jbookreader.rendering.Position;
 import jbookreader.style.Alignment;
 
 
-public class SimpleCompositor implements ICompositor {
-	public List<IDrawable> compose(List<IDrawable> particles, int width, Alignment alignment, IGraphicDriver driver) {
-		List<IDrawable> result = new ArrayList<IDrawable>();
-		List<IDrawable> line = new ArrayList<IDrawable>();
+public class SimpleCompositor<T> implements ICompositor<T> {
+	public List<IDrawable<T>> compose(List<IDrawable<? extends T>> particles, int width, Alignment alignment, IGraphicDriver<? extends T> driver) {
+		List<IDrawable<T>> result = new ArrayList<IDrawable<T>>();
+		List<IDrawable<? extends T>> line = new ArrayList<IDrawable<? extends T>>();
 		float currentWidth = 0;
-		for (IDrawable d: particles) {
+		for (IDrawable<? extends T> d: particles) {
 			if (line.isEmpty()) {
 				line.add(d);
 				currentWidth = d.getWidth(Position.START);
 			} else if (currentWidth + d.getWidth(Position.END) > width) {
 				// we can't add current element as last or middle
-				IDrawable last = line.get(line.size()-1);
+				IDrawable<? extends T> last = line.get(line.size()-1);
 				currentWidth = currentWidth
 							- last.getWidth(Position.MIDDLE)
 							+ last.getWidth(Position.END);
@@ -49,7 +49,7 @@ public class SimpleCompositor implements ICompositor {
 			}
 		}
 		if (!line.isEmpty()) {
-			IDrawable last = line.get(line.size()-1);
+			IDrawable<? extends T> last = line.get(line.size()-1);
 			currentWidth = currentWidth
 						- last.getWidth(Position.MIDDLE)
 						+ last.getWidth(Position.END);
@@ -61,8 +61,8 @@ public class SimpleCompositor implements ICompositor {
 		return result;
 	}
 
-	private IDrawable makeHBox(IGraphicDriver driver, List<IDrawable> line, float width, Alignment alignment, boolean last) {
-		HBox hbox;
+	private IDrawable<T> makeHBox(IGraphicDriver<? extends T> driver, List<IDrawable<? extends T>> line, float width, Alignment alignment, boolean last) {
+		HBox<T> hbox;
 		switch (alignment) {
 		case JUSTIFY:
 		{
@@ -70,36 +70,36 @@ public class SimpleCompositor implements ICompositor {
 			float boxWidth = hbox.getWidth(Position.MIDDLE);
 			float defect = width - boxWidth;
 			if (defect != 0) {
-				HBox wrapperBox = new HBox();
+				HBox<T> wrapperBox = new HBox<T>();
 				wrapperBox.add(hbox);
-				wrapperBox.add(new SimpleWhitespace(driver, defect));
+				wrapperBox.add(new SimpleWhitespace<T>(driver, defect, hbox.getContext()));
 				hbox = wrapperBox;
 			}
 		}
 		break;
 		case LEFT:
 		{
-			hbox = new HBox();
+			hbox = new HBox<T>();
 			hbox.addAll(line);
 			float boxWidth = hbox.getWidth(Position.MIDDLE);
 			float defect = width - boxWidth;
 			if (defect != 0) {
-				HBox wrapperBox = new HBox();
+				HBox<T> wrapperBox = new HBox<T>();
 				wrapperBox.add(hbox);
-				wrapperBox.add(new SimpleWhitespace(driver, defect));
+				wrapperBox.add(new SimpleWhitespace<T>(driver, defect, hbox.getContext()));
 				hbox = wrapperBox;
 			}
 		}
 		break;
 		case RIGHT:
 		{
-			hbox = new HBox();
+			hbox = new HBox<T>();
 			hbox.addAll(line);
 			float boxWidth = hbox.getWidth(Position.MIDDLE);
 			float defect = width - boxWidth;
 			if (defect != 0) {
-				HBox wrapperBox = new HBox();
-				wrapperBox.add(new SimpleWhitespace(driver, defect));
+				HBox<T> wrapperBox = new HBox<T>();
+				wrapperBox.add(new SimpleWhitespace<T>(driver, defect, hbox.getContext()));
 				wrapperBox.add(hbox);
 				hbox = wrapperBox;
 			}
@@ -107,15 +107,15 @@ public class SimpleCompositor implements ICompositor {
 		break;
 		case CENTER:
 		{
-			hbox = new HBox();
+			hbox = new HBox<T>();
 			hbox.addAll(line);
 			float boxWidth = hbox.getWidth(Position.MIDDLE);
 			float defect = width - boxWidth;
 			if (defect != 0) {
-				HBox wrapperBox = new HBox();
-				wrapperBox.add(new SimpleWhitespace(driver, defect / 2));
+				HBox<T> wrapperBox = new HBox<T>();
+				wrapperBox.add(new SimpleWhitespace<T>(driver, defect / 2, hbox.getContext()));
 				wrapperBox.add(hbox);
-				wrapperBox.add(new SimpleWhitespace(driver, defect - (defect / 2)));
+				wrapperBox.add(new SimpleWhitespace<T>(driver, defect - (defect / 2), hbox.getContext()));
 				hbox = wrapperBox;
 			}
 		}
@@ -125,16 +125,16 @@ public class SimpleCompositor implements ICompositor {
 		return hbox;
 	}
 
-	private HBox makeJustifiedHBox(List<IDrawable> line, float width, boolean last) {
+	private HBox<T> makeJustifiedHBox(List<IDrawable<? extends T>> line, float width, boolean last) {
 		if (last) {
-			HBox hbox = new HBox();
+			HBox<T> hbox = new HBox<T>();
 			hbox.addAll(line);
 			return hbox;
 		}
 		float currentWidth = 0;
 		float currentStretch = 0;
-		for (ListIterator<IDrawable> iter = line.listIterator(); iter.hasNext();) {
-			IDrawable d = iter.next();
+		for (ListIterator<IDrawable<? extends T>> iter = line.listIterator(); iter.hasNext();) {
+			IDrawable<? extends T> d = iter.next();
 			if (iter.previousIndex() == 0) {
 				currentWidth += d.getWidth(Position.START);
 			} else if (iter.hasNext()) {
@@ -144,7 +144,7 @@ public class SimpleCompositor implements ICompositor {
 			}
 			
 			if (d instanceof IAdjustableDrawable) {
-				IAdjustableDrawable ad = (IAdjustableDrawable)d;
+				IAdjustableDrawable<?> ad = (IAdjustableDrawable<?>)d;
 				if (iter.previousIndex() == 0) {
 					currentStretch += ad.getStretch(Position.START);
 				} else if (iter.hasNext()) {
@@ -156,7 +156,7 @@ public class SimpleCompositor implements ICompositor {
 		}
 			
 		if (currentStretch == 0) {
-			HBox hbox = new HBox();
+			HBox<T> hbox = new HBox<T>();
 			hbox.addAll(line);
 			return hbox;
 		}
@@ -167,12 +167,12 @@ public class SimpleCompositor implements ICompositor {
 			throw new UnsupportedOperationException("Shrinking isn't supported yet");
 		}
 
-		HBox hbox = new HBox();
-		for (ListIterator<IDrawable> iter = line.listIterator(); iter.hasNext();) {
-			IDrawable drawable = iter.next();
+		HBox<T> hbox = new HBox<T>();
+		for (ListIterator<IDrawable<? extends T>> iter = line.listIterator(); iter.hasNext();) {
+			IDrawable<? extends T> drawable = iter.next();
 
 			if (drawable instanceof IAdjustableDrawable) {
-				IAdjustableDrawable d = (IAdjustableDrawable) drawable;
+				IAdjustableDrawable<?> d = (IAdjustableDrawable<?>) drawable;
 				
 				float adj_i;
 				if (iter.previousIndex() == 0) {

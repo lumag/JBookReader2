@@ -6,7 +6,7 @@ import java.awt.font.TextLayout;
 import jbookreader.rendering.IDrawable;
 import jbookreader.rendering.Position;
 
-final class SwingString implements IDrawable {
+final class SwingString<T> implements IDrawable<T> {
 	private final JGraphicDriver driver;
 
 	private final TextLayout layout;
@@ -17,8 +17,12 @@ final class SwingString implements IDrawable {
 
 	private final float width;
 
-	SwingString(JGraphicDriver driver, String s, AWTFontAdapter font) {
+	private final T context;
+
+	SwingString(final JGraphicDriver driver, final String s, final AWTFontAdapter font, final T context) {
 		this.driver = driver;
+		this.context = context;
+
 		layout = new TextLayout(s, font.getFont(), this.driver.getFontRC());
 
 		depth = layout.getDescent();
@@ -47,6 +51,10 @@ final class SwingString implements IDrawable {
 
 	public float getWidth(Position position) {
 		return width;
+	}
+
+	public T getContext() {
+		return context;
 	}
 
 }

@@ -18,6 +18,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 
 import jbookreader.book.IBook;
+import jbookreader.book.INode;
 import jbookreader.book.IStylesheet;
 import jbookreader.formatengine.ICompositor;
 import jbookreader.formatengine.IFormatEngine;
@@ -32,7 +33,7 @@ import lumag.util.ClassFactory;
 import lumag.util.SimpleCache;
 
 @SuppressWarnings("serial")
-public class JGraphicDriver extends JComponent implements IGraphicDriver, Scrollable {
+public class JGraphicDriver extends JComponent implements IGraphicDriver<INode>, Scrollable {
 	// TODO: move to separate layer between IGraphicDriver and IFormatEngine
 	private SimpleCache<FontDescriptor, IFont> fontsCache = new SimpleCache<FontDescriptor, IFont>(
 			new SimpleCache.Getter<FontDescriptor, IFont>(){
@@ -46,10 +47,10 @@ public class JGraphicDriver extends JComponent implements IGraphicDriver, Scroll
 	float horizontalPosition;
 	float verticalPosition;
 
-	private IFormatEngine formatEngine;
-	private Compositor compositor;
+	private IFormatEngine<INode> formatEngine;
+	private Compositor<INode> compositor;
 	private IBook book;
-	private List<IDrawable> lines;
+	private List<IDrawable<INode>> lines;
 
 	private FontRenderContext fontRC;
 
@@ -60,11 +61,11 @@ public class JGraphicDriver extends JComponent implements IGraphicDriver, Scroll
 
 	private IStyleConfig config = new JGraphicDriverConfig(this);
 	
-	public void setCompositor(ICompositor compositor) {
-		this.compositor = new Compositor(compositor);
+	public void setCompositor(ICompositor<INode> compositor) {
+		this.compositor = new Compositor<INode>(compositor);
 	}
 
-	public void setFormatEngine(IFormatEngine engine) {
+	public void setFormatEngine(IFormatEngine<INode> engine) {
 		this.formatEngine = engine;
 	}
 
@@ -119,21 +120,21 @@ public class JGraphicDriver extends JComponent implements IGraphicDriver, Scroll
 		return verticalPosition;
 	}
 
-	public IDrawable renderBox(int width, int height, int depth) {
+	public IDrawable<INode> renderBox(int width, int height, int depth, INode node) {
 		throw new UnsupportedOperationException("boxes aren't supported");
 	}
 
-	public IDrawable renderString(final String s, final IFont font) {
+	public IDrawable<INode> renderString(final String s, final IFont font, INode node) {
 		if (fontRC == null) {
 			throw new IllegalStateException("renderString with null frc");
 		}
 
-		return new SimpleSwingString(this, s, (AWTFontAdapter) font);
+		return new SimpleSwingString<INode>(this, s, (AWTFontAdapter) font, node);
 	}
 	
-	public IDrawable renderImage(String contentType, InputStream dataStream) throws IOException {
+	public IDrawable<INode> renderImage(String contentType, InputStream dataStream, INode node) throws IOException {
 		// throw new UnsupportedOperationException("unsupported");
-		return new AWTImageAdapter(this, contentType, dataStream);
+		return new AWTImageAdapter<INode>(this, contentType, dataStream, node);
 	}
 
 	public int getPaperWidth() {
@@ -199,7 +200,7 @@ public class JGraphicDriver extends JComponent implements IGraphicDriver, Scroll
 			reformatBook();
 
 			float height = 0;
-			for (IDrawable dr: lines) {
+			for (IDrawable<?> dr: lines) {
 				// FIXME: correct inter-line value!
 				height += dr.getHeight() + dr.getDepth();
 			}
@@ -221,7 +222,7 @@ public class JGraphicDriver extends JComponent implements IGraphicDriver, Scroll
 			horizontalPosition = 0;
 			verticalPosition = - offset;
 			long before = System.nanoTime();
-			for (IDrawable dr: lines) {
+			for (IDrawable<INode> dr: lines) {
 				if (verticalPosition + dr.getHeight() > hmin) {
 					dr.draw(Position.MIDDLE);
 					horizontalPosition = 0;
@@ -245,7 +246,7 @@ public class JGraphicDriver extends JComponent implements IGraphicDriver, Scroll
 	private void reformatBook() {
 		// FIXME: move to separate thread!
 		System.err.println("formatting");
-		IStyleStack styleStack = ClassFactory.createClass(IStyleStack.class, "jbookreader.stylestack");
+		IStyleStack<INode> styleStack = createStyleStack();
 		styleStack.setConfig(config);
 		if (defaultStylesheet != null ) {
 			styleStack.addStylesheet(defaultStylesheet);
@@ -268,10 +269,15 @@ public class JGraphicDriver extends JComponent implements IGraphicDriver, Scroll
 		
 	}
 
+	@SuppressWarnings("unchecked")
+	private IStyleStack<INode> createStyleStack() {
+		return ClassFactory.createClass(IStyleStack.class, "jbookreader.stylestack");
+	}
+
 	private int findNextHeight(float height, int direction) {
 		float h = height;
 		if (direction > 0) {
-			for (IDrawable dr: lines) {
+			for (IDrawable<?> dr: lines) {
 				// FIXME: correct inter-line value!
 				h -= dr.getHeight() + dr.getDepth();
 				float move = - h;
@@ -280,7 +286,7 @@ public class JGraphicDriver extends JComponent implements IGraphicDriver, Scroll
 				}
 			}
 		} else {
-			for (IDrawable dr: lines) {
+			for (IDrawable<?> dr: lines) {
 				// FIXME: correct inter-line value!
 				if (h > dr.getHeight() + dr.getDepth() + 1) {
 					h -= dr.getHeight() + dr.getDepth();

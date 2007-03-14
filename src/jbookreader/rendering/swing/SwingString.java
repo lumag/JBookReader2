@@ -7,7 +7,7 @@ import jbookreader.rendering.IDrawable;
 import jbookreader.rendering.Position;
 
 final class SwingString<T> implements IDrawable<T> {
-	private final JGraphicDriver driver;
+	private final JGraphicDriver<T> driver;
 
 	private final TextLayout layout;
 
@@ -19,7 +19,7 @@ final class SwingString<T> implements IDrawable<T> {
 
 	private final T context;
 
-	SwingString(final JGraphicDriver driver, final String s, final AWTFontAdapter font, final T context) {
+	SwingString(final JGraphicDriver<T> driver, final String s, final AWTFontAdapter font, final T context) {
 		this.driver = driver;
 		this.context = context;
 

@@ -15,11 +15,11 @@ import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 
 @SuppressWarnings("serial")
-public class JBookComponent extends JComponent implements Scrollable {
+public class JBookComponent<T> extends JComponent implements Scrollable {
 	
-	private JGraphicDriver driver = new JGraphicDriver(this);
+	private JGraphicDriver<T> driver = new JGraphicDriver<T>(this);
 	
-	private IRenderingModel renderingModel;
+	private IRenderingModel<T> renderingModel;
 
 	private FontRenderContext fontRC;
 
@@ -43,7 +43,7 @@ public class JBookComponent extends JComponent implements Scrollable {
 		return getHeight() - insets.top - insets.bottom;
 	}
 
-	public void setRenderingModel(IRenderingModel model) {
+	public void setRenderingModel(IRenderingModel<T> model) {
 		this.renderingModel = model;
 	}
 

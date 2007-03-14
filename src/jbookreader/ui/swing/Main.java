@@ -7,6 +7,7 @@ import javax.swing.SwingUtilities;
 
 import jbookreader.book.IBook;
 import jbookreader.book.IBookFactory;
+import jbookreader.book.INode;
 import jbookreader.book.IStylesheet;
 import jbookreader.css.CSSParser;
 import jbookreader.fileformats.IErrorHandler;
@@ -36,11 +37,13 @@ public class Main {
 
 			@SuppressWarnings("unchecked")
 			public void run() {
-				final IRenderingModel model = new ContinuousBookRenderingModel();
+				final IRenderingModel<INode> model = new ContinuousBookRenderingModel();
 				// JFrame.setDefaultLookAndFeelDecorated(true);
-				MainWindow window = new MainWindow();
-				final JBookComponent driver = window.getBookComponent();
+
+				final JBookComponent<INode> driver = new JBookComponent<INode>();
 				driver.setRenderingModel(model);
+
+				new MainWindow().setMainComponent(driver);
 				
 				model.setCompositor(
 						ClassFactory.createClass(ICompositor.class,

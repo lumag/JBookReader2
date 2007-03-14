@@ -9,7 +9,7 @@ import jbookreader.rendering.Position;
 
 final class SimpleSwingString<T> implements IDrawable<T> {
 
-	private final JGraphicDriver driver;
+	private final JGraphicDriver<T> driver;
 	private final String string;
 	private final AWTFontAdapter font;
 	private final float height;
@@ -17,7 +17,7 @@ final class SimpleSwingString<T> implements IDrawable<T> {
 	private final float width;
 	private final T context;
 
-	SimpleSwingString(final JGraphicDriver driver, final String string, final AWTFontAdapter font, final T context) {
+	SimpleSwingString(final JGraphicDriver<T> driver, final String string, final AWTFontAdapter font, final T context) {
 		this.driver = driver;
 		this.string = string;
 		this.font = font;

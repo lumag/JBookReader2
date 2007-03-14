@@ -16,13 +16,13 @@ import jbookreader.rendering.Position;
 
 class AWTImageAdapter<T> implements IDrawable<T> {
 
-	private final JGraphicDriver driver;
+	private final JGraphicDriver<T> driver;
 	private BufferedImage image;
 	private final int width;
 	private final int height;
 	private final T context;
 
-	AWTImageAdapter(final JGraphicDriver driver, final String contentType, final InputStream dataStream, final T context) throws IOException {
+	AWTImageAdapter(final JGraphicDriver<T> driver, final String contentType, final InputStream dataStream, final T context) throws IOException {
 		this.driver = driver;
 		this.context = context;
 
@@ -58,7 +58,7 @@ class AWTImageAdapter<T> implements IDrawable<T> {
 		imageThread.start();
 	}
 
-	AWTImageAdapter(JGraphicDriver driver, BufferedImage image, T context) {
+	AWTImageAdapter(JGraphicDriver<T> driver, BufferedImage image, T context) {
 		this.driver = driver;
 		this.image = image;
 		this.context = context;

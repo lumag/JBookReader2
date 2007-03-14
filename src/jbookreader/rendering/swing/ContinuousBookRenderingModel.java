@@ -15,7 +15,7 @@ import jbookreader.rendering.IGraphicDriver;
 import jbookreader.rendering.Position;
 import lumag.util.ClassFactory;
 
-public class ContinuousBookRenderingModel implements IRenderingModel {
+public class ContinuousBookRenderingModel implements IRenderingModel<INode> {
 	private IFormatEngine<INode> formatEngine;
 	private Compositor<INode> compositor;
 	private IBook book;

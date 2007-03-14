@@ -6,6 +6,7 @@ import java.awt.GraphicsConfiguration;
 import java.awt.event.KeyEvent;
 
 import javax.swing.BorderFactory;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -13,12 +14,10 @@ import javax.swing.JMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 
-import jbookreader.rendering.swing.JBookComponent;
-
 @SuppressWarnings("serial")
 class MainWindow extends JFrame {
 	private static final int BORDER_WIDTH = 15;
-	private JBookComponent display;
+	private final JScrollPane pane;
 
 	public MainWindow() {
 		this(null);
@@ -30,14 +29,9 @@ class MainWindow extends JFrame {
 		setTitle("JBookReader");
 
 		setJMenuBar(createMenuBar());
-		display = new JBookComponent();
-		display.setBorder(BorderFactory.createEmptyBorder(
-				BORDER_WIDTH, BORDER_WIDTH,
-				BORDER_WIDTH, BORDER_WIDTH));
-//		display.setBorder(BorderFactory.createLineBorder(java.awt.Color.RED, BORDER_WIDTH));
-		JScrollPane pane = new JScrollPane(display,
-				ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
-				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		pane = new JScrollPane(
+						ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
+						ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		add(pane);
 
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -82,7 +76,13 @@ class MainWindow extends JFrame {
 		return menu;
 	}
 
-	public JBookComponent getBookComponent() {
-		return display;
+	public void setMainComponent(JComponent component) {
+		component.setBorder(BorderFactory.createEmptyBorder(
+				BORDER_WIDTH, BORDER_WIDTH,
+				BORDER_WIDTH, BORDER_WIDTH));
+//		component.setBorder(BorderFactory.createLineBorder(java.awt.Color.RED, BORDER_WIDTH));
+
+		pane.setViewportView(component);
+
 	}
 }

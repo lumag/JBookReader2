@@ -1,17 +1,16 @@
 package jbookreader.rendering.swing;
 
 import jbookreader.book.IBook;
-import jbookreader.book.INode;
 import jbookreader.book.IStylesheet;
 import jbookreader.formatengine.ICompositor;
 import jbookreader.formatengine.IFormatEngine;
 import jbookreader.rendering.IGraphicDriver;
 
-public interface IRenderingModel {
+public interface IRenderingModel<T> {
 
-	void setCompositor(ICompositor<INode> compositor);
+	void setCompositor(ICompositor<T> compositor);
 
-	void setFormatEngine(IFormatEngine<INode> engine);
+	void setFormatEngine(IFormatEngine<T> engine);
 
 	void setBook(IBook book);
 
@@ -21,7 +20,7 @@ public interface IRenderingModel {
 
 	int findNextHeight(float height, int direction);
 
-	void render(IGraphicDriver<INode> driver, int minHeight, int maxHeight, int offset);
+	void render(IGraphicDriver<T> driver, int minHeight, int maxHeight, int offset);
 
-	float getHeight(IGraphicDriver<INode> driver);
+	float getHeight(IGraphicDriver<T> driver);
 }

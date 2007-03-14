@@ -10,17 +10,16 @@ import java.io.InputStream;
 
 import javax.swing.JComponent;
 
-import jbookreader.book.INode;
 import jbookreader.rendering.IDrawable;
 import jbookreader.rendering.IFont;
 import jbookreader.rendering.IGraphicDriver;
 import jbookreader.style.FontDescriptor;
 import lumag.util.SimpleCache;
 
-class JGraphicDriver implements IGraphicDriver<INode> {
-	private final JBookComponent component;
+class JGraphicDriver<T> implements IGraphicDriver<T> {
+	private final JBookComponent<T> component;
 
-	JGraphicDriver(JBookComponent component) {
+	JGraphicDriver(JBookComponent<T> component) {
 		this.component = component;
 	}
 
@@ -71,24 +70,24 @@ class JGraphicDriver implements IGraphicDriver<INode> {
 		return fontsCache.get(fd);
 	}
 
-	public IDrawable<INode> renderBox(int width, int height, int depth,
-			INode node) {
+	public IDrawable<T> renderBox(int width, int height, int depth,
+			T node) {
 		throw new UnsupportedOperationException("boxes aren't supported");
 	}
 
-	public IDrawable<INode> renderString(final String s, final IFont font,
-			INode node) {
+	public IDrawable<T> renderString(final String s, final IFont font,
+			T node) {
 		if (this.component.getFontRC() == null) {
 			throw new IllegalStateException("renderString with null frc");
 		}
 
-		return new SimpleSwingString<INode>(this, s, (AWTFontAdapter) font, node);
+		return new SimpleSwingString<T>(this, s, (AWTFontAdapter) font, node);
 	}
 
-	public IDrawable<INode> renderImage(String contentType,
-			InputStream dataStream, INode node) throws IOException {
+	public IDrawable<T> renderImage(String contentType,
+			InputStream dataStream, T node) throws IOException {
 		// throw new UnsupportedOperationException("unsupported");
-		return new AWTImageAdapter<INode>(this, contentType, dataStream, node);
+		return new AWTImageAdapter<T>(this, contentType, dataStream, node);
 	}
 
 	/*

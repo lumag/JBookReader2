@@ -33,6 +33,7 @@ public class Main {
 				//"tests/test.rtf"
 				//"tests/yekzyuperi_antuan_malenkii_princ.rtf"
 				: args[0];
+		final String ref = args.length < 2 ? null : args[1];
 		SwingUtilities.invokeLater(new Runnable() {
 
 			@SuppressWarnings("unchecked")
@@ -78,6 +79,12 @@ public class Main {
 									model.setDefaultStylesheet(defaultStylesheet);
 									model.setFormatStylesheet(fileFormat.getStylesheet());
 									model.setBook(book);
+									
+									if (ref != null) {
+										INode node = book.getNodeByRef(ref);
+										System.out.println(node);
+										// FIXME: scroll to node
+									}
 									
 									driver.repaint();
 								}

@@ -1,6 +1,7 @@
 package jbookreader.style;
 
-import static jbookreader.style.ERuleValueType.*;
+import static jbookreader.style.ERuleValueType.ENUM;
+import static jbookreader.style.ERuleValueType.STRING_ARRAY;
 
 public enum StyleAttribute implements IStyleRule {
 	DISPLAY(		Display.class,		false,	ENUM,	Display.INLINE),

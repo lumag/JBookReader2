@@ -21,10 +21,7 @@ import org.w3c.css.sac.SACMediaList;
 import org.w3c.css.sac.SelectorList;
 
 class CSSHandler implements DocumentHandler {
-	private CSSStylesheet stylesheet = new CSSStylesheet();
-	private Map<IStyleSelector, List<IStyleRule>> ruleSets;
 	private static Map<String, IRuleHandler> handlers = new HashMap<String, IRuleHandler>();
-	
 	static {
 		handlers.put("display", new BasicHandler(StyleAttribute.DISPLAY));
 		handlers.put("font-style", new BasicHandler(StyleAttribute.FONT_STYLE));
@@ -34,6 +31,9 @@ class CSSHandler implements DocumentHandler {
 		handlers.put("font-size", new FontSizeHandler());
 	}
 
+	private CSSStylesheet stylesheet = new CSSStylesheet();
+	private Map<IStyleSelector, List<IStyleRule>> ruleSets;
+	
 	public void comment(String text) throws CSSException {
 //		System.out.println("/* " + text + "*/");
 	}

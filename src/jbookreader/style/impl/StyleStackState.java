@@ -24,7 +24,7 @@ class StyleStackState {
 		generics.put(Enum.class, new EnumValueComputer());
 	}
 	
-	private static final IStyleRule inheritRule = new IStyleRule() {
+	private static final IStyleRule INHERIT_RULE = new IStyleRule() {
 
 		public StyleAttribute getAttribute() {
 			throw new InternalError("Attribute requested for special inheritance rule");
@@ -65,7 +65,7 @@ class StyleStackState {
 
 			if (rule == null) {
 				if (attribute.isInherit()) {
-					rule = inheritRule;
+					rule = INHERIT_RULE;
 				} else {
 					rule = attribute;
 				}

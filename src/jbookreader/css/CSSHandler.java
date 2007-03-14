@@ -7,9 +7,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import jbookreader.book.IStylesheet;
+import jbookreader.book.INode;
 import jbookreader.style.ERuleValueType;
 import jbookreader.style.IStyleRule;
+import jbookreader.style.IStylesheet;
 import jbookreader.style.StyleAttribute;
 
 import org.w3c.css.sac.CSSException;
@@ -134,7 +135,7 @@ class CSSHandler implements DocumentHandler {
 		throw new CSSException("media not supported");
 	}
 
-	public IStylesheet getStylesheet() {
+	public IStylesheet<INode> getStylesheet() {
 		return stylesheet;
 	}
 }

@@ -6,10 +6,10 @@ import java.util.List;
 import java.util.Map;
 
 import jbookreader.book.INode;
-import jbookreader.book.IStylesheet;
 import jbookreader.style.IStyleRule;
+import jbookreader.style.IStylesheet;
 
-class CSSStylesheet implements IStylesheet {
+class CSSStylesheet implements IStylesheet<INode> {
 	Map<IStyleSelector, List<IStyleRule>> rules =
 		new LinkedHashMap<IStyleSelector, List<IStyleRule>>();
 

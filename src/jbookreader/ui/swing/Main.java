@@ -8,7 +8,6 @@ import javax.swing.SwingUtilities;
 import jbookreader.book.IBook;
 import jbookreader.book.IBookFactory;
 import jbookreader.book.INode;
-import jbookreader.book.IStylesheet;
 import jbookreader.css.CSSParser;
 import jbookreader.fileformats.IErrorHandler;
 import jbookreader.fileformats.IFileFormatDescriptor;
@@ -19,6 +18,7 @@ import jbookreader.formatengine.IFormatEngine;
 import jbookreader.rendering.swing.ContinuousBookRenderingModel;
 import jbookreader.rendering.swing.IRenderingModel;
 import jbookreader.rendering.swing.JBookComponent;
+import jbookreader.style.IStylesheet;
 import lumag.util.ClassFactory;
 
 import org.xml.sax.SAXException;
@@ -68,7 +68,7 @@ public class Main {
 						};
 
 						try {
-							final IStylesheet defaultStylesheet = CSSParser.parse("resources/css/default.css");
+							final IStylesheet<INode> defaultStylesheet = CSSParser.parse("resources/css/default.css");
 							final IFileFormatDescriptor fileFormat = FileFormatsLibrary.getDescriptorForFile(filename);
 							final IBook book = fileFormat.parse(
 									filename, handler,

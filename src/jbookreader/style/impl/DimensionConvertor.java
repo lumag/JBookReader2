@@ -1,4 +1,4 @@
-package jbookreader.formatengine.style.impl;
+package jbookreader.style.impl;
 
 import java.util.HashMap;
 import java.util.Map;

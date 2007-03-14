@@ -1,4 +1,4 @@
-package jbookreader.formatengine;
+package jbookreader.style;
 
 public interface IStyleConfig {
 //	int getPageWidth();

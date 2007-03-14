@@ -3,7 +3,7 @@
  */
 package jbookreader.rendering.swing;
 
-import jbookreader.formatengine.IStyleConfig;
+import jbookreader.style.IStyleConfig;
 
 class JGraphicDriverConfig implements IStyleConfig {
 

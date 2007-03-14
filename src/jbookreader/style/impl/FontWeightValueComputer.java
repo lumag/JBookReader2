@@ -1,7 +1,7 @@
-package jbookreader.formatengine.style.impl;
+package jbookreader.style.impl;
 
-import jbookreader.formatengine.IStyleConfig;
 import jbookreader.style.FontWeight;
+import jbookreader.style.IStyleConfig;
 import jbookreader.style.IStyleRule;
 import jbookreader.style.StyleAttribute;
 

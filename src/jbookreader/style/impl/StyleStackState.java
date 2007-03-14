@@ -1,12 +1,12 @@
-package jbookreader.formatengine.style.impl;
+package jbookreader.style.impl;
 
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 
-import jbookreader.formatengine.IStyleConfig;
 import jbookreader.style.ERuleValueType;
 import jbookreader.style.IDimensionConvertor;
+import jbookreader.style.IStyleConfig;
 import jbookreader.style.IStyleRule;
 import jbookreader.style.StyleAttribute;
 

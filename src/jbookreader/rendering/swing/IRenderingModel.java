@@ -1,10 +1,10 @@
 package jbookreader.rendering.swing;
 
 import jbookreader.book.IBook;
-import jbookreader.book.IStylesheet;
 import jbookreader.formatengine.ICompositor;
 import jbookreader.formatengine.IFormatEngine;
 import jbookreader.rendering.IGraphicDriver;
+import jbookreader.style.IStylesheet;
 
 public interface IRenderingModel<T> {
 
@@ -14,9 +14,9 @@ public interface IRenderingModel<T> {
 
 	void setBook(IBook book);
 
-	void setDefaultStylesheet(IStylesheet defaultStylesheet);
+	void setDefaultStylesheet(IStylesheet<T> defaultStylesheet);
 
-	void setFormatStylesheet(IStylesheet formatStylesheet);
+	void setFormatStylesheet(IStylesheet<T> formatStylesheet);
 
 	int findNextHeight(float height, int direction);
 

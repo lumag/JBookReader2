@@ -1,24 +1,28 @@
-package jbookreader.formatengine.style.impl;
+package jbookreader.style.impl;
+
+import static jbookreader.style.StyleAttribute.DISPLAY;
+import static jbookreader.style.StyleAttribute.FONT_FAMILY;
+import static jbookreader.style.StyleAttribute.FONT_SIZE;
+import static jbookreader.style.StyleAttribute.FONT_STYLE;
+import static jbookreader.style.StyleAttribute.FONT_WEIGHT;
+import static jbookreader.style.StyleAttribute.TEXT_ALIGN;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
-import jbookreader.book.INode;
-import jbookreader.book.IStylesheet;
-import jbookreader.formatengine.IStyleConfig;
-import jbookreader.formatengine.IStyleStack;
 import jbookreader.style.Alignment;
 import jbookreader.style.Display;
 import jbookreader.style.FontStyle;
+import jbookreader.style.IStyleConfig;
 import jbookreader.style.IStyleRule;
+import jbookreader.style.IStyleStack;
+import jbookreader.style.IStylesheet;
 import jbookreader.style.StyleAttribute;
 
-import static jbookreader.style.StyleAttribute.*;
-
-public class StyleStackImpl implements IStyleStack<INode> {
-	private List<IStylesheet> stylesheets = new ArrayList<IStylesheet>();
+public class StyleStackImpl<T> implements IStyleStack<T> {
+	private List<IStylesheet<T>> stylesheets = new ArrayList<IStylesheet<T>>();
 	private List<StyleStackState> stateStack = new ArrayList<StyleStackState>();
 	private StyleStackState currentState;
 	private IStyleConfig config;
@@ -43,18 +47,18 @@ public class StyleStackImpl implements IStyleStack<INode> {
 		return config;
 	}
 
-	public void addStylesheet(final IStylesheet stylesheet) {
+	public void addStylesheet(final IStylesheet<T> stylesheet) {
 		stylesheets.add(stylesheet);
 	}
 
-	public void push(INode node) {
+	public void push(T context) {
 		Map<StyleAttribute, IStyleRule> rules =
 			new EnumMap<StyleAttribute, IStyleRule>(
 					StyleAttribute.class);
 		
-		for (IStylesheet stylesheet: stylesheets) {
+		for (IStylesheet<T> stylesheet: stylesheets) {
 			for (IStyleRule rule:
-					stylesheet.getApplicableRules(node)) {
+					stylesheet.getApplicableRules(context)) {
 				StyleAttribute attrib = rule.getAttribute();
 				long weight = rule.getWeight();
 				if (!rules.containsKey(attrib) ||

@@ -9,11 +9,11 @@ import jbookreader.fileformats.IErrorHandler;
 import jbookreader.fileformats.impl.FileFormatsLibrary;
 import jbookreader.formatengine.ICompositor;
 import jbookreader.formatengine.IFormatEngine;
-import jbookreader.formatengine.IStyleStack;
 import jbookreader.rendering.IDrawable;
 import jbookreader.rendering.IGraphicDriver;
 import jbookreader.rendering.Position;
 import jbookreader.rendering.text.TextRenderer;
+import jbookreader.style.IStyleStack;
 import lumag.util.ClassFactory;
 
 

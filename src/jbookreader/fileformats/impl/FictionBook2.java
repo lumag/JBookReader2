@@ -20,12 +20,12 @@ import jbookreader.book.IContainerNode;
 import jbookreader.book.IImageNode;
 import jbookreader.book.INamedNode;
 import jbookreader.book.INode;
-import jbookreader.book.IStylesheet;
 import jbookreader.book.ITextNode;
 import jbookreader.css.CSSParser;
 import jbookreader.fileformats.IErrorHandler;
 import jbookreader.fileformats.IFileFormatDescriptor;
 import jbookreader.style.IStyleRule;
+import jbookreader.style.IStylesheet;
 import lumag.util.Base64;
 
 import org.xml.sax.Attributes;
@@ -172,7 +172,7 @@ class FictionBook2 implements IFileFormatDescriptor {
 		}
 	}
 	private final Collection<String> extensions;
-	private IStylesheet stylesheet;
+	private IStylesheet<INode> stylesheet;
 
 	FictionBook2() {
 		extensions = new ArrayList<String>();
@@ -226,7 +226,7 @@ class FictionBook2 implements IFileFormatDescriptor {
 		return Collections.unmodifiableCollection(extensions);
 	}
 
-	public IStylesheet getStylesheet() {
+	public IStylesheet<INode> getStylesheet() {
 		if (stylesheet == null) {
 			try {
 				stylesheet = CSSParser.parse("resources/css/fb2.css");
@@ -235,10 +235,9 @@ class FictionBook2 implements IFileFormatDescriptor {
 			}
 		}
 		if (stylesheet == null) {
-			return new IStylesheet() {
-				private List<IStyleRule> list = new LinkedList<IStyleRule>();
+			return new IStylesheet<INode>() {
 				public List<IStyleRule> getApplicableRules(INode node) {
-					return Collections.unmodifiableList(list);
+					return new LinkedList<IStyleRule>();
 				}
 			};
 		}

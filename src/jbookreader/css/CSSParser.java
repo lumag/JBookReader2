@@ -3,7 +3,8 @@ package jbookreader.css;
 import java.io.IOException;
 import java.io.Reader;
 
-import jbookreader.book.IStylesheet;
+import jbookreader.book.INode;
+import jbookreader.style.IStylesheet;
 import lumag.util.ClassFactory;
 
 import org.w3c.css.sac.CSSException;
@@ -13,16 +14,16 @@ import org.w3c.css.sac.Parser;
 import org.w3c.css.sac.SelectorFactory;
 
 public class CSSParser {
-	public static IStylesheet parse(String name) throws CSSException, IOException {
+	public static IStylesheet<INode> parse(String name) throws CSSException, IOException {
 		return parse(new InputSource(name));
 	}
 
-	public static IStylesheet parse(Reader reader) throws CSSException, IOException {
+	public static IStylesheet<INode> parse(Reader reader) throws CSSException, IOException {
 		return parse(new InputSource(reader));
 		
 	}
 	
-	private static IStylesheet parse(InputSource source) throws CSSException, IOException {
+	private static IStylesheet<INode> parse(InputSource source) throws CSSException, IOException {
 		Parser cssParser = ClassFactory.createClass(Parser.class,
 				"sac.parser");
 		CSSHandler handler = new CSSHandler();

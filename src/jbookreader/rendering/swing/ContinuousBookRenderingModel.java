@@ -5,14 +5,14 @@ import java.util.List;
 
 import jbookreader.book.IBook;
 import jbookreader.book.INode;
-import jbookreader.book.IStylesheet;
 import jbookreader.formatengine.ICompositor;
 import jbookreader.formatengine.IFormatEngine;
-import jbookreader.formatengine.IStyleConfig;
-import jbookreader.formatengine.IStyleStack;
 import jbookreader.rendering.IDrawable;
 import jbookreader.rendering.IGraphicDriver;
 import jbookreader.rendering.Position;
+import jbookreader.style.IStyleConfig;
+import jbookreader.style.IStyleStack;
+import jbookreader.style.IStylesheet;
 import lumag.util.ClassFactory;
 
 public class ContinuousBookRenderingModel implements IRenderingModel<INode> {
@@ -21,8 +21,8 @@ public class ContinuousBookRenderingModel implements IRenderingModel<INode> {
 	private IBook book;
 	private List<IDrawable<INode>> lines = new ArrayList<IDrawable<INode>>(1);
 
-	private IStylesheet defaultStylesheet;
-	private IStylesheet formatStylesheet;
+	private IStylesheet<INode> defaultStylesheet;
+	private IStylesheet<INode> formatStylesheet;
 
 	private IStyleConfig config = new JGraphicDriverConfig();
 	
@@ -39,11 +39,11 @@ public class ContinuousBookRenderingModel implements IRenderingModel<INode> {
 		lines = new ArrayList<IDrawable<INode>>(1);
 	}
 
-	public void setDefaultStylesheet(IStylesheet defaultStylesheet) {
+	public void setDefaultStylesheet(IStylesheet<INode> defaultStylesheet) {
 		this.defaultStylesheet = defaultStylesheet;
 	}
 
-	public void setFormatStylesheet(IStylesheet formatStylesheet) {
+	public void setFormatStylesheet(IStylesheet<INode> formatStylesheet) {
 		this.formatStylesheet = formatStylesheet;
 	}
 
@@ -95,7 +95,7 @@ public class ContinuousBookRenderingModel implements IRenderingModel<INode> {
 			if (formatStylesheet != null ) {
 				styleStack.addStylesheet(formatStylesheet);
 			}
-			IStylesheet bookStylesheet = book.getStylesheet();
+			IStylesheet<INode> bookStylesheet = book.getStylesheet();
 			if (bookStylesheet != null) {
 				styleStack.addStylesheet(bookStylesheet);
 			}

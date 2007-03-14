@@ -33,6 +33,16 @@ public class JBookComponent extends JComponent implements Scrollable {
 		return fontRC;
 	}
 	
+	int getPaperWidth() {
+		Insets insets = getInsets();
+		return getWidth() - insets.left - insets.right;
+	}
+
+	int getPaperHeight() {
+		Insets insets = getInsets();
+		return getHeight() - insets.top - insets.bottom;
+	}
+
 	public void setRenderingModel(IRenderingModel model) {
 		this.renderingModel = model;
 	}

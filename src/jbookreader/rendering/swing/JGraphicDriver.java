@@ -4,7 +4,6 @@
 package jbookreader.rendering.swing;
 
 import java.awt.Graphics2D;
-import java.awt.Insets;
 import java.awt.font.FontRenderContext;
 import java.io.IOException;
 import java.io.InputStream;
@@ -60,13 +59,11 @@ class JGraphicDriver implements IGraphicDriver<INode> {
 	}
 
 	public int getPaperWidth() {
-		Insets insets = this.component.getInsets();
-		return this.component.getWidth() - insets.left - insets.right;
+		return component.getPaperWidth();
 	}
 
 	public int getPaperHeight() {
-		Insets insets = this.component.getInsets();
-		return this.component.getHeight() - insets.top - insets.bottom;
+		return component.getPaperHeight();
 	}
 
 	public IFont getFont(FontDescriptor fd) {
@@ -108,4 +105,5 @@ class JGraphicDriver implements IGraphicDriver<INode> {
 	public JComponent getComponent() {
 		return component;
 	}
+
 }

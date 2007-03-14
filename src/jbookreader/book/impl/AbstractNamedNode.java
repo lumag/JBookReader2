@@ -34,11 +34,11 @@ abstract class AbstractNamedNode extends AbstractNode implements INamedNode {
 
 		IContainerNode parent = getParentNode();
 		if (parent != null) {
-			int count = 0;
+			int count = 1;
 
-			for (INode node = this;
-					parent.hasPrevious(node);
-					node = parent.getPrevious(node)) {
+			INode node = this;
+			while (parent.hasPrevious(node)) {
+				node = parent.getPrevious(node);
 				if (node instanceof INamedNode) {
 					INamedNode namedNode = (INamedNode) node;
 					if (tag.equals(namedNode.getNodeTag())) {

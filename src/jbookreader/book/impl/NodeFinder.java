@@ -53,7 +53,6 @@ class NodeFinder implements INodeVisitor {
 	}
 
 	private boolean checkNamedNode(INamedNode node) {
-		System.out.println(node + " " + tag);
 		if (tag.equals(node.getNodeTag())) {
 			return true;
 		}

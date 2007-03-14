@@ -15,7 +15,9 @@ import jbookreader.fileformats.UnknownFormatException;
 import jbookreader.fileformats.impl.FileFormatsLibrary;
 import jbookreader.formatengine.ICompositor;
 import jbookreader.formatengine.IFormatEngine;
-import jbookreader.rendering.swing.JGraphicDriver;
+import jbookreader.rendering.swing.ContinuousBookRenderingModel;
+import jbookreader.rendering.swing.IRenderingModel;
+import jbookreader.rendering.swing.JBookComponent;
 import lumag.util.ClassFactory;
 
 import org.xml.sax.SAXException;
@@ -34,14 +36,16 @@ public class Main {
 
 			@SuppressWarnings("unchecked")
 			public void run() {
+				final IRenderingModel model = new ContinuousBookRenderingModel();
 				// JFrame.setDefaultLookAndFeelDecorated(true);
 				MainWindow window = new MainWindow();
-				final JGraphicDriver driver = window.getGraphicDriver();
+				final JBookComponent driver = window.getBookComponent();
+				driver.setRenderingModel(model);
 				
-				driver.setCompositor(
+				model.setCompositor(
 						ClassFactory.createClass(ICompositor.class,
 								"jbookreader.compositor"));
-				driver.setFormatEngine(
+				model.setFormatEngine(
 						ClassFactory.createClass(IFormatEngine.class,
 								"jbookreader.formatengine"));
 				
@@ -68,9 +72,9 @@ public class Main {
 									ClassFactory.createClass(IBookFactory.class, "jbookreader.factory.book"));
 							SwingUtilities.invokeAndWait(new Runnable() {
 								public void run() {
-									driver.setDefaultStylesheet(defaultStylesheet);
-									driver.setFormatStylesheet(fileFormat.getStylesheet());
-									driver.setBook(book);
+									model.setDefaultStylesheet(defaultStylesheet);
+									model.setFormatStylesheet(fileFormat.getStylesheet());
+									model.setBook(book);
 									
 									driver.repaint();
 								}

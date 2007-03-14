@@ -36,9 +36,9 @@ final class SwingString<T> implements IDrawable<T> {
 			throw new IllegalStateException("draw with g2d = null");
 		}
 		layout.draw(g2d,
-				this.driver.horizontalPosition,
-				this.driver.verticalPosition + height);
-		this.driver.horizontalPosition += width;
+				this.driver.getHorizontalPosition(),
+				this.driver.getVerticalPosition() + height);
+		this.driver.addHorizontalSpace(width);
 	}
 
 	public float getDepth() {

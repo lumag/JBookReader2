@@ -48,7 +48,7 @@ class AWTImageAdapter<T> implements IDrawable<T> {
 					synchronized (AWTImageAdapter.this) {
 						image = readImage;
 					}
-					AWTImageAdapter.this.driver.repaint();
+					AWTImageAdapter.this.driver.getComponent().repaint();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -84,9 +84,9 @@ class AWTImageAdapter<T> implements IDrawable<T> {
 					AffineTransform.getTranslateInstance(
 						driver.getHorizontalPosition(),
 						driver.getVerticalPosition()),
-					driver);
+					driver.getComponent());
 		}
-		driver.horizontalPosition += width;
+		driver.addHorizontalSpace(width);
 	}
 
 	public float getDepth() {

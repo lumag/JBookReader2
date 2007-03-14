@@ -45,10 +45,10 @@ final class SimpleSwingString<T> implements IDrawable<T> {
 		}
 //		System.out.println(width + " x " + height + " + " + depth);
 		graphics.drawString(string,
-				this.driver.horizontalPosition,
-				this.driver.verticalPosition + height);
+				this.driver.getHorizontalPosition(),
+				this.driver.getVerticalPosition() + height);
 
-		this.driver.horizontalPosition += width;
+		this.driver.addHorizontalSpace(width);
 	}
 
 	public float getDepth() {

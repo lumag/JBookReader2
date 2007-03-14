@@ -1,7 +1,7 @@
 package jbookreader.formatengine;
 
 public interface IStyleConfig {
-	int getPageWidth();
+//	int getPageWidth();
 	
 	int getMediumFontSize();
 }

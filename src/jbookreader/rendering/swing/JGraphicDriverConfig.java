@@ -7,10 +7,10 @@ import jbookreader.formatengine.IStyleConfig;
 
 class JGraphicDriverConfig implements IStyleConfig {
 
-	private final JGraphicDriver driver;
+//	private final JGraphicDriver driver;
 
-	JGraphicDriverConfig(JGraphicDriver driver) {
-		this.driver = driver;
+	JGraphicDriverConfig(/*JGraphicDriver driver*/) {
+//		this.driver = driver;
 	}
 
 	public int getMediumFontSize() {
@@ -18,8 +18,8 @@ class JGraphicDriverConfig implements IStyleConfig {
 		return 10;
 	}
 
-	public int getPageWidth() {
-		return this.driver.getPaperWidth();
-	}
+//	public int getPageWidth() {
+//		return this.driver.getPaperWidth();
+//	}
 	
 }

@@ -13,12 +13,12 @@ import javax.swing.JMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 
-import jbookreader.rendering.swing.JGraphicDriver;
+import jbookreader.rendering.swing.JBookComponent;
 
 @SuppressWarnings("serial")
 class MainWindow extends JFrame {
 	private static final int BORDER_WIDTH = 15;
-	private JGraphicDriver display;
+	private JBookComponent display;
 
 	public MainWindow() {
 		this(null);
@@ -30,7 +30,7 @@ class MainWindow extends JFrame {
 		setTitle("JBookReader");
 
 		setJMenuBar(createMenuBar());
-		display = new JGraphicDriver();
+		display = new JBookComponent();
 		display.setBorder(BorderFactory.createEmptyBorder(
 				BORDER_WIDTH, BORDER_WIDTH,
 				BORDER_WIDTH, BORDER_WIDTH));
@@ -82,7 +82,7 @@ class MainWindow extends JFrame {
 		return menu;
 	}
 
-	public JGraphicDriver getGraphicDriver() {
+	public JBookComponent getBookComponent() {
 		return display;
 	}
 }

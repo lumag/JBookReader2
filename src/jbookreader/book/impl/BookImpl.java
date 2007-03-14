@@ -11,25 +11,25 @@ import jbookreader.style.IStylesheet;
 
 
 class BookImpl implements IBook {
-	private Map<String, IContainerNode> bodies = new LinkedHashMap<String, IContainerNode>();
-	private Map<String, IBinaryBlob> blobs = new LinkedHashMap<String, IBinaryBlob>();
+	private Map<String, ContainerNodeImpl> bodies = new LinkedHashMap<String, ContainerNodeImpl>();
+	private Map<String, BinaryBlobImpl> blobs = new LinkedHashMap<String, BinaryBlobImpl>();
 	private IStylesheet<INode> stylesheet;
 
 	public void addBody(IContainerNode node, String name) {
-		// FIXME: remove cast
-		((AbstractNode) node).setBook(this);
-		bodies.put(name, node);
+		ContainerNodeImpl container = (ContainerNodeImpl) node;
+		container.setBook(this);
+		bodies.put(name, container);
 	}
 
-	public IContainerNode getFirstBody() {
+	public ContainerNodeImpl getFirstBody() {
 		return bodies.entrySet().iterator().next().getValue();
 	}
 
 	public void addBinaryBlob(IBinaryBlob blob, String name) {
-		blobs.put(name, blob);
+		blobs.put(name, (BinaryBlobImpl) blob);
 	}
 
-	public IBinaryBlob getBinaryBlob(String name) {
+	public BinaryBlobImpl getBinaryBlob(String name) {
 		return blobs.get(name);
 	}
 
@@ -39,5 +39,9 @@ class BookImpl implements IBook {
 
 	public void setStylesheet(IStylesheet<INode> stylesheet) {
 		this.stylesheet = stylesheet;
+	}
+
+	public INode getNodeByRef(String ref) {
+		return new NodeFinder(this, ref).getNode();
 	}
 }

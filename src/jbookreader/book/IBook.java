@@ -12,4 +12,6 @@ public interface IBook {
 
 	IStylesheet<INode> getStylesheet();
 	void setStylesheet(IStylesheet<INode> stylesheet);
+	
+	INode getNodeByRef(String ref);
 }

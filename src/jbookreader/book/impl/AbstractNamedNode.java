@@ -47,9 +47,11 @@ abstract class AbstractNamedNode extends AbstractNode implements INamedNode {
 				}
 			}
 			
-			builder.append('[');
-			builder.append(count);
-			builder.append(']');
+			if (count != 1) {
+				builder.append('[');
+				builder.append(count);
+				builder.append(']');
+			}
 		}
 		
 		return builder.toString();

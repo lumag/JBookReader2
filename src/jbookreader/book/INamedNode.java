@@ -1,6 +1,6 @@
 package jbookreader.book;
 
-public interface INamedNode {
+public interface INamedNode extends INode {
 
 	String getNodeClass();
 

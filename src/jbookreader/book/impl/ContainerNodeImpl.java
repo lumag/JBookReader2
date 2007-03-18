@@ -5,20 +5,21 @@ import java.util.NoSuchElementException;
 import jbookreader.book.IContainerNode;
 import jbookreader.book.INode;
 import jbookreader.book.INodeVisitor;
+import lumag.util.IOrderedContainer;
 import lumag.util.OrderedSet;
 
 
 class ContainerNodeImpl extends AbstractNamedNode implements IContainerNode {
-	private OrderedSet<INode> children = new OrderedSet<INode>();
+	private IOrderedContainer<INode> children = new OrderedSet<INode>();
 
-	public void add(INode node) {
+	public boolean add(INode node) {
 		if (node.getParentNode() != null) {
 			throw new IllegalArgumentException("The node being added is already a part of some book");
 		}
 		// XXX: try to find a way to remove these casts
 		((AbstractNode) node).setParentNode(this);
 		((AbstractNode) node).setBook(this.getBook());
-		this.children.add(node);
+		return this.children.add(node);
 	}
 
 	public void accept(INodeVisitor visitor) {
@@ -36,10 +37,6 @@ class ContainerNodeImpl extends AbstractNamedNode implements IContainerNode {
 		return children.isEmpty();
 	}
 
-	public boolean contains(INode element) {
-		return children.contains(element);
-	}
-
 	public INode getNext(INode element) throws NoSuchElementException {
 		return children.getNext(element);
 	}
@@ -54,6 +51,14 @@ class ContainerNodeImpl extends AbstractNamedNode implements IContainerNode {
 
 	public boolean hasPrevious(INode element) throws NoSuchElementException {
 		return children.hasPrevious(element);
+	}
+
+	public int getNumber(INode element) throws NoSuchElementException {
+		return children.getNumber(element);
+	}
+
+	public void remove(INode node) throws UnsupportedOperationException {
+		children.remove(node);
 	}
 
 }

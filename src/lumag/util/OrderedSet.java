@@ -139,4 +139,16 @@ public class OrderedSet<E> extends AbstractSet<E> implements Set<E>, IOrderedCon
 		return backwardMap.get(element) != null;
 	}
 
+	public int getNumber(E element) throws NoSuchElementException {
+		if (!contains(element)) {
+			throw new NoSuchElementException();
+		}
+		
+		int num = 0;
+		
+		for (E temp = element; hasPrevious(temp); temp = getPrevious(temp)) {
+			num ++;
+		}
+		return num;
+	}
 }

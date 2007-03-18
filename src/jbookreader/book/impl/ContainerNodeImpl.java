@@ -5,12 +5,12 @@ import java.util.NoSuchElementException;
 import jbookreader.book.IContainerNode;
 import jbookreader.book.INode;
 import jbookreader.book.INodeVisitor;
+import lumag.util.ArrayOrderedSet;
 import lumag.util.IOrderedContainer;
-import lumag.util.OrderedSet;
 
 
 class ContainerNodeImpl extends AbstractNamedNode implements IContainerNode {
-	private IOrderedContainer<INode> children = new OrderedSet<INode>();
+	private IOrderedContainer<INode> children = new ArrayOrderedSet<INode>();
 
 	public boolean add(INode node) {
 		if (node.getParentNode() != null) {

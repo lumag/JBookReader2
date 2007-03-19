@@ -6,6 +6,7 @@ import java.util.Collections;
 
 import jbookreader.fileformats.IFileFormatDescriptor;
 import jbookreader.fileformats.UnknownFormatException;
+import jbookreader.fileformats.rtf.RichTextFormat;
 
 //FIXME: rework to remove public class from .impl package!
 public class FileFormatsLibrary {

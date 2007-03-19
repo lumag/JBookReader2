@@ -56,9 +56,11 @@ class RichTextFormat implements IFileFormatDescriptor {
 
 			this.book = factory.newBook();
 			IContainerNode body = factory.newContainerNode();
+			body.setNodeTag("rtf");
 
 			book.addBody(body, "");
 			container = factory.newContainerNode();
+			container.setNodeTag("par");
 			body.add(container);
 		}
 
@@ -76,6 +78,7 @@ class RichTextFormat implements IFileFormatDescriptor {
 			controlHandlers.put("par", new IControlHandler() {
 				public void control(String string, boolean hasParameter, int parameter) {
 					IContainerNode node = factory.newContainerNode();
+					node.setNodeTag("par");
 					container.getParentNode().add(node);
 					container = node;
 				}
@@ -83,6 +86,7 @@ class RichTextFormat implements IFileFormatDescriptor {
 			controlHandlers.put("\n", new IControlHandler() {
 				public void control(String string, boolean hasParameter, int parameter) {
 					IContainerNode node = factory.newContainerNode();
+					node.setNodeTag("par");
 					container.getParentNode().add(node);
 					container = node;
 				}
@@ -90,6 +94,7 @@ class RichTextFormat implements IFileFormatDescriptor {
 			controlHandlers.put("\r", new IControlHandler() {
 				public void control(String string, boolean hasParameter, int parameter) {
 					IContainerNode node = factory.newContainerNode();
+					node.setNodeTag("par");
 					container.getParentNode().add(node);
 					container = node;
 				}

@@ -26,7 +26,9 @@ public class FormatEngine implements IFormatEngine<INode> {
 	public List<IDrawable<INode>> format(IGraphicDriver<INode> driver,
 			ICompositor<INode> compositor, INode node, IStyleStack<INode> styleStack) {
 		List<IDrawable<INode>> result = new ArrayList<IDrawable<INode>> ();
-		node.accept(new BlockFormattingVisitor(driver, compositor, result, styleStack));
+		BlockFormattingVisitor blockFormattingVisitor = new BlockFormattingVisitor(driver, compositor, result, styleStack);
+		node.accept(blockFormattingVisitor);
+		blockFormattingVisitor.flush();
 		return result;
 	}
 

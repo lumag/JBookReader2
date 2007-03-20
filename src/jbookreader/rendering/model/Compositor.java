@@ -1,4 +1,4 @@
-package jbookreader.rendering.swing;
+package jbookreader.rendering.model;
 
 import java.util.List;
 

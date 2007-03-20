@@ -1,4 +1,4 @@
-package jbookreader.rendering.swing;
+package jbookreader.rendering.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +9,7 @@ import jbookreader.formatengine.ICompositor;
 import jbookreader.formatengine.IFormatEngine;
 import jbookreader.rendering.IDrawable;
 import jbookreader.rendering.IGraphicDriver;
+import jbookreader.rendering.IRenderingModel;
 import jbookreader.rendering.Position;
 import jbookreader.style.IStyleConfig;
 import jbookreader.style.IStyleStack;
@@ -19,24 +20,39 @@ public class ContinuousBookRenderingModel implements IRenderingModel<INode> {
 	private IFormatEngine<INode> formatEngine;
 	private Compositor<INode> compositor;
 	private IBook book;
-	private List<IDrawable<INode>> lines = new ArrayList<IDrawable<INode>>(1);
+	private List<IDrawable<INode>> lines;
 
 	private IStylesheet<INode> defaultStylesheet;
 	private IStylesheet<INode> formatStylesheet;
 
-	private IStyleConfig config = new JGraphicDriverConfig();
+	private IStyleConfig config;
+	
+	public ContinuousBookRenderingModel() {
+		clear();
+	}
+	
+	private void clear() {
+		lines = new ArrayList<IDrawable<INode>>(1);
+	}
+
+	public void setConfig(IStyleConfig config) {
+		this.config = config;
+		clear();
+	}
 	
 	public void setCompositor(ICompositor<INode> compositor) {
 		this.compositor = new Compositor<INode>(compositor);
+		clear();
 	}
 
 	public void setFormatEngine(IFormatEngine<INode> engine) {
 		this.formatEngine = engine;
+		clear();
 	}
 
 	public void setBook(IBook book) {
 		this.book = book;
-		lines = new ArrayList<IDrawable<INode>>(1);
+		clear();
 	}
 
 	public void setDefaultStylesheet(IStylesheet<INode> defaultStylesheet) {

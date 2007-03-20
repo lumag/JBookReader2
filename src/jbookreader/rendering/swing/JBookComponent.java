@@ -14,6 +14,8 @@ import javax.swing.Scrollable;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 
+import jbookreader.rendering.IRenderingModel;
+
 @SuppressWarnings("serial")
 public class JBookComponent<T> extends JComponent implements Scrollable {
 	
@@ -45,6 +47,7 @@ public class JBookComponent<T> extends JComponent implements Scrollable {
 
 	public void setRenderingModel(IRenderingModel<T> model) {
 		this.renderingModel = model;
+		renderingModel.setConfig(new JGraphicDriverConfig());
 	}
 
 	/*

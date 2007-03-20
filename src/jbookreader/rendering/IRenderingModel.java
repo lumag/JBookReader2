@@ -1,12 +1,14 @@
-package jbookreader.rendering.swing;
+package jbookreader.rendering;
 
 import jbookreader.book.IBook;
 import jbookreader.formatengine.ICompositor;
 import jbookreader.formatengine.IFormatEngine;
-import jbookreader.rendering.IGraphicDriver;
+import jbookreader.style.IStyleConfig;
 import jbookreader.style.IStylesheet;
 
 public interface IRenderingModel<T> {
+	
+	void setConfig(IStyleConfig config);
 
 	void setCompositor(ICompositor<T> compositor);
 

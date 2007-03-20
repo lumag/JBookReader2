@@ -15,8 +15,7 @@ import jbookreader.fileformats.UnknownFormatException;
 import jbookreader.fileformats.impl.FileFormatsLibrary;
 import jbookreader.formatengine.ICompositor;
 import jbookreader.formatengine.IFormatEngine;
-import jbookreader.rendering.swing.ContinuousBookRenderingModel;
-import jbookreader.rendering.swing.IRenderingModel;
+import jbookreader.rendering.IRenderingModel;
 import jbookreader.rendering.swing.JBookComponent;
 import jbookreader.style.IStylesheet;
 import lumag.util.ClassFactory;
@@ -38,7 +37,9 @@ public class Main {
 
 			@SuppressWarnings("unchecked")
 			public void run() {
-				final IRenderingModel<INode> model = new ContinuousBookRenderingModel();
+				final IRenderingModel<INode> model =
+						ClassFactory.createClass(IRenderingModel.class,
+								"jbookreader.swing.model");
 				// JFrame.setDefaultLookAndFeelDecorated(true);
 
 				final JBookComponent<INode> driver = new JBookComponent<INode>();

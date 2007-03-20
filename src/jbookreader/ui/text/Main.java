@@ -1,19 +1,16 @@
 package jbookreader.ui.text;
 
-import java.util.List;
-
 import jbookreader.book.IBook;
 import jbookreader.book.IBookFactory;
 import jbookreader.book.INode;
 import jbookreader.fileformats.IErrorHandler;
+import jbookreader.fileformats.IFileFormatDescriptor;
 import jbookreader.fileformats.impl.FileFormatsLibrary;
 import jbookreader.formatengine.ICompositor;
 import jbookreader.formatengine.IFormatEngine;
-import jbookreader.rendering.IDrawable;
 import jbookreader.rendering.IGraphicDriver;
-import jbookreader.rendering.Position;
+import jbookreader.rendering.IRenderingModel;
 import jbookreader.rendering.text.TextRenderer;
-import jbookreader.style.IStyleStack;
 import lumag.util.ClassFactory;
 
 
@@ -40,26 +37,33 @@ public class Main {
 				"tests/simple.fb2"
 				//"tests/exupery_malenkiyi_princ.fb2"
 			;
-		IBook book = FileFormatsLibrary.getDescriptorForFile(uri).parse(
+		final IFileFormatDescriptor fileFormat = FileFormatsLibrary.getDescriptorForFile(uri);
+		final IBook book = fileFormat.parse(
 				uri, handler,
 				ClassFactory.createClass(IBookFactory.class, "jbookreader.factory.book"));
 		System.err.println("parsed");
 //		book.getFirstBody().accept(new BookDumper());
-		IGraphicDriver<INode> driver = new TextRenderer<INode>();
-		ICompositor<INode> compositor = ClassFactory.createClass(ICompositor.class,
-				"jbookreader.compositor");
-		IFormatEngine<INode> engine = ClassFactory.createClass(IFormatEngine.class,
-				"jbookreader.formatengine");
-		IStyleStack<INode> styleStack = ClassFactory.createClass(IStyleStack.class,
-				"jbookreader.stylestack");
-		List<IDrawable<INode>> lines = engine.format(driver, compositor, book.getFirstBody(),
-				styleStack);
+
+		IGraphicDriver<INode> driver = args.length > 1? 
+				new TextRenderer<INode>(args[1]):
+				new TextRenderer<INode>();
+
+		IRenderingModel<INode> model = ClassFactory.createClass(IRenderingModel.class,
+				"jbookreader.text.model");
+		model.setFormatEngine(ClassFactory.createClass(IFormatEngine.class,
+				"jbookreader.formatengine"));
+		model.setCompositor(ClassFactory.createClass(ICompositor.class,
+				"jbookreader.compositor"));
+		model.setFormatStylesheet(fileFormat.getStylesheet());
+		model.setConfig(new TextConfig());
+
+		model.setBook(book);
+
+		float height = model.getHeight(driver);
+
 		System.err.println("formatted");
-		for (IDrawable<?> dr: lines) {
-			dr.draw(Position.MIDDLE);
-			driver.clear();
-			System.out.println();
-		}
+
+		model.render(driver, 0, Math.round(height), 0);
 	}
 
 }

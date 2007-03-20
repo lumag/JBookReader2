@@ -2,6 +2,7 @@ package jbookreader.rendering.text;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintStream;
 
 import jbookreader.rendering.IDrawable;
 import jbookreader.rendering.IFont;
@@ -12,22 +13,32 @@ public class TextRenderer<T> implements IGraphicDriver<T> {
 	private static final int WIDTH = 80; 
 	private float xPosition;
 	private int realXPosition;
-	private int yPosition;
-	private Appendable outStream = System.out;
+	private float yPosition;
+	private int realYPosition;
+	private PrintStream outStream;
+	
+	public TextRenderer() {
+		outStream = System.out;
+	}
+	
+	public TextRenderer(String name) throws IOException {
+		outStream = new PrintStream(name);
+	}
 
 	public void addHorizontalSpace(float amount) {
 		xPosition += amount;
 	}
 
 	public void addVerticalSpace(float amount) {
-		// FIXME: really change strings
 		yPosition += amount;
 	}
 
 	public void clear() {
+		outStream.flush();
 		xPosition = 0;
 		realXPosition = 0;
 		yPosition = 0;
+		realYPosition = 0;
 	}
 
 	public int getPaperHeight() {
@@ -58,8 +69,14 @@ public class TextRenderer<T> implements IGraphicDriver<T> {
 		throw new UnsupportedOperationException("image rendering isn't supported");
 	}
 	
-	private void fixXPosition() throws IOException {
+	private void fixPosition() {
 		int xp = Math.round(xPosition);
+		int yp = Math.round(yPosition);
+		while (realYPosition < yp) {
+			outStream.append('\n');
+			realYPosition += 1;
+			realXPosition = 0;
+		}
 		while (realXPosition < xp) {
 			outStream.append(' ');
 			realXPosition += 1;
@@ -67,14 +84,10 @@ public class TextRenderer<T> implements IGraphicDriver<T> {
 	}
 
 	void append(String s) {
-		try {
-			fixXPosition();
-			outStream.append(s);
-			xPosition += s.length();
-			realXPosition += s.length();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		fixPosition();
+		outStream.append(s);
+		xPosition += s.length();
+		realXPosition += s.length();
 	}
 
 	public IFont getFont(FontDescriptor fd) {

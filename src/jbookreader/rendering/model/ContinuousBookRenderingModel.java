@@ -136,7 +136,7 @@ public class ContinuousBookRenderingModel implements IRenderingModel<INode> {
 		for (IDrawable<INode> dr: lines) {
 			if (driver.getVerticalPosition() + dr.getHeight() > minHeight) {
 				dr.draw(Position.MIDDLE);
-				System.out.println(dr.getContext().getNodeRef());
+//				System.out.println(dr.getContext().getNodeRef());
 				driver.addHorizontalSpace(-driver.getHorizontalPosition());
 			}
 			// FIXME: correct inter-line value!

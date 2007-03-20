@@ -151,4 +151,18 @@ public class OrderedSet<E> extends AbstractSet<E> implements Set<E>, IOrderedCon
 		}
 		return num;
 	}
+
+	public E get(int index) {
+		if (index < 0 || index >= size()) {
+			throw new NoSuchElementException();
+		}
+		int i = 0;
+		for (E e: this) {
+			if (i == index) {
+				return e;
+			}
+			i++;
+		}
+		throw new InternalError();
+	}
 }

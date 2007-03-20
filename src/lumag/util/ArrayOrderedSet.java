@@ -89,6 +89,11 @@ public class ArrayOrderedSet<E> extends AbstractSet<E> implements IOrderedContai
 		return true;
 	}
 
+
+	public E get(int index) {
+		return elements.get(index);
+	}
+	
 	public E getNext(E element) throws NoSuchElementException {
 		if (!contains(element)) {
 			throw new NoSuchElementException();
@@ -130,4 +135,5 @@ public class ArrayOrderedSet<E> extends AbstractSet<E> implements IOrderedContai
 		int num = getNumber(element);
 		return num != 0;
 	}
+
 }

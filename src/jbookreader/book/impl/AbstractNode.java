@@ -23,4 +23,19 @@ abstract class AbstractNode implements INode {
 	void setBook(IBook book) {
 		this.book = book;
 	}
+	
+	protected String getNodeRefElement() {
+		if (parentNode != null) {
+			return "/" + parentNode.getNumber(this);
+		}
+		return "/body";
+	}
+	
+	public final String getNodeRef() {
+		if (getParentNode() != null) {
+			return getParentNode().getNodeRef() + getNodeRefElement();
+		}
+		return getNodeRefElement();
+	}
+
 }

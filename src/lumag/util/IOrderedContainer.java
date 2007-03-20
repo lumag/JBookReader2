@@ -12,4 +12,5 @@ public interface IOrderedContainer<E> extends Collection<E> {
 	E getPrevious(E element) throws NoSuchElementException;
 
 	int getNumber(E element) throws NoSuchElementException;
+	E get(int index);
 }

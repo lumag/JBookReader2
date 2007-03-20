@@ -37,28 +37,32 @@ class ContainerNodeImpl extends AbstractNamedNode implements IContainerNode {
 		return children.isEmpty();
 	}
 
-	public INode getNext(INode element) throws NoSuchElementException {
-		return children.getNext(element);
-	}
-
-	public INode getPrevious(INode element) throws NoSuchElementException {
-		return children.getPrevious(element);
-	}
-
-	public boolean hasNext(INode element) throws NoSuchElementException {
-		return children.hasNext(element);
-	}
-
-	public boolean hasPrevious(INode element) throws NoSuchElementException {
-		return children.hasPrevious(element);
-	}
-
+//	public INode getNext(INode element) throws NoSuchElementException {
+//		return children.getNext(element);
+//	}
+//
+//	public INode getPrevious(INode element) throws NoSuchElementException {
+//		return children.getPrevious(element);
+//	}
+//
+//	public boolean hasNext(INode element) throws NoSuchElementException {
+//		return children.hasNext(element);
+//	}
+//
+//	public boolean hasPrevious(INode element) throws NoSuchElementException {
+//		return children.hasPrevious(element);
+//	}
+//
 	public int getNumber(INode element) throws NoSuchElementException {
 		return children.getNumber(element);
 	}
 
 	public void remove(INode node) throws UnsupportedOperationException {
 		children.remove(node);
+	}
+	
+	public INode getNode(int index) throws NoSuchElementException {
+		return children.get(index);
 	}
 
 }

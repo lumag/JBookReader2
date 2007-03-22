@@ -12,6 +12,9 @@ class AWTFontAdapter implements IFont {
 	private final float spaceWidth;
 
 	AWTFontAdapter(FontDescriptor fd, FontRenderContext frc) {
+		if (frc == null) {
+			throw new NullPointerException("Null FRC passed");
+		}
 		int style = Font.PLAIN;
 		if (fd.isBold()) {
 			style |= Font.BOLD;

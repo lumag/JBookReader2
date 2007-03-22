@@ -15,7 +15,7 @@ import jbookreader.fileformats.UnknownFormatException;
 import jbookreader.fileformats.impl.FileFormatsLibrary;
 import jbookreader.formatengine.ICompositor;
 import jbookreader.formatengine.IFormatEngine;
-import jbookreader.rendering.IRenderingModel;
+import jbookreader.rendering.model.IRenderingModel;
 import jbookreader.rendering.swing.JBookComponent;
 import jbookreader.style.IStylesheet;
 import lumag.util.ClassFactory;
@@ -84,7 +84,7 @@ public class Main {
 									if (ref != null) {
 										INode node = book.getNodeByRef(ref);
 										System.out.println(node);
-										// FIXME: scroll to node
+										driver.scrollTo(node);
 									}
 									
 									driver.repaint();

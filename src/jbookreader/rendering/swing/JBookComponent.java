@@ -1,20 +1,23 @@
 package jbookreader.rendering.swing;
 
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Insets;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.font.FontRenderContext;
 
 import javax.swing.JComponent;
+import javax.swing.JViewport;
 import javax.swing.Scrollable;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 
-import jbookreader.rendering.IRenderingModel;
+import jbookreader.rendering.model.IRenderingModel;
 
 @SuppressWarnings("serial")
 public class JBookComponent<T> extends JComponent implements Scrollable {
@@ -23,7 +26,7 @@ public class JBookComponent<T> extends JComponent implements Scrollable {
 	
 	private IRenderingModel<T> renderingModel;
 
-	private FontRenderContext fontRC;
+	private FontRenderContext fontRC = new FontRenderContext(null, true, true);
 
 	private Graphics2D paperGraphics;
 
@@ -73,7 +76,10 @@ public class JBookComponent<T> extends JComponent implements Scrollable {
 		Insets insets = getInsets();
 		int w = visible.width - insets.left - insets.right;
 		int h = visible.height - insets.top - insets.bottom;
-		int offset = visible.y;
+		int offset = visible.y - insets.top;
+		if (offset < 0) {
+			offset = 0;
+		}
 		System.out.println(w + "x" + h + "@" + offset);
 	
 		paperGraphics = (Graphics2D) g.create(
@@ -90,7 +96,14 @@ public class JBookComponent<T> extends JComponent implements Scrollable {
 		paperGraphics.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
 				RenderingHints.VALUE_FRACTIONALMETRICS_ON);
 
-		fontRC = paperGraphics.getFontRenderContext();
+		{
+			FontRenderContext newFRC = paperGraphics.getFontRenderContext();
+			if (!newFRC.equals(fontRC)) {
+				System.out.println("Font Rendering Context has changed!");
+				fontRC = newFRC;
+				renderingModel.clear();
+			}
+		}
 
 		float height = renderingModel.getHeight(this.driver);
 		int prefHeight = Math.round(height + insets.top + insets.bottom);
@@ -108,10 +121,10 @@ public class JBookComponent<T> extends JComponent implements Scrollable {
 				hmax = rectangle.y + rectangle.height;
 			}
 
+			System.out.println("Offset: " + offset);
 			renderingModel.render(driver, hmin, hmax, offset);
 		}
 
-		fontRC = null;
 		paperGraphics.dispose();
 		paperGraphics = null;
 	}
@@ -133,8 +146,13 @@ public class JBookComponent<T> extends JComponent implements Scrollable {
 			return 0;
 		}
 
-		float height = visibleRect.y;
-		return renderingModel.findNextHeight(height, direction);
+		float height = visibleRect.y - getInsets().top;
+		float extra = 0;
+		if (height < 0) {
+			extra = - height; 
+			height = 0;
+		}
+		return Math.round(extra + renderingModel.findNextHeight(height, direction));
 	}
 
 	public int getScrollableBlockIncrement(Rectangle visibleRect, int orientation, int direction) {
@@ -144,13 +162,44 @@ public class JBookComponent<T> extends JComponent implements Scrollable {
 
 		final int pageSize = 100;
 
-		float height = visibleRect.y;
+		float height = visibleRect.y - getInsets().top;
+		float extra = 0;
+		if (height < 0) {
+			extra = -height;
+			height = 0;
+		}
 		if (direction > 0) {
 			height += pageSize;
 		} else {
 			height -= pageSize;
 		}
-		return pageSize + renderingModel.findNextHeight(height, direction);
+		return Math.round(pageSize + extra + renderingModel.findNextHeight(height, direction));
+	}
+
+	public void scrollTo(T context) {
+		float height = renderingModel.getHeight(this.driver);
+		Insets insets = getInsets();
+		int prefHeight = Math.round(height + insets.top + insets.bottom);
+		
+		if (getPreferredSize().height != prefHeight) {
+			setPreferredSize(new Dimension(getWidth(), prefHeight));
+			revalidate();
+		}
+		int offset = (int) Math.floor(renderingModel.getOffset(driver, context));
+		System.out.println("Scroll: " + offset);
+		
+		
+		Container parent = getParent();
+		if (parent instanceof JViewport) {
+			Point p = new Point(0, offset + insets.top);
+			System.out.println("Scroll point: " + p);
+			((JViewport) parent).setViewPosition(p);
+		} else {
+			// FIXME: this won't always position necessary point on the top of the widget
+			Rectangle rect = new Rectangle(0, offset + insets.top, 1, (int) getVisibleRect().getHeight());
+			//System.out.println("Scroll rect: " + rect);
+			scrollRectToVisible(rect);
+		}
 	}
 
 }

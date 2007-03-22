@@ -1,4 +1,4 @@
-package jbookreader.rendering.model;
+package jbookreader.rendering.model.impl;
 
 import java.util.List;
 

@@ -9,7 +9,7 @@ import jbookreader.fileformats.impl.FileFormatsLibrary;
 import jbookreader.formatengine.ICompositor;
 import jbookreader.formatengine.IFormatEngine;
 import jbookreader.rendering.IGraphicDriver;
-import jbookreader.rendering.IRenderingModel;
+import jbookreader.rendering.model.IRenderingModel;
 import jbookreader.rendering.text.TextRenderer;
 import lumag.util.ClassFactory;
 

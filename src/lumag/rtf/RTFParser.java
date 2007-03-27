@@ -151,7 +151,9 @@ public class RTFParser {
 	}
 
 	private void processStateBackslash(byte b) {
-		if (Character.isLetter(b)) {
+		if (level >= skipLevel) {
+			state = State.TEXT;
+		} else if (Character.isLetter(b)) {
 			state = State.CONTROL;
 			putChar(b);
 		} else if (b == '\'') {

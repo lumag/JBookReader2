@@ -61,9 +61,11 @@ class StyleStackState {
 		for (StyleAttribute attribute: StyleAttribute.values()) {
 			IStyleValueComputer computer = findComputer(attribute);
 
-			IStyleRule rule = rules.get(attribute);
+			IStyleRule rule;
 
-			if (rule == null) {
+			if (rules.containsKey(attribute)) {
+				rule = rules.get(attribute);
+			} else {
 				if (attribute.isInherit()) {
 					rule = INHERIT_RULE;
 				} else {
@@ -76,8 +78,10 @@ class StyleStackState {
 	}
 
 	private IStyleValueComputer findComputer(StyleAttribute attrib) throws InternalError {
-		IStyleValueComputer computer = specials.get(attrib);
-		if (computer == null) {
+		IStyleValueComputer computer = null;
+		if (specials.containsKey(attrib)) {
+			computer = specials.get(attrib);
+		} else {
 			for (Class<?> klass = attrib.getAttributeValueClass();
 				computer == null && klass != null;
 				klass = klass.getSuperclass()) {
